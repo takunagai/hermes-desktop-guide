@@ -105,17 +105,30 @@ const hermesVersion = frontmatter.hermes_version || undefined;
     <title>{title} | Hermes Desktop 設定ガイド</title>
     <ClientRouter />
     
-    <!-- ダークモード初期化スクリプト -->
+    <!-- ダークモード初期化および遷移時同期スクリプト -->
     <script is:inline>
-      const getThemePreference = () => {
-        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-          return localStorage.getItem('theme');
+      const applyTheme = () => {
+        let theme = 'light';
+        try {
+          if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+            theme = localStorage.getItem('theme');
+          } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            theme = 'dark';
+          }
+        } catch (e) {
+          console.warn('localStorage is blocked or unavailable:', e);
+          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            theme = 'dark';
+          }
         }
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        
+        const isDark = theme === 'dark';
+        document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+        document.documentElement.setAttribute('data-theme', theme);
       };
-      const isDark = getThemePreference() === 'dark';
-      document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
-      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      
+      applyTheme();
+      document.addEventListener('astro:after-swap', applyTheme);
     </script>
   </head>
   <body class="bg-transparent transition-colors duration-200">
@@ -273,24 +286,19 @@ const hermesVersion = frontmatter.hermes_version || undefined;
     <!-- テーマ切り替え & モバイルメニュー制御スクリプト -->
     <script>
       const setupLayout = () => {
-        // テーマの復元と適用
-        const getThemePreference = () => {
-          if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-            return localStorage.getItem('theme');
-          }
-          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        };
-        const isDark = getThemePreference() === 'dark';
-        document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
-        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-
         // テーマ切り替え
         const themeToggle = document.getElementById('theme-toggle');
         themeToggle?.addEventListener('click', () => {
           const nextDark = document.documentElement.classList.toggle('dark');
           const nextTheme = nextDark ? 'dark' : 'light';
           document.documentElement.setAttribute('data-theme', nextTheme);
-          localStorage.setItem('theme', nextTheme);
+          try {
+            if (typeof localStorage !== 'undefined') {
+              localStorage.setItem('theme', nextTheme);
+            }
+          } catch (e) {
+            console.warn('Failed to save theme preference:', e);
+          }
         });
 
         // モバイルサイドバーのトグル
