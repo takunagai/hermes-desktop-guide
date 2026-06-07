@@ -273,11 +273,24 @@ const hermesVersion = frontmatter.hermes_version || undefined;
     <!-- テーマ切り替え & モバイルメニュー制御スクリプト -->
     <script>
       const setupLayout = () => {
+        // テーマの復元と適用
+        const getThemePreference = () => {
+          if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+            return localStorage.getItem('theme');
+          }
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        };
+        const isDark = getThemePreference() === 'dark';
+        document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
         // テーマ切り替え
         const themeToggle = document.getElementById('theme-toggle');
         themeToggle?.addEventListener('click', () => {
-          const isDark = document.documentElement.classList.toggle('dark');
-          document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+          const nextDark = document.documentElement.classList.toggle('dark');
+          const nextTheme = nextDark ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', nextTheme);
+          localStorage.setItem('theme', nextTheme);
         });
 
         // モバイルサイドバーのトグル
