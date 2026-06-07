@@ -107,28 +107,29 @@ const hermesVersion = frontmatter.hermes_version || undefined;
     
     <!-- ダークモード初期化および遷移時同期スクリプト -->
     <script is:inline>
-      const applyTheme = () => {
-        let theme = 'light';
+      const resolveTheme = () => {
         try {
-          if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-            theme = localStorage.getItem('theme');
-          } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            theme = 'dark';
-          }
+          const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('theme') : null;
+          if (stored) return stored;
         } catch (e) {
           console.warn('localStorage is blocked or unavailable:', e);
-          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            theme = 'dark';
-          }
         }
-        
-        const isDark = theme === 'dark';
-        document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
-        document.documentElement.setAttribute('data-theme', theme);
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       };
-      
+
+      const applyTheme = (root = document.documentElement) => {
+        const isDark = resolveTheme() === 'dark';
+        root.classList[isDark ? 'add' : 'remove']('dark');
+        root.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      };
+
       applyTheme();
-      document.addEventListener('astro:after-swap', applyTheme);
+      // スワップ前に「次ページの html」へ現在のテーマを適用し、
+      // ダークモード時に light 背景が一瞬描画される白フラッシュを防ぐ。
+      document.addEventListener('astro:before-swap', (event) => {
+        applyTheme(event.newDocument.documentElement);
+      });
+      document.addEventListener('astro:after-swap', () => applyTheme());
     </script>
   </head>
   <body class="bg-transparent transition-colors duration-200">
