@@ -93,6 +93,15 @@ const tocItems = headings.filter((h) => h.depth === 2 || h.depth === 3);
 // バージョン情報
 const verifiedDate = frontmatter.verified ? String(frontmatter.verified) : undefined;
 const hermesVersion = frontmatter.hermes_version || undefined;
+
+// サイト名と重複しないページタイトル（トップは「サイト名」単独にする）と
+// 最低限の SEO/OGP メタ用の説明文。description は将来スキーマに追加すれば
+// ページ個別指定も効く（現状は frontmatter に無いため既定文を使う）。
+const SITE_NAME = "Hermes Desktop 設定ガイド";
+const pageTitle = title === SITE_NAME ? SITE_NAME : `${title} | ${SITE_NAME}`;
+const description =
+  (frontmatter.description as string | undefined) ??
+  "Hermes Desktop の設定項目・推奨値・安全な設定手順を日本語でまとめた設定ガイド。";
 ---
 
 <!doctype html>
@@ -102,7 +111,13 @@ const hermesVersion = frontmatter.hermes_version || undefined;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title} | Hermes Desktop 設定ガイド</title>
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary" />
+    <title>{pageTitle}</title>
     <ClientRouter />
     
     <!-- ダークモード初期化および遷移時同期スクリプト -->
