@@ -7,19 +7,24 @@
   --font-display: "Outfit", "Inter", system-ui, -apple-system, sans-serif;
 }
 
-body {
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html {
   background-color: #f8fafc; /* slate-50 */
   color: #0f172a; /* slate-900 (High contrast) */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Fix background dark mode application */
-.dark body {
+html.dark {
   background-color: #030712; /* slate-950 (Midnight slate) */
   color: #f1f5f9; /* slate-100 (High contrast) */
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: transparent;
+  color: inherit;
 }
 
 /* Custom Scrollbar for premium feel */
