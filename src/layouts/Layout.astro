@@ -48,7 +48,7 @@ for (const doc of allDocs) {
       slug: doc.id,
       url: `/${doc.id}`,
       title: cleanTitle,
-      order: doc.data.order || 0,
+      order: doc.data.order ?? Number.MAX_SAFE_INTEGER,
     });
   } else {
     const cleanTitle = doc.data.title.replace(/^\d+[\s_]+/, "");
@@ -65,7 +65,7 @@ for (const doc of allDocs) {
       slug: doc.id,
       url: `/${doc.id}`,
       title: cleanTitle,
-      order: doc.data.order || 0,
+      order: doc.data.order ?? Number.MAX_SAFE_INTEGER,
     });
   }
 }
@@ -174,8 +174,9 @@ const description =
           <div class="relative hidden sm:block w-48 md:w-64">
             <input 
               type="text" 
-              id="search-input" 
-              placeholder="検索..." 
+              id="search-input"
+              aria-label="サイト内検索"
+              placeholder="検索..."
               class="w-full text-sm px-3 py-1.5 pl-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900/70 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-all"
             />
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-2.5 top-2.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -216,13 +217,13 @@ const description =
           </div>
 
           {sortedGroups.map((group) => (
-            <div class="space-y-1.5" key={group.key}>
+            <div class="space-y-1.5">
               <h3 class="px-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-display">
                 {group.displayName}
               </h3>
               <ul class="space-y-1">
                 {group.items.map((item: any) => (
-                  <li key={item.slug}>
+                  <li>
                     <a
                       href={item.url}
                       class={`block px-3 py-1.5 text-sm rounded-lg transition-all ${
@@ -280,10 +281,7 @@ const description =
             </h3>
             <ul class="space-y-2 text-sm">
               {tocItems.map((item) => (
-                <li 
-                  class={`${item.depth === 3 ? 'pl-3' : ''}`}
-                  key={item.slug}
-                >
+                <li class={`${item.depth === 3 ? 'pl-3' : ''}`}>
                   <a 
                     href={`#${item.slug}`} 
                     class="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors block leading-snug py-0.5 toc-link"
@@ -350,7 +348,8 @@ const description =
         if (searchInput && searchResults) {
           const docsData: { title: string; url: string; category: string }[] = [];
           
-          document.querySelectorAll('aside#sidebar nav ul li a').forEach((el) => {
+          // ホーム(ul/li の外にある)も含めるため nav 配下の全リンクを対象にする。
+          document.querySelectorAll('aside#sidebar nav a').forEach((el) => {
             const anchor = el as HTMLAnchorElement;
             const categoryEl = anchor.closest('div')?.querySelector('h3');
             docsData.push({
@@ -385,6 +384,14 @@ const description =
             searchResults.classList.remove('hidden');
           });
 
+          // Escape キーで検索結果を閉じられるようにする（キーボード操作対応）。
+          searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+              searchResults.classList.add('hidden');
+              searchInput.blur();
+            }
+          });
+
           outsideClickHandler = (e) => {
             if (!searchInput.contains(e.target as Node) && !searchResults.contains(e.target as Node)) {
               searchResults.classList.add('hidden');
@@ -404,21 +411,34 @@ const description =
             threshold: 0
           };
 
+          const visibleHeadings = new Set<string>();
           const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                const activeId = entry.target.getAttribute('id');
-                tocLinks.forEach(link => {
-                  const href = link.getAttribute('href');
-                  if (href === `#${activeId}`) {
-                    link.classList.add('text-indigo-600', 'dark:text-indigo-400', 'font-semibold');
-                    link.classList.remove('text-slate-500', 'dark:text-slate-400');
-                  } else {
-                    link.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'font-semibold');
-                    link.classList.add('text-slate-500', 'dark:text-slate-400');
-                  }
-                });
+            for (const entry of entries) {
+              const id = entry.target.getAttribute('id');
+              if (!id) continue;
+              if (entry.isIntersecting) visibleHeadings.add(id);
+              else visibleHeadings.delete(id);
+            }
+
+            // ドキュメント順で最初の可視見出しを active にする。交差中の見出しが
+            // 無い（最上部など）場合は activeId が null になり全リンクの active が
+            // 外れる（古いハイライトの残留を防ぐ）。
+            let activeId: string | null = null;
+            for (const heading of headings) {
+              const id = heading.getAttribute('id');
+              if (id && visibleHeadings.has(id)) {
+                activeId = id;
+                break;
               }
+            }
+
+            tocLinks.forEach(link => {
+              const isActive = link.getAttribute('href') === `#${activeId}`;
+              link.classList.toggle('text-indigo-600', isActive);
+              link.classList.toggle('dark:text-indigo-400', isActive);
+              link.classList.toggle('font-semibold', isActive);
+              link.classList.toggle('text-slate-500', !isActive);
+              link.classList.toggle('dark:text-slate-400', !isActive);
             });
           }, observerOptions);
 
