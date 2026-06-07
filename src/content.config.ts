@@ -17,7 +17,18 @@ const docs = defineCollection({
     tags: z.array(z.string()).optional(),
     hermes_version: z.string().optional(),
     hermes_commit: z.string().optional(),
-    verified: z.union([z.string(), z.date(), z.number()]).optional(),
+    // 未引用の YAML 日付 (verified: 2026-06-07) は js-yaml が JS Date に
+    // 解釈するため、そのまま String() すると "Sun Jun 07 2026 …" になる。
+    // ここで YYYY-MM-DD 文字列へ正規化する（Date は UTC 0時なので
+    // toISOString の日付部分で元の値に戻り、TZ ずれも防げる）。
+    verified: z
+      .union([z.string(), z.date(), z.number()])
+      .optional()
+      .transform((value) => {
+        if (value == null) return undefined;
+        if (value instanceof Date) return value.toISOString().slice(0, 10);
+        return String(value);
+      }),
   }),
 });
 
