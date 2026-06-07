@@ -285,7 +285,18 @@ const hermesVersion = frontmatter.hermes_version || undefined;
 
     <!-- テーマ切り替え & モバイルメニュー制御スクリプト -->
     <script>
+      let tocObserver: IntersectionObserver | null = null;
+      let outsideClickHandler: ((event: MouseEvent) => void) | null = null;
+
       const setupLayout = () => {
+        // 直前のナビゲーションで登録した document スコープのリスナー / Observer を破棄し、
+        // astro:after-swap ごとの多重登録（リーク）を防ぐ。
+        tocObserver?.disconnect();
+        if (outsideClickHandler) {
+          document.removeEventListener('click', outsideClickHandler);
+          outsideClickHandler = null;
+        }
+
         // テーマ切り替え
         const themeToggle = document.getElementById('theme-toggle');
         themeToggle?.addEventListener('click', () => {
@@ -358,11 +369,12 @@ const hermesVersion = frontmatter.hermes_version || undefined;
             searchResults.classList.remove('hidden');
           });
 
-          document.addEventListener('click', (e) => {
+          outsideClickHandler = (e) => {
             if (!searchInput.contains(e.target as Node) && !searchResults.contains(e.target as Node)) {
               searchResults.classList.add('hidden');
             }
-          });
+          };
+          document.addEventListener('click', outsideClickHandler);
         }
 
         // TOC Active Link Highlighter
@@ -395,6 +407,7 @@ const hermesVersion = frontmatter.hermes_version || undefined;
           }, observerOptions);
 
           headings.forEach(heading => observer.observe(heading));
+          tocObserver = observer;
         }
       };
 
