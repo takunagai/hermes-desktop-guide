@@ -20,7 +20,13 @@ function transformCallouts(markdown: string): string {
   const lines = markdown.split("\n");
   const result: string[] = [];
   let inCallout = false;
-  let calloutType = "";
+
+  // コールアウトを閉じる。直前に空行を挟むことで本文ブロックと
+  // 閉じ div を分離し、本文側の Markdown 解釈を保ったまま入れ子を閉じる。
+  const closeCallout = () => {
+    result.push("");
+    result.push("</div></div>");
+  };
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
@@ -28,22 +34,27 @@ function transformCallouts(markdown: string): string {
 
     if (match) {
       if (inCallout) {
-        result.push("</div></div>");
+        closeCallout();
       }
       inCallout = true;
-      calloutType = match[1].toLowerCase();
+      const calloutType = match[1].toLowerCase();
       const title = match[2].trim();
-      result.push(
-        `<div class="callout callout-${calloutType}"><div class="callout-title">${
-          title || calloutType.toUpperCase()
-        }</div><div class="callout-content">`,
-      );
+      // 開始タグ群を生 HTML ブロックとして出力し、直後に空行を入れて
+      // 本文を独立した Markdown ブロックにする。これにより本文中の
+      // **太字**・`code`・[link](url) などのインライン記法が解釈され、
+      // rehype-raw が入れ子を再構築するため本文は .callout-content 内に収まる。
+      // （空行を挟まないと CommonMark の生 HTML ブロック扱いで記法が
+      //   リテラル表示されてしまう）
+      result.push(`<div class="callout callout-${calloutType}">`);
+      result.push(`<div class="callout-title">${title || calloutType.toUpperCase()}</div>`);
+      result.push(`<div class="callout-content">`);
+      result.push("");
     } else if (inCallout) {
-      if (line.startsWith(">") || line.trim() === ">") {
-        const contentLine = line.replace(/^>\s?/, "");
-        result.push(contentLine);
+      if (line.startsWith(">")) {
+        // 「> 本文」も単独の「>」(空行) も、先頭の "> " を除いて本文として扱う。
+        result.push(line.replace(/^>\s?/, ""));
       } else {
-        result.push("</div></div>");
+        closeCallout();
         inCallout = false;
         result.push(line);
       }
@@ -53,7 +64,7 @@ function transformCallouts(markdown: string): string {
   }
 
   if (inCallout) {
-    result.push("</div></div>");
+    closeCallout();
   }
 
   return result.join("\n");
