@@ -88,13 +88,15 @@ body {
 
 /* Callout Themes - Light Mode */
 .callout-note,
-.callout-info {
+.callout-info,
+.callout-important {
   background-color: rgba(79, 70, 229, 0.04); /* Light Indigo tint */
   border-color: #6366f1; /* Indigo-500 */
   color: #1e1b4b; /* Indigo-950 */
 }
 .callout-note .callout-title,
-.callout-info .callout-title {
+.callout-info .callout-title,
+.callout-important .callout-title {
   color: #4f46e5; /* Indigo-600 */
 }
 
@@ -131,13 +133,15 @@ body {
 
 /* Callout Themes - Dark Mode */
 .dark .callout-note,
-.dark .callout-info {
+.dark .callout-info,
+.dark .callout-important {
   background-color: rgba(99, 102, 241, 0.08); /* Dark Indigo tint */
   border-color: #818cf8; /* Indigo-400 */
   color: #e0e7ff; /* Indigo-100 */
 }
 .dark .callout-note .callout-title,
-.dark .callout-info .callout-title {
+.dark .callout-info .callout-title,
+.dark .callout-important .callout-title {
   color: #a5b4fc; /* Indigo-300 */
 }
 
