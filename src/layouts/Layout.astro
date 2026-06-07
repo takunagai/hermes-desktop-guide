@@ -1,14 +1,14 @@
 ---
+import { getCollection } from "astro:content";
+import { ClientRouter } from "astro:transitions";
+import "../styles/global.css";
+
 interface Props {
   title: string;
   headings?: { depth: number; slug: string; text: string }[];
   currentSlug?: string;
   frontmatter?: Record<string, unknown>;
 }
-
-import { getCollection } from "astro:content";
-import { ClientRouter } from "astro:transitions";
-import "../styles/global.css";
 
 const { title, headings = [], currentSlug = "", frontmatter = {} } = Astro.props;
 
@@ -118,52 +118,52 @@ const hermesVersion = frontmatter.hermes_version || undefined;
       document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
     </script>
   </head>
-  <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-200">
-    <!-- ヘッダー -->
-    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md transition-colors">
+  <body class="transition-colors duration-200">
+    <!-- ヘッダー (ガラスモーフィズムと洗練されたグラデーション) -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-[#030712]/80 backdrop-blur-md transition-colors duration-300">
       <div class="max-w-[1400px] mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <!-- モバイル用サイドバー開閉ボタン -->
-          <button id="mobile-menu-toggle" class="p-2 -ml-2 md:hidden text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" aria-label="メニューを開く">
+          <button id="mobile-menu-toggle" class="p-2 -ml-2 md:hidden text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition-colors" aria-label="メニューを開く">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
           
-          <a href="/" class="flex items-center gap-2 font-bold text-lg md:text-xl tracking-tight bg-gradient-to-r from-blue-600 to-indigo-500 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+          <a href="/" class="flex items-center gap-2.5 font-bold text-lg md:text-xl tracking-tight bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 dark:from-indigo-400 dark:via-blue-400 dark:to-sky-300 bg-clip-text text-transparent">
             Hermes Desktop 設定ガイド
           </a>
           {hermesVersion && (
-            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100/80 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300">
+            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-900/50">
               v{hermesVersion}
             </span>
           )}
         </div>
 
         <div class="flex items-center gap-4">
-          <!-- クライアント検索窓 (後述のReactコンポーネント用プレースホルダー、今回はシンプル版をHTMLで実装) -->
+          <!-- 検索窓 (インディゴフォーカス) -->
           <div class="relative hidden sm:block w-48 md:w-64">
             <input 
               type="text" 
               id="search-input" 
               placeholder="検索..." 
-              class="w-full text-sm px-3 py-1.5 pl-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all"
+              class="w-full text-sm px-3 py-1.5 pl-8 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900/70 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-all"
             />
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-2.5 top-2.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <!-- 簡易的な検索結果コンテナ -->
-            <div id="search-results" class="hidden absolute top-full right-0 w-80 mt-1 max-h-96 overflow-y-auto rounded-lg shadow-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 z-50"></div>
+            <!-- 検索結果コンテナ -->
+            <div id="search-results" class="hidden absolute top-full right-0 w-80 mt-1.5 max-h-96 overflow-y-auto rounded-lg shadow-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 z-50"></div>
           </div>
 
           <!-- テーマ切り替えトグル -->
-          <button id="theme-toggle" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200" aria-label="テーマの切り替え">
-            <!-- 太陽アイコン (ダークモードで表示) -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button id="theme-toggle" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all duration-200" aria-label="テーマの切り替え">
+            <!-- 太陽アイコン -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m2.828 0l-.707-.707m2.828-10.828l-.707-.707M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <!-- 月アイコン (ライトモードで表示) -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block dark:hidden text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <!-- 月アイコン -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 block dark:hidden text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
           </button>
@@ -174,11 +174,11 @@ const hermesVersion = frontmatter.hermes_version || undefined;
     <!-- メイン領域 -->
     <div class="max-w-[1400px] mx-auto px-4 md:px-6 flex">
       
-      <!-- サイドバー (デスクトップ: 260px, モバイル: ドロワー) -->
-      <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-[270px] transform -translate-x-full md:translate-x-0 md:sticky md:top-16 md:h-[calc(100vh-4rem)] md:shrink-0 border-r border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-950 md:bg-transparent transition-all duration-300 overflow-y-auto py-6 md:py-8 pr-4 pl-4 md:pl-0">
+      <!-- サイドバー (透過レイヤー) -->
+      <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-[270px] transform -translate-x-full md:translate-x-0 md:sticky md:top-16 md:h-[calc(100vh-4rem)] md:shrink-0 border-r border-slate-200/50 dark:border-slate-800/50 bg-white dark:bg-[#030712] md:bg-transparent transition-all duration-300 overflow-y-auto py-6 md:py-8 pr-4 pl-4 md:pl-0">
         <nav class="space-y-6">
           <div>
-            <a href={homeItem.url} class={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${currentSlug === homeItem.slug || currentSlug === '' ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/50 dark:hover:bg-slate-900/50'}`}>
+            <a href={homeItem.url} class={`flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${currentSlug === homeItem.slug || currentSlug === '' ? 'bg-indigo-50/70 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400 font-semibold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/50 dark:hover:bg-slate-900/50'}`}>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
@@ -188,7 +188,7 @@ const hermesVersion = frontmatter.hermes_version || undefined;
 
           {sortedGroups.map((group) => (
             <div class="space-y-1.5" key={group.key}>
-              <h3 class="px-3 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-display">
+              <h3 class="px-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-display">
                 {group.displayName}
               </h3>
               <ul class="space-y-1">
@@ -198,7 +198,7 @@ const hermesVersion = frontmatter.hermes_version || undefined;
                       href={item.url}
                       class={`block px-3 py-1.5 text-sm rounded-lg transition-all ${
                         currentSlug === item.slug
-                          ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400 font-semibold border-l-2 border-blue-500 rounded-l-none'
+                          ? 'bg-indigo-50/70 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300 font-semibold border-l-2 border-indigo-500 rounded-l-none'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100/50 dark:hover:bg-slate-900/50'
                       }`}
                     >
@@ -212,39 +212,41 @@ const hermesVersion = frontmatter.hermes_version || undefined;
         </nav>
       </aside>
 
-      <!-- オーバーレイ (モバイルサイドバー表示時の背景) -->
+      <!-- モバイル用オーバーレイ -->
       <div id="sidebar-overlay" class="fixed inset-0 z-20 bg-slate-900/30 backdrop-blur-sm hidden md:hidden"></div>
 
-      <!-- メインコンテンツ -->
-      <main class="flex-1 min-w-0 max-w-4xl mx-auto py-8 md:py-12 px-0 md:px-8 lg:px-12">
-        <article class="markdown-body">
-          {verifiedDate && (
-            <div class="mb-6 flex flex-wrap items-center gap-2 text-xs text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-900 pb-4">
-              <span class="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                実機確認日: {verifiedDate}
-              </span>
-              {frontmatter.hermes_commit && (
+      <!-- メインコンテンツ (コンテンツカード化) -->
+      <main class="flex-1 min-w-0 max-w-4xl mx-auto py-8 md:py-12 px-0 md:px-6">
+        <div class="bg-white dark:bg-[#0b0f19] border border-slate-200/60 dark:border-slate-800/60 rounded-2xl shadow-sm p-6 md:p-10 transition-all duration-200">
+          <article class="markdown-body">
+            {verifiedDate && (
+              <div class="mb-6 flex flex-wrap items-center gap-2.5 text-xs text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-900 pb-4">
                 <span class="flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  コミット: <code class="ml-1 px-1 py-0 bg-slate-100 dark:bg-slate-800 rounded font-mono text-[10px]">{frontmatter.hermes_commit}</code>
+                  実機確認日: {verifiedDate}
                 </span>
-              )}
-            </div>
-          )}
-          <slot />
-        </article>
+                {frontmatter.hermes_commit && (
+                  <span class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                    コミット: <code class="ml-1 px-1 py-0 bg-slate-100 dark:bg-slate-800/80 rounded font-mono text-[10px]">{frontmatter.hermes_commit}</code>
+                  </span>
+                )}
+              </div>
+            )}
+            <slot />
+          </article>
+        </div>
       </main>
 
-      <!-- 右側: 目次 (TOC) (デスクトップのみ) -->
+      <!-- 右側: 目次 (TOC) -->
       {tocItems.length > 0 && (
         <aside class="hidden lg:block w-[240px] shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto py-8 pl-6">
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-display">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-display">
               目次
             </h3>
             <ul class="space-y-2 text-sm">
@@ -255,7 +257,7 @@ const hermesVersion = frontmatter.hermes_version || undefined;
                 >
                   <a 
                     href={`#${item.slug}`} 
-                    class="text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors block leading-snug py-0.5 toc-link"
+                    class="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors block leading-snug py-0.5 toc-link"
                     data-slug={item.slug}
                   >
                     {item.text}
@@ -298,11 +300,8 @@ const hermesVersion = frontmatter.hermes_version || undefined;
         const searchResults = document.getElementById('search-results');
 
         if (searchInput && searchResults) {
-          // Astro 側でビルドしたコレクションのJSON風データをメモリに取得
-          // 今回はシンプルに、ページタイトルのマッチングを行います
           const docsData: { title: string; url: string; category: string }[] = [];
           
-          // サイドバーから全記事のリストを動的にパースして辞書を作る
           document.querySelectorAll('aside#sidebar nav ul li a').forEach((el) => {
             const anchor = el as HTMLAnchorElement;
             const categoryEl = anchor.closest('div')?.querySelector('h3');
@@ -326,11 +325,11 @@ const hermesVersion = frontmatter.hermes_version || undefined;
             );
 
             if (matches.length === 0) {
-              searchResults.innerHTML = '<div class="text-xs p-3 text-slate-400">見つかりませんでした</div>';
+              searchResults.innerHTML = '<div class="text-xs p-3 text-slate-400 dark:text-slate-500">見つかりませんでした</div>';
             } else {
               searchResults.innerHTML = matches.map(doc => `
                 <a href="${doc.url}" class="block p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                  <div class="text-xs font-semibold text-blue-500 dark:text-blue-400">${doc.category}</div>
+                  <div class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">${doc.category}</div>
                   <div class="text-sm font-medium text-slate-800 dark:text-slate-200">${doc.title}</div>
                 </a>
               `).join('');
@@ -338,7 +337,6 @@ const hermesVersion = frontmatter.hermes_version || undefined;
             searchResults.classList.remove('hidden');
           });
 
-          // 枠外クリックで検索窓を閉じる
           document.addEventListener('click', (e) => {
             if (!searchInput.contains(e.target as Node) && !searchResults.contains(e.target as Node)) {
               searchResults.classList.add('hidden');
@@ -346,7 +344,7 @@ const hermesVersion = frontmatter.hermes_version || undefined;
           });
         }
 
-        // TOC Active Link Highlighter (IntersectionObserver)
+        // TOC Active Link Highlighter
         const tocLinks = document.querySelectorAll('.toc-link');
         const headings = document.querySelectorAll('.markdown-body h2, .markdown-body h3');
 
@@ -364,10 +362,10 @@ const hermesVersion = frontmatter.hermes_version || undefined;
                 tocLinks.forEach(link => {
                   const href = link.getAttribute('href');
                   if (href === `#${activeId}`) {
-                    link.classList.add('text-blue-500', 'dark:text-blue-400', 'font-semibold');
+                    link.classList.add('text-indigo-600', 'dark:text-indigo-400', 'font-semibold');
                     link.classList.remove('text-slate-500', 'dark:text-slate-400');
                   } else {
-                    link.classList.remove('text-blue-500', 'dark:text-blue-400', 'font-semibold');
+                    link.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'font-semibold');
                     link.classList.add('text-slate-500', 'dark:text-slate-400');
                   }
                 });
@@ -379,7 +377,6 @@ const hermesVersion = frontmatter.hermes_version || undefined;
         }
       };
 
-      // ページ読み込み時および遷移完了時に初期化
       setupLayout();
       document.addEventListener('astro:after-swap', setupLayout);
     </script>
