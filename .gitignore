@@ -26,3 +26,5 @@ pnpm-debug.log*
 .wrangler/
 .dev.vars
 
+# generated content docs
+src/content/docs/
