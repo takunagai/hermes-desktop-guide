@@ -15,6 +15,43 @@ function getFiles(dir: string): string[] {
   return files.filter((f) => f.endsWith(".md"));
 }
 
+// fenced code block (```／~~~) の内側を変換対象から除外するためのヘルパー。
+// コード外のチャンクにだけ transform を適用し、コード例に含まれる
+// [[WikiLink]] や > [!callout] が誤変換されるのを防ぐ。
+// （インラインコードは行をまたがないため対象外。主因のフェンスのみ保護する）
+function applyOutsideCodeBlocks(markdown: string, transform: (chunk: string) => string): string {
+  const lines = markdown.split("\n");
+  const out: string[] = [];
+  let buffer: string[] = [];
+  let inFence = false;
+  let fenceChar = "";
+
+  const flush = () => {
+    if (buffer.length > 0) {
+      out.push(transform(buffer.join("\n")));
+      buffer = [];
+    }
+  };
+
+  for (const line of lines) {
+    const fence = line.match(/^\s*(`{3,}|~{3,})/);
+    if (fence && (!inFence || fence[1][0] === fenceChar)) {
+      if (!inFence) {
+        flush();
+        inFence = true;
+        fenceChar = fence[1][0];
+      } else {
+        inFence = false;
+      }
+      out.push(line);
+    } else {
+      (inFence ? out : buffer).push(line);
+    }
+  }
+  flush();
+  return out.join("\n");
+}
+
 // コールアウトの変換 (> [!info] -> HTMLタグ)
 function transformCallouts(markdown: string): string {
   const lines = markdown.split("\n");
@@ -159,9 +196,9 @@ function preprocess() {
 
     let content = fs.readFileSync(file, "utf-8");
 
-    // 前処理を適用
-    content = transformWikiLinks(content, rel);
-    content = transformCallouts(content);
+    // 前処理を適用（コードフェンス内は変換しない）
+    content = applyOutsideCodeBlocks(content, (chunk) => transformWikiLinks(chunk, rel));
+    content = applyOutsideCodeBlocks(content, transformCallouts);
 
     fs.writeFileSync(destPath, content, "utf-8");
   }
