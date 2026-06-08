@@ -1,7 +1,9 @@
 // @ts-check
 import { execFileSync } from "node:child_process";
+import { unified } from "@astrojs/markdown-remark";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
+import remarkHomeDirectoryGrid from "./scripts/remark-home-directory-grid.ts";
 
 const preprocessIntegration = () => ({
   name: "preprocess-obsidian",
@@ -37,6 +39,11 @@ const legacyRedirects = {
 };
 
 export default defineConfig({
+  markdown: {
+    processor: unified({
+      remarkPlugins: [remarkHomeDirectoryGrid],
+    }),
+  },
   integrations: [
     preprocessIntegration(),
     starlight({

@@ -49,6 +49,51 @@
     overflow-wrap: anywhere;
   }
 
+  .home-directory-grid {
+    display: grid;
+    gap: 1.25rem;
+    margin-block: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .home-directory-grid > .home-directory-section {
+    min-width: 0;
+    margin-top: 0;
+    border: 1px solid var(--sl-color-hairline);
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background: color-mix(in srgb, var(--sl-color-bg-nav) 72%, transparent);
+  }
+
+  .home-directory-section > .sl-heading-wrapper:first-child {
+    margin-top: 0;
+    border-bottom: 1px solid var(--sl-color-hairline);
+    padding-bottom: 0.75rem;
+  }
+
+  .home-directory-section > .sl-heading-wrapper:first-child h2 {
+    font-size: clamp(var(--sl-text-h3), 3vw, var(--sl-text-h2));
+  }
+
+  .home-directory-section > ol {
+    columns: 2 9rem;
+    column-gap: 2rem;
+  }
+
+  .home-directory-section > ol > li {
+    break-inside: avoid;
+  }
+
+  @media (min-width: 48rem) {
+    .home-directory-grid {
+      grid-template-columns: minmax(0, 1.08fr) minmax(16rem, 0.92fr);
+      align-items: start;
+      gap: clamp(1.25rem, 3vw, 2rem);
+    }
+
+    .home-directory-section {
+      height: 100%;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
