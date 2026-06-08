@@ -47,6 +47,7 @@ ln -s /path/to/your/obsidian-vault vault-symlink
 
 ```
 .
+├── docs/                     # 設計・計画ドキュメント
 ├── scripts/preprocess.ts     # Vault → src/content/docs/ への変換
 ├── src/
 │   ├── content.config.ts     # Content Collection 定義
