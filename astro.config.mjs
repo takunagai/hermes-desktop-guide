@@ -59,6 +59,7 @@ export default defineConfig({
       ],
       customCss: ["./src/styles/starlight.css"],
       components: {
+        Hero: "./src/components/Hero.astro",
         PageTitle: "./src/components/PageTitle.astro",
       },
       tableOfContents: {

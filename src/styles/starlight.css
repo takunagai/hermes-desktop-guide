@@ -49,34 +49,6 @@
     overflow-wrap: anywhere;
   }
 
-  html[data-has-hero] .hero:not(:has(> img, > .hero-html)) h1 {
-    overflow-wrap: normal;
-    word-break: keep-all;
-    text-wrap: balance;
-  }
-
-  @media (min-width: 50rem) {
-    html[data-has-hero] .hero:not(:has(> img, > .hero-html)) {
-      grid-template-columns: minmax(0, 1fr);
-      padding-block: clamp(3rem, 6vmin, 5rem);
-    }
-
-    html[data-has-hero] .hero:not(:has(> img, > .hero-html)) .stack {
-      max-width: 64rem;
-    }
-
-    html[data-has-hero] .hero:not(:has(> img, > .hero-html)) h1 {
-      max-width: none;
-      font-size: clamp(3rem, 5vw, 4.5rem);
-      letter-spacing: -0.035em;
-    }
-
-    html[data-has-hero] .hero:not(:has(> img, > .hero-html)) .tagline {
-      max-width: 46rem;
-      text-wrap: pretty;
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

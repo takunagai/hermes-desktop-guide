@@ -1,0 +1,237 @@
+---
+import { Image } from "astro:assets";
+import DefaultHero from "@astrojs/starlight/components/Hero.astro";
+import hermesGirl from "../assets/hermes-girl-line.png";
+
+const { starlightRoute } = Astro.locals;
+const { data } = starlightRoute.entry;
+const { title = data.title, tagline, actions = [] } = data.hero || {};
+const isHome = data.slug === "index";
+---
+
+{
+  isHome ? (
+    <section class="hermes-hero" aria-labelledby="_top">
+      <div class="hero-copy">
+        <p class="eyebrow">HERMES DESKTOP / JAPANESE GUIDE</p>
+        <h1 id="_top" data-page-title set:html={title} />
+        {tagline && <p class="tagline" set:html={tagline} />}
+        {actions.length > 0 && (
+          <div class="actions">
+            {actions.map(
+              ({ attrs: { class: className, ...attrs } = {}, link: href, text, variant }) => (
+                <a
+                  {href}
+                  class:list={["hero-action", variant ?? "primary", className]}
+                  {...attrs}
+                >
+                  {text}
+                </a>
+              ),
+            )}
+          </div>
+        )}
+        <p class="guide-note">COMMUNITY MAINTAINED / OPEN DOCUMENTATION</p>
+      </div>
+
+      <figure class="hero-visual">
+        <figcaption>
+          <span>HERMES AGENT</span>
+          <span>GUIDE 01</span>
+        </figcaption>
+        <div class="art-stage">
+          <Image
+            src={hermesGirl}
+            alt="白い線画で描かれたHermes Agentのイメージキャラクター"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
+        </div>
+      </figure>
+    </section>
+  ) : (
+    <DefaultHero />
+  )
+}
+
+<style>
+  @layer hermes {
+    .hermes-hero {
+      --hero-blue: #2116ff;
+
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(19rem, 0.65fr);
+      min-height: clamp(28rem, 44vw, 34rem);
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--hero-blue) 72%, white);
+      background: var(--hero-blue);
+      color: white;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      min-width: 0;
+      padding: clamp(2.5rem, 5vw, 4rem);
+    }
+
+    .eyebrow,
+    .guide-note,
+    figcaption {
+      font-family: var(--__sl-font-mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow {
+      margin: 0 0 1.5rem;
+      color: color-mix(in srgb, white 78%, transparent);
+      font-size: var(--sl-text-xs);
+      font-weight: 600;
+    }
+
+    h1 {
+      max-width: 12ch;
+      margin: 0;
+      color: white;
+      font-size: clamp(3.1rem, 5vw, 4.75rem);
+      font-weight: 650;
+      letter-spacing: -0.055em;
+      line-height: 0.98;
+      overflow-wrap: normal;
+      text-wrap: wrap;
+      word-break: keep-all;
+    }
+
+    .tagline {
+      max-width: 34rem;
+      margin: 1.75rem 0 0;
+      color: color-mix(in srgb, white 82%, transparent);
+      font-size: clamp(var(--sl-text-base), 1.6vw, var(--sl-text-xl));
+      line-height: 1.7;
+      text-wrap: pretty;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1rem;
+      margin-top: 2rem;
+    }
+
+    .hero-action {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid transparent;
+      border-radius: 0;
+      padding: 0.875rem 1.25rem;
+      font-family: var(--__sl-font-mono);
+      font-size: var(--sl-text-sm);
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+      outline-offset: 0.25rem;
+      text-decoration: none;
+    }
+
+    .hero-action.primary {
+      border-color: white;
+      background: white;
+      color: var(--hero-blue);
+    }
+
+    .hero-action.primary:hover {
+      background: color-mix(in srgb, white 88%, var(--hero-blue));
+      color: var(--hero-blue);
+    }
+
+    .hero-action.secondary {
+      border-color: color-mix(in srgb, white 68%, transparent);
+      color: white;
+    }
+
+    .hero-action.secondary:hover {
+      border-color: white;
+      background: color-mix(in srgb, white 12%, transparent);
+      color: white;
+    }
+
+    .guide-note {
+      margin: auto 0 0;
+      padding-top: 2.5rem;
+      color: color-mix(in srgb, white 58%, transparent);
+      font-size: 0.6875rem;
+    }
+
+    .hero-visual {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-width: 0;
+      margin: 0;
+      border-inline-start: 1px solid color-mix(in srgb, white 30%, transparent);
+    }
+
+    figcaption {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      border-bottom: 1px solid color-mix(in srgb, white 30%, transparent);
+      padding: 1rem 1.25rem;
+      color: color-mix(in srgb, white 72%, transparent);
+      font-size: 0.6875rem;
+    }
+
+    .art-stage {
+      display: grid;
+      align-items: end;
+      justify-items: center;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .art-stage :global(img) {
+      width: min(112%, 30rem);
+      max-width: none;
+      height: auto;
+      opacity: 0.94;
+      transform: translateY(4%) scale(1.04);
+      transform-origin: bottom center;
+    }
+
+    @media (max-width: 49.99rem) {
+      .hermes-hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero-copy {
+        padding: 2.25rem 1.5rem;
+      }
+
+      h1 {
+        max-width: 10ch;
+        font-size: clamp(2.8rem, 14vw, 4.25rem);
+      }
+
+      .tagline {
+        font-size: var(--sl-text-base);
+      }
+
+      .guide-note {
+        padding-top: 2rem;
+      }
+
+      .hero-visual {
+        min-height: 20rem;
+        border-top: 1px solid color-mix(in srgb, white 30%, transparent);
+        border-inline-start: 0;
+      }
+
+      .art-stage :global(img) {
+        width: min(105%, 28rem);
+      }
+    }
+  }
+</style>
