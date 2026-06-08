@@ -68,6 +68,7 @@ export default defineConfig({
       components: {
         Hero: "./src/components/Hero.astro",
         PageTitle: "./src/components/PageTitle.astro",
+        SiteTitle: "./src/components/SiteTitle.astro",
       },
       tableOfContents: {
         minHeadingLevel: 2,

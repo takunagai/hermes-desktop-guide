@@ -71,4 +71,42 @@
 - P1: none
 - P2: none
 
+---
+
+## Header Version Badge
+
+### Evidence
+
+- Source visual truth: `/tmp/hermes-header-qa/before-header.png`
+- Implementation screenshot: `/tmp/hermes-header-qa/desktop-dark.png`
+- Full-view comparison: `/tmp/hermes-header-qa/header-comparison.png`
+- Focused region comparison: the comparison image contains the complete 1512 x 64 header before
+  and after the change.
+- Viewports: 1512 x 900, 1024 x 844, and 390 x 844
+- States: desktop dark, tablet light, and mobile dark
+
+### Fidelity Review
+
+- Fonts and typography: the badge uses the existing monospace UI font while preserving the site
+  title's weight and hierarchy.
+- Spacing and layout rhythm: the badge sits between the site title and search without shifting the
+  right-side controls. At 390px, the site title shortens to `Hermes` and the badge remains visible.
+- Colors and visual tokens: border, background, text, hover, and focus colors use Starlight theme
+  tokens and remain legible in light and dark themes.
+- Image quality and asset fidelity: this change does not add or alter imagery.
+- Copy and content: `対応 v0.16.0` is sourced from the version evidence entry and links to its
+  supporting documentation.
+
+### Patches Since Previous QA
+
+- Added a custom Starlight site-title component with a responsive version badge.
+- Added an accessible label explaining the version and link destination.
+- Added compact mobile title rendering without hiding the version.
+
+### Findings
+
+- P0: none
+- P1: none
+- P2: none
+
 final result: passed
