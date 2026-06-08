@@ -14,7 +14,10 @@ const isHome = data.slug === "index";
     <section class="hermes-hero" aria-labelledby="_top">
       <div class="hero-copy">
         <p class="eyebrow">HERMES DESKTOP / JAPANESE GUIDE</p>
-        <h1 id="_top" data-page-title set:html={title} />
+        <h1 id="_top" data-page-title>
+          <span set:html={title} />
+          <small>（非公式）</small>
+        </h1>
         {tagline && <p class="tagline" set:html={tagline} />}
         {actions.length > 0 && (
           <div class="actions">
@@ -104,6 +107,14 @@ const isHome = data.slug === "index";
       overflow-wrap: normal;
       text-wrap: wrap;
       word-break: keep-all;
+    }
+
+    h1 small {
+      margin-inline-start: 0.45em;
+      font-size: 0.28em;
+      font-weight: 600;
+      letter-spacing: 0;
+      white-space: nowrap;
     }
 
     .tagline {
