@@ -1,4 +1,10 @@
-@layer starlight.core, starlight.content, hermes;
+@layer starlight.base,
+  starlight.reset,
+  starlight.core,
+  starlight.content,
+  starlight.components,
+  starlight.utils,
+  hermes;
 
 @layer hermes {
   :root {
@@ -6,7 +12,8 @@
     --sl-color-accent-low: #e0e7ff;
     --sl-color-accent: #4f46e5;
     --sl-color-accent-high: #312e81;
-    --sl-content-width: 52rem;
+    --sl-content-width: 50rem;
+    --sl-content-gap-y: 1.25rem;
   }
 
   :root[data-theme="dark"] {
@@ -22,10 +29,16 @@
 
   .sl-markdown-content {
     line-height: 1.8;
+    text-wrap: pretty;
   }
 
-  .sl-markdown-content :is(h2, h3) {
+  .sl-markdown-content :is(h2, h3, h4) {
     scroll-margin-top: calc(var(--sl-nav-height) + 2rem);
+    text-wrap: balance;
+  }
+
+  .sl-markdown-content li + li {
+    margin-top: 0.4rem;
   }
 
   .sl-markdown-content table {
@@ -34,6 +47,34 @@
 
   .sl-markdown-content :not(pre) > code {
     overflow-wrap: anywhere;
+  }
+
+  html[data-has-hero] .hero:not(:has(> img, > .hero-html)) h1 {
+    overflow-wrap: normal;
+    word-break: keep-all;
+    text-wrap: balance;
+  }
+
+  @media (min-width: 50rem) {
+    html[data-has-hero] .hero:not(:has(> img, > .hero-html)) {
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: clamp(3rem, 6vmin, 5rem);
+    }
+
+    html[data-has-hero] .hero:not(:has(> img, > .hero-html)) .stack {
+      max-width: 64rem;
+    }
+
+    html[data-has-hero] .hero:not(:has(> img, > .hero-html)) h1 {
+      max-width: none;
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      letter-spacing: -0.035em;
+    }
+
+    html[data-has-hero] .hero:not(:has(> img, > .hero-html)) .tagline {
+      max-width: 46rem;
+      text-wrap: pretty;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
