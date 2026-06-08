@@ -1,9 +1,12 @@
 // @ts-check
 import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { unified } from "@astrojs/markdown-remark";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import remarkHomeDirectoryGrid from "./scripts/remark-home-directory-grid.ts";
+
+const editorialAssets = fileURLToPath(new URL("./src/assets/editorial", import.meta.url));
 
 const preprocessIntegration = () => ({
   name: "preprocess-obsidian",
@@ -39,6 +42,19 @@ const legacyRedirects = {
 };
 
 export default defineConfig({
+  image: {
+    layout: "constrained",
+    responsiveStyles: true,
+    service: {
+      entrypoint: "astro/assets/services/sharp",
+      config: {
+        webp: {
+          effort: 6,
+          quality: 78,
+        },
+      },
+    },
+  },
   markdown: {
     processor: unified({
       remarkPlugins: [remarkHomeDirectoryGrid],
@@ -121,4 +137,11 @@ export default defineConfig({
     }),
   ],
   redirects: legacyRedirects,
+  vite: {
+    resolve: {
+      alias: {
+        "@editorial": editorialAssets,
+      },
+    },
+  },
 });
