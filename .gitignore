@@ -22,6 +22,9 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# Gemini / Antigravity CLI local config (symlink outside repo)
+.antigravitycli/
+
 # wrangler (Cloudflare)
 .wrangler/
 .dev.vars
