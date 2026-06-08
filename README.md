@@ -1,20 +1,26 @@
-# Hermes Desktop 設定ガイド
+# Hermes Desktop ガイド
 
-[Hermes Desktop](https://github.com/NousResearch/hermes-agent) の設定項目・推奨値・安全な設定手順を日本語でまとめたドキュメントサイト。Obsidian Vault を正本に、[Astro](https://astro.build/) で静的サイト化している。
+[Hermes Desktop](https://github.com/NousResearch/hermes-agent)の導入、基本操作、設定、安全な運用、問題解決を日本語でまとめた非公式ドキュメントサイト。Obsidian Vaultを正本に、Astro Starlightで静的サイト化する。
 
 ## 特徴
 
-- Obsidian の Markdown（WikiLink・コールアウト）をそのまま記事ソースにできる
-- フォルダ構成から自動生成されるサイドバーと目次（TOC）
-- クライアントサイドの簡易検索、ダークモード、レスポンシブ対応
-- 「実機確認日」「対応バージョン／コミット」をフロントマターから表示
+- Pagefindによる本文・見出し・タグの全文検索
+- モバイル対応のサイドバー、目次、ダークモード
+- キーボード操作と支援技術に配慮したStarlight標準UI
+- frontmatter `slug`によるフォルダ構成と独立した恒久URL
+- Obsidian WikiLinkとコールアウトの自動変換
+- basename、slug、未解決リンクをビルド前に検出
+- 「実機・内容確認日」「対応バージョン／コミット」の表示
 
 ## 技術スタック
 
-- Astro 6 / TypeScript
-- Tailwind CSS 4
-- Biome（Lint / Format）
-- デプロイ: Cloudflare Workers（予定・未設定）
+- Astro 6
+- Astro Starlight
+- Pagefind
+- TypeScript
+- Biome
+
+デプロイ先はCloudflare Workersを予定しているが、まだ設定していない。
 
 ## 必要要件
 
@@ -26,7 +32,7 @@
 npm install
 ```
 
-記事の実体は Obsidian Vault にあり、リポジトリ内の `vault-symlink/` がそこへのシンボリックリンク。**自分の環境では自分の Vault パスに張り替える**:
+記事の正本はObsidian Vaultにあり、リポジトリ内の`vault-symlink/`がそこへのシンボリックリンクになっている。別環境では自分のVaultパスへ張り替える。
 
 ```bash
 rm vault-symlink
@@ -37,75 +43,113 @@ ln -s /path/to/your/obsidian-vault vault-symlink
 
 | コマンド | 内容 |
 |---|---|
-| `npm run dev` | 開発サーバー（http://localhost:4321） |
-| `npm run build` | 本番ビルド → `dist/` |
+| `npm run dev` | 開発サーバーを起動 |
+| `npm run build` | 本番ビルドとPagefindインデックス生成 |
 | `npm run preview` | ビルド結果をローカルプレビュー |
-| `npm run lint` | Biome チェック |
-| `npm run format` | Biome 整形 |
+| `npm run preprocess` | Vaultを検証して`src/content/docs/`へ変換 |
+| `npm run validate:content` | コンテンツ変換と前処理テスト |
+| `npm run lint` | Biomeチェック |
+| `npm run check` | Astro型チェック |
+| `npm test` | 前処理の自動テスト |
+| `npm run check:links` | ビルド済み内部リンク・アンカーを検査 |
+| `npm run quality` | Lint、型、テスト、ビルド、リンク検査を一括実行 |
 
-## プロジェクト構成
+## コンテンツパイプライン
 
+```text
+vault-symlink/              Obsidian Vault、コンテンツの正本
+    ↓ npm run preprocess
+scripts/preprocess.ts       frontmatter・slug・WikiLink・コールアウトを検証変換
+    ↓
+src/content/docs/           生成物、gitignore対象
+    ↓
+Astro Starlight             ルーティング、ナビ、目次、検索、SEO
+    ↓
+dist/                       静的サイトとPagefindインデックス
 ```
-.
-├── docs/                     # 設計・計画ドキュメント
-├── scripts/preprocess.ts     # Vault → src/content/docs/ への変換
-├── src/
-│   ├── content.config.ts     # Content Collection 定義
-│   ├── layouts/Layout.astro  # 全体レイアウト（ヘッダー / サイドバー / TOC）
-│   ├── pages/
-│   │   ├── index.astro       # トップ（00_ホーム）
-│   │   ├── [...slug].astro   # 各ドキュメント
-│   │   └── 404.astro
-│   └── styles/global.css
-├── vault-symlink/            # Obsidian Vault へのシンボリックリンク（正本）
-└── astro.config.mjs
+
+`src/content/docs/`は毎回全削除して再生成するため、直接編集しない。
+
+## Vault構成
+
+```text
+00_ホーム.md
+01_はじめに/
+02_基本操作/
+03_設定/
+04_ガイド/
+05_トラブルシューティング/
+└── 01_問題の切り分け.md
+06_リファレンス/
 ```
 
-## コンテンツの編集
+フォルダとファイルの数字はObsidian内の並び順にだけ使う。公開URLはfrontmatter `slug`から生成する。
 
-**記事の正本は Obsidian Vault（`vault-symlink/`）**。サイトに出る内容を直すときは Vault の Markdown を編集する。`src/content/docs/` はビルドのたびに `scripts/preprocess.ts` が再生成する中間生成物なので、直接編集しない。
+```text
+03_設定/12_MCP.md → /settings/mcp/
+04_ガイド/01_推奨設定プリセット.md → /guides/recommended-presets/
+```
 
-> 開発サーバー（`npm run dev`）の実行中に Vault を編集した場合は、反映のためにサーバーを再起動する（preprocess は起動時に一度だけ走る）。
-
-### フォルダと URL
-
-- `00_ホーム.md` がトップページ（`/`）
-- それ以外はファイルのパスがそのまま URL になる（例: `01_設定/12_MCP.md` → `/01_設定/12_MCP`）
-- ファイル名・フォルダ名の先頭の数字（`01_` 等）は表示名から除去され、並び順に使われる
-- ファイル名の英大文字・記号はそのまま URL に含まれる（slug 化しない）
-
-### WikiLink
-
-`[[ページ名]]` / `[[ページ名|表示名]]` / `[[ページ名#見出し]]` が使える。リンク先はファイル名（拡張子なし）で解決する。表示名を省くとファイル名がそのまま表示されるため、番号付きファイルへリンクするときは `[[12_MCP|MCP]]` のように表示名を付けると読みやすい。
-
-### コールアウト
-
-Obsidian 記法の `> [!type] タイトル` がそのまま使える。本文には太字・コード・リンクなどの Markdown を書ける。色テーマが用意されている type は次のとおり:
-
-| type | 色 |
-|---|---|
-| `note` / `info` / `important` | indigo |
-| `warning` / `caution` | amber |
-| `danger` / `error` | rose |
-| `tip` | emerald |
-
-### フロントマター
+## frontmatter
 
 ```yaml
 ---
-title: 12 MCP            # 必須
-order: 12                # 任意。サイドバーの並び順（未指定は末尾）
-tags: [hermes, mcp]      # 任意
-hermes_version: "0.16.0" # 任意。ヘッダーにバッジ表示
-hermes_commit: "d165933" # 任意。本文上部に表示
-verified: 2026-06-07     # 任意。実機確認日（YYYY-MM-DD で表示）
+title: MCP
+description: Hermes DesktopでMCPサーバーを設定する方法と安全上の注意。
+slug: settings/mcp
+sidebar:
+  order: 12
+tags: [hermes, settings, mcp]
+audience: [Hermes Desktop利用者]
+platforms: [macOS, Windows, Linux]
+status: verified
+hermes_version: "0.16.0"
+hermes_commit: "d165933"
+verified: 2026-06-07
 ---
 ```
 
+- `title`、`description`、`slug`は必須
+- `slug`はASCII小文字、数字、ハイフン、`/`だけを使う
+- `draft: true`のページは本番ビルドから除外される
+- `status`は`verified`または`needs-review`
+- 内容のない準備中ページは公開しない
+
+## WikiLink
+
+パス付きWikiLinkを基本とする。
+
+```md
+[[03_設定/12_MCP|MCP]]
+[[03_設定/08_詳細#実行バックエンド|隔離バックエンド]]
+```
+
+basenameだけのリンクはVault全体でファイル名が一意な場合のみ解決できる。basename重複、slug重複、未解決リンクは前処理を失敗させる。
+
+## コールアウト
+
+Obsidian記法をStarlight Asideへ変換する。
+
+```md
+> [!warning] 注意
+> 実行内容を確認してください。
+```
+
+対応type:
+
+- `note` / `info` / `important`
+- `warning` / `caution`
+- `danger` / `error`
+- `tip`
+
+## URLとSEO
+
+旧番号付きURLは`astro.config.mjs`で恒久URLへリダイレクトする。本番ドメイン確定後に`site`を設定し、canonical、OGP URL、sitemapを最終化する。
+
 ## デプロイ
 
-Cloudflare Workers を予定（未設定）。本番ドメイン確定後に `astro.config.mjs` の `site` 設定と、`canonical` / OGP の `og:url` / `sitemap` を追加する。
+Cloudflare Workersを予定しているが未設定。現時点では`npm run build`で静的出力を生成する。
 
-## 開発メモ
+## 設計資料
 
-- 設計意図やアーキテクチャの詳細は [`CLAUDE.md`](./CLAUDE.md) を参照
+- [サイト構成の再編計画](./docs/サイト構成の再編計画-設定特化から製品全般ハブへ.md)
