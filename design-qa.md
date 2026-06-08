@@ -109,4 +109,42 @@
 - P1: none
 - P2: none
 
+---
+
+## Settings Preview Image
+
+### Evidence
+
+- Source visual truth: `/tmp/hermes-settings-preview-qa/source.png`
+- Implementation screenshot: `/tmp/hermes-settings-preview-qa/implementation-1512.png`
+- Focused comparison: `/tmp/hermes-settings-preview-qa/comparison.png`
+- Viewports: 1512 x 900, 768 x 900, and 390 x 844
+- State: dark theme, homepage scrolled to `#設定画面`
+
+### Fidelity Review
+
+- Fonts and typography: the existing section heading, link list, and caption typography remain
+  consistent with the rest of the directory panels.
+- Spacing and layout rhythm: the screenshot sits directly below the `設定画面` heading, followed by
+  a compact caption and the existing link list. The two-panel layout remains aligned on desktop.
+- Colors and visual tokens: the dark application screenshot is framed with the existing hairline
+  token and remains legible in both site themes.
+- Image quality and asset fidelity: the supplied 800 x 546 screenshot is preserved at its original
+  aspect ratio and encoded as a 17KB WebP without changing its content or crop.
+- Copy and content: descriptive alternative text identifies the left settings menu and selected
+  detail panel. The screenshot links to the matching `メモリとコンテキスト` guide.
+
+### Patches Since Previous QA
+
+- Added the supplied Hermes Desktop settings screenshot to the homepage settings section.
+- Added a descriptive caption, alternative text, responsive sizing, focus treatment, and subtle
+  hover feedback.
+- Added a direct link from the screenshot to the matching settings page.
+
+### Findings
+
+- P0: none
+- P1: none
+- P2: none
+
 final result: passed
