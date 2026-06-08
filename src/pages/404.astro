@@ -1,12 +1,23 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+const frontmatter = {
+  title: "ページが見つかりません",
+  description: "指定されたページが存在しない場合の案内。",
+  slug: "404",
+  pagefind: false,
+  editUrl: false as const,
+};
 ---
 
-<Layout title="ページが見つかりません">
-  <h1>404 — ページが見つかりません</h1>
-  <p>
-    お探しのページは存在しないか、移動した可能性があります。URL を確認するか、
-    下のリンクからトップへ戻ってください。
-  </p>
-  <p><a href="/">ホームに戻る</a></p>
-</Layout>
+<StarlightPage frontmatter={frontmatter}>
+  <p>指定されたURLのページは存在しないか、移動した可能性があります。</p>
+
+  <h2>次にできること</h2>
+  <ul>
+    <li>ヘッダーの検索からページタイトル、設定名、エラー文を検索する</li>
+    <li><a href="/">ホームへ戻る</a></li>
+    <li><a href="/getting-started/overview/">はじめにから読み直す</a></li>
+    <li><a href="/troubleshooting/first-response/">問題の切り分けを確認する</a></li>
+  </ul>
+</StarlightPage>

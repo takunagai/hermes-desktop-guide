@@ -1,0 +1,92 @@
+---
+import DefaultPageTitle from "@astrojs/starlight/components/PageTitle.astro";
+
+interface GuideFrontmatter {
+  audience?: string[];
+  hermes_commit?: string;
+  hermes_version?: string;
+  platforms?: string[];
+  status?: "verified" | "needs-review";
+  tags?: string[];
+  verified?: string;
+}
+
+const data = Astro.locals.starlightRoute.entry
+  .data as typeof Astro.locals.starlightRoute.entry.data & GuideFrontmatter;
+const statusLabel = data.status === "needs-review" ? "要再確認" : "確認済み";
+const hasMetadata = Boolean(
+  data.verified ||
+    data.hermes_version ||
+    data.hermes_commit ||
+    data.platforms?.length ||
+    data.tags?.length,
+);
+---
+
+<DefaultPageTitle />
+
+{
+  hasMetadata && (
+    <div class="page-metadata" aria-label="ページ情報">
+      <span class:list={["status", { review: data.status === "needs-review" }]}>
+        {statusLabel}
+      </span>
+      {data.verified && (
+        <span>
+          実機・内容確認:
+          <time datetime={data.verified}>{data.verified}</time>
+        </span>
+      )}
+      {data.hermes_version && <span>対象バージョン: v{data.hermes_version}</span>}
+      {data.hermes_commit && (
+        <span>
+          対象コミット: <code>{data.hermes_commit}</code>
+        </span>
+      )}
+      {data.platforms?.map((platform) => <span class="metadata-tag">{platform}</span>)}
+      {data.tags?.map((tag) => <span class="metadata-tag">#{tag}</span>)}
+    </div>
+  )
+}
+
+<style>
+  .page-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-top: 1rem;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+    line-height: 1.5;
+  }
+
+  .status,
+  .metadata-tag {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--sl-color-green);
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+    color: var(--sl-color-green-high);
+    background: color-mix(in srgb, var(--sl-color-green) 12%, transparent);
+    font-weight: 600;
+  }
+
+  .status.review {
+    border-color: var(--sl-color-orange);
+    color: var(--sl-color-orange-high);
+    background: color-mix(in srgb, var(--sl-color-orange) 12%, transparent);
+  }
+
+  .metadata-tag {
+    border-color: var(--sl-color-hairline-light);
+    color: var(--sl-color-gray-2);
+    background: var(--sl-color-gray-6);
+    font-weight: 500;
+  }
+
+  code {
+    font-size: 0.9em;
+  }
+</style>

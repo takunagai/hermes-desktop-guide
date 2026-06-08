@@ -1,209 +1,381 @@
 import fs from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { slug as slugifyHeading } from "github-slugger";
+import { load as loadYaml } from "js-yaml";
 
-const VAULT_DIR = path.resolve("vault-symlink");
-const OUT_DIR = path.resolve("src/content/docs");
+const DEFAULT_VAULT_DIR = path.resolve("vault-symlink");
+const DEFAULT_OUT_DIR = path.resolve("src/content/docs");
+const SLUG_PATTERN = /^(?:index|[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*)$/;
 
-// 再帰的にディレクトリ内のファイルを検索
-function getFiles(dir: string): string[] {
-  if (!fs.existsSync(dir)) return [];
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  const files = entries.flatMap((entry) => {
-    const res = path.resolve(dir, entry.name);
-    return entry.isDirectory() ? getFiles(res) : res;
-  });
-  return files.filter((f) => f.endsWith(".md"));
+interface Frontmatter {
+  title?: unknown;
+  description?: unknown;
+  slug?: unknown;
+  [key: string]: unknown;
 }
 
-// fenced code block (```／~~~) の内側を変換対象から除外するためのヘルパー。
-// コード外のチャンクにだけ transform を適用し、コード例に含まれる
-// [[WikiLink]] や > [!callout] が誤変換されるのを防ぐ。
-// （インラインコードは行をまたがないため対象外。主因のフェンスのみ保護する）
+interface SourcePage {
+  file: string;
+  rel: string;
+  relNoExt: string;
+  basename: string;
+  data: Frontmatter;
+  content: string;
+  slug: string;
+  url: string;
+}
+
+interface PageRegistry {
+  byPath: Map<string, SourcePage>;
+  byBasename: Map<string, SourcePage>;
+}
+
+export class ContentValidationError extends Error {
+  constructor(public readonly issues: string[]) {
+    super(`Content validation failed:\n${issues.map((issue) => `- ${issue}`).join("\n")}`);
+    this.name = "ContentValidationError";
+  }
+}
+
+function toPosix(value: string): string {
+  return value.split(path.sep).join("/");
+}
+
+function getMarkdownFiles(dir: string): string[] {
+  if (!fs.existsSync(dir)) return [];
+
+  return fs
+    .readdirSync(dir, { withFileTypes: true })
+    .flatMap((entry) => {
+      const resolved = path.resolve(dir, entry.name);
+      return entry.isDirectory() ? getMarkdownFiles(resolved) : [resolved];
+    })
+    .filter((file) => file.endsWith(".md"))
+    .sort((a, b) => a.localeCompare(b));
+}
+
+export function parseFrontmatter(content: string, source: string): Frontmatter {
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
+  if (!match) {
+    throw new ContentValidationError([`${source}: YAML frontmatter がありません。`]);
+  }
+
+  const parsed = loadYaml(match[1]);
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    throw new ContentValidationError([`${source}: frontmatter がオブジェクトではありません。`]);
+  }
+
+  return parsed as Frontmatter;
+}
+
+function validatePageMetadata(rel: string, data: Frontmatter): string[] {
+  const issues: string[] = [];
+
+  if (typeof data.title !== "string" || data.title.trim() === "") {
+    issues.push(`${rel}: title は空でない文字列を指定してください。`);
+  }
+  if (typeof data.description !== "string" || data.description.trim() === "") {
+    issues.push(`${rel}: description は空でない文字列を指定してください。`);
+  }
+  if (typeof data.slug !== "string" || !SLUG_PATTERN.test(data.slug)) {
+    issues.push(
+      `${rel}: slug は "settings/models" のようなASCII小文字の恒久パスを指定してください。`,
+    );
+  }
+
+  return issues;
+}
+
+function createSourcePages(vaultDir: string): SourcePage[] {
+  const issues: string[] = [];
+  const pages: SourcePage[] = [];
+
+  for (const file of getMarkdownFiles(vaultDir)) {
+    const rel = toPosix(path.relative(vaultDir, file));
+    const relNoExt = rel.slice(0, -path.extname(rel).length);
+    const basename = path.posix.basename(relNoExt);
+    const content = fs.readFileSync(file, "utf-8");
+
+    try {
+      const data = parseFrontmatter(content, rel);
+      issues.push(...validatePageMetadata(rel, data));
+
+      const pageSlug = typeof data.slug === "string" ? data.slug : "";
+      pages.push({
+        file,
+        rel,
+        relNoExt,
+        basename,
+        data,
+        content,
+        slug: pageSlug,
+        url: pageSlug === "index" ? "/" : `/${pageSlug}/`,
+      });
+    } catch (error) {
+      if (error instanceof ContentValidationError) {
+        issues.push(...error.issues);
+      } else {
+        issues.push(`${rel}: frontmatter の解析に失敗しました。${String(error)}`);
+      }
+    }
+  }
+
+  if (pages.length === 0) {
+    issues.push(`${vaultDir}: Markdownファイルが見つかりません。`);
+  }
+  if (issues.length > 0) {
+    throw new ContentValidationError(issues);
+  }
+
+  return pages;
+}
+
+function createRegistry(pages: SourcePage[]): PageRegistry {
+  const issues: string[] = [];
+  const byPath = new Map<string, SourcePage>();
+  const basenameGroups = new Map<string, SourcePage[]>();
+  const slugGroups = new Map<string, SourcePage[]>();
+
+  for (const page of pages) {
+    byPath.set(page.relNoExt, page);
+
+    const basenamePages = basenameGroups.get(page.basename) ?? [];
+    basenamePages.push(page);
+    basenameGroups.set(page.basename, basenamePages);
+
+    const slugPages = slugGroups.get(page.slug) ?? [];
+    slugPages.push(page);
+    slugGroups.set(page.slug, slugPages);
+  }
+
+  for (const [basename, matches] of basenameGroups) {
+    if (matches.length > 1) {
+      issues.push(
+        `basename "${basename}" が重複しています: ${matches.map((page) => page.rel).join(", ")}`,
+      );
+    }
+  }
+
+  for (const [pageSlug, matches] of slugGroups) {
+    if (matches.length > 1) {
+      issues.push(
+        `slug "${pageSlug}" が重複しています: ${matches.map((page) => page.rel).join(", ")}`,
+      );
+    }
+  }
+
+  if (issues.length > 0) {
+    throw new ContentValidationError(issues);
+  }
+
+  return {
+    byPath,
+    byBasename: new Map(
+      Array.from(basenameGroups, ([basename, matches]) => [basename, matches[0]]),
+    ),
+  };
+}
+
 function applyOutsideCodeBlocks(markdown: string, transform: (chunk: string) => string): string {
   const lines = markdown.split("\n");
-  const out: string[] = [];
+  const output: string[] = [];
   let buffer: string[] = [];
-  let inFence = false;
-  let fenceChar = "";
+  let fence: { char: string; length: number } | undefined;
 
   const flush = () => {
     if (buffer.length > 0) {
-      out.push(transform(buffer.join("\n")));
+      output.push(transform(buffer.join("\n")));
       buffer = [];
     }
   };
 
   for (const line of lines) {
-    const fence = line.match(/^\s*(`{3,}|~{3,})/);
-    if (fence && (!inFence || fence[1][0] === fenceChar)) {
-      if (!inFence) {
-        flush();
-        inFence = true;
-        fenceChar = fence[1][0];
-      } else {
-        inFence = false;
-      }
-      out.push(line);
-    } else {
-      (inFence ? out : buffer).push(line);
+    const match = line.match(/^\s*(`{3,}|~{3,})/);
+    if (!fence && match) {
+      flush();
+      fence = { char: match[1][0], length: match[1].length };
+      output.push(line);
+      continue;
     }
+
+    if (fence && match && match[1][0] === fence.char && match[1].length >= fence.length) {
+      output.push(line);
+      fence = undefined;
+      continue;
+    }
+
+    (fence ? output : buffer).push(line);
   }
+
   flush();
-  return out.join("\n");
+  return output.join("\n");
 }
 
-// コールアウトの変換 (> [!info] -> HTMLタグ)
-function transformCallouts(markdown: string): string {
+function splitWikiLink(raw: string): { target: string; label?: string } {
+  const separator = raw.indexOf("|");
+  if (separator === -1) {
+    return { target: raw.trim() };
+  }
+
+  return {
+    target: raw.slice(0, separator).replace(/\\$/, "").trim(),
+    label: raw.slice(separator + 1).trim(),
+  };
+}
+
+function normalizeTargetPath(value: string): string {
+  return value
+    .replaceAll("\\", "/")
+    .replace(/\.md$/i, "")
+    .replace(/^\/+|\/+$/g, "");
+}
+
+function resolveWikiTarget(
+  rawTarget: string,
+  currentPage: SourcePage,
+  registry: PageRegistry,
+): SourcePage | undefined {
+  const target = normalizeTargetPath(rawTarget);
+  if (target === "") return currentPage;
+
+  if (target.startsWith(".")) {
+    const relativeTarget = path.posix.normalize(
+      path.posix.join(path.posix.dirname(currentPage.relNoExt), target),
+    );
+    return registry.byPath.get(relativeTarget);
+  }
+
+  if (target.includes("/")) {
+    return registry.byPath.get(target);
+  }
+
+  return registry.byBasename.get(target);
+}
+
+export function transformWikiLinks(
+  markdown: string,
+  currentPage: SourcePage,
+  registry: PageRegistry,
+  issues: string[],
+): string {
+  return markdown.replace(/\[\[([^\]]+)\]\]/g, (_match, rawInner: string) => {
+    const { target, label } = splitWikiLink(rawInner);
+    const hashIndex = target.indexOf("#");
+    const rawPath = hashIndex === -1 ? target : target.slice(0, hashIndex).trim();
+    const rawAnchor = hashIndex === -1 ? "" : target.slice(hashIndex + 1).trim();
+    const destination = resolveWikiTarget(rawPath, currentPage, registry);
+
+    if (!destination) {
+      issues.push(`${currentPage.rel}: WikiLink "${target}" を解決できません。`);
+      return label || target;
+    }
+
+    const anchor = rawAnchor ? `#${slugifyHeading(rawAnchor)}` : "";
+    const defaultLabel = rawAnchor || destination.data.title || destination.basename;
+    return `[${label || String(defaultLabel)}](${destination.url}${anchor})`;
+  });
+}
+
+const CALLOUT_TYPES: Record<string, string> = {
+  caution: "caution",
+  danger: "danger",
+  error: "danger",
+  important: "note",
+  info: "note",
+  note: "note",
+  tip: "tip",
+  warning: "caution",
+};
+
+export function transformCallouts(markdown: string): string {
   const lines = markdown.split("\n");
-  const result: string[] = [];
+  const output: string[] = [];
   let inCallout = false;
 
-  // コールアウトを閉じる。直前に空行を挟むことで本文ブロックと
-  // 閉じ div を分離し、本文側の Markdown 解釈を保ったまま入れ子を閉じる。
   const closeCallout = () => {
-    result.push("");
-    result.push("</div></div>");
+    output.push(":::");
+    inCallout = false;
   };
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+  for (const line of lines) {
     const match = line.match(/^>\s*\[!([a-zA-Z0-9_-]+)\]\s*(.*)/);
 
     if (match) {
-      if (inCallout) {
-        closeCallout();
-      }
+      if (inCallout) closeCallout();
+      const sourceType = match[1].toLowerCase();
+      const asideType = CALLOUT_TYPES[sourceType] ?? "note";
+      const title = match[2].trim().replaceAll("]", "\\]");
+      output.push(`:::${asideType}${title ? `[${title}]` : ""}`);
       inCallout = true;
-      const calloutType = match[1].toLowerCase();
-      const title = match[2].trim();
-      // 開始タグ群を生 HTML ブロックとして出力し、直後に空行を入れて
-      // 本文を独立した Markdown ブロックにする。これにより本文中の
-      // **太字**・`code`・[link](url) などのインライン記法が解釈され、
-      // rehype-raw が入れ子を再構築するため本文は .callout-content 内に収まる。
-      // （空行を挟まないと CommonMark の生 HTML ブロック扱いで記法が
-      //   リテラル表示されてしまう）
-      result.push(`<div class="callout callout-${calloutType}">`);
-      result.push(`<div class="callout-title">${title || calloutType.toUpperCase()}</div>`);
-      result.push(`<div class="callout-content">`);
-      result.push("");
-    } else if (inCallout) {
-      if (line.startsWith(">")) {
-        // 「> 本文」も単独の「>」(空行) も、先頭の "> " を除いて本文として扱う。
-        result.push(line.replace(/^>\s?/, ""));
-      } else {
-        closeCallout();
-        inCallout = false;
-        result.push(line);
-      }
-    } else {
-      result.push(line);
+      continue;
     }
+
+    if (inCallout && line.startsWith(">")) {
+      output.push(line.replace(/^>\s?/, ""));
+      continue;
+    }
+
+    if (inCallout) closeCallout();
+    output.push(line);
   }
 
-  if (inCallout) {
-    closeCallout();
-  }
-
-  return result.join("\n");
+  if (inCallout) closeCallout();
+  return output.join("\n");
 }
 
-function preprocess() {
+function destinationRelativePath(page: SourcePage): string {
+  return page.slug === "index" ? "index.md" : `${page.slug}.md`;
+}
+
+export function preprocess({
+  vaultDir = DEFAULT_VAULT_DIR,
+  outDir = DEFAULT_OUT_DIR,
+}: {
+  vaultDir?: string;
+  outDir?: string;
+} = {}): void {
   console.log("Starting preprocessing Obsidian Vault...");
 
-  if (!fs.existsSync(VAULT_DIR)) {
-    console.error(`Error: Vault directory not found at ${VAULT_DIR}`);
-    process.exit(1);
+  if (!fs.existsSync(vaultDir)) {
+    throw new ContentValidationError([`Vault directory not found: ${vaultDir}`]);
   }
 
-  // 出力ディレクトリをクリーンアップ
-  if (fs.existsSync(OUT_DIR)) {
-    fs.rmSync(OUT_DIR, { recursive: true, force: true });
-  }
-  fs.mkdirSync(OUT_DIR, { recursive: true });
-
-  const files = getFiles(VAULT_DIR);
-  const urlMap = new Map<string, string>();
-
-  // 1. URLマッピングテーブルを構築
-  for (const file of files) {
-    const rel = path.relative(VAULT_DIR, file); // e.g. "01_設定/01_モデル.md"
-    const relNoExt = rel.substring(0, rel.length - 3); // e.g. "01_設定/01_モデル"
-    const basename = path.basename(file, ".md"); // e.g. "01_モデル"
-
-    let urlPath = `/${relNoExt}`;
-    if (basename === "00_ホーム") {
-      urlPath = "/";
-    }
-
-    urlMap.set(relNoExt, urlPath);
-    urlMap.set(basename, urlPath);
-  }
-
-  // WikiLink の変換
-  function transformWikiLinks(markdown: string, currentFile: string): string {
-    return markdown.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_match, target, label) => {
-      const cleanTarget = target.trim();
-      const cleanLabel = label ? label.trim() : cleanTarget;
-
-      // アンカー (#) の分離
-      const hashIndex = cleanTarget.indexOf("#");
-      let baseTarget = cleanTarget;
-      let anchor = "";
-      if (hashIndex !== -1) {
-        baseTarget = cleanTarget.substring(0, hashIndex).trim();
-        anchor = cleanTarget.substring(hashIndex); // e.g. "#実行バックエンド"
-      }
-
-      // 末尾のバックスラッシュやスラッシュをクリーンアップ
-      baseTarget = baseTarget.replace(/[\\/]+$/, "");
-
-      let dest = urlMap.get(baseTarget);
-      if (!dest) {
-        const targetBasename = path.basename(baseTarget);
-        dest = urlMap.get(targetBasename);
-      }
-
-      if (dest) {
-        // 日本語アンカー対応 (Astro/GitHub GFMのスラッグ処理に近くするため、スペース等を調整する程度)
-        // 基本的にはブラウザ側で解釈されるためそのまま付与
-        return `[${cleanLabel}](${dest}${anchor})`;
-      }
-
-      console.warn(
-        `[Warning] Could not resolve WikiLink "${cleanTarget}" in file "${currentFile}"`,
-      );
-      return cleanLabel;
-    });
-  }
-
-  // 2. 各ファイルを前処理して書き出し
-  for (const file of files) {
-    const rel = path.relative(VAULT_DIR, file);
-    const basename = path.basename(file, ".md");
-
-    // コピー先パスの決定 (00_ホーム.md -> index.md にリネーム)
-    let destRelPath = rel;
-    if (basename === "00_ホーム") {
-      destRelPath = rel.replace("00_ホーム.md", "index.md");
-    }
-
-    const destPath = path.join(OUT_DIR, destRelPath);
-    const destDir = path.dirname(destPath);
-
-    if (!fs.existsSync(destDir)) {
-      fs.mkdirSync(destDir, { recursive: true });
-    }
-
-    let content = fs.readFileSync(file, "utf-8");
-
-    // 前処理を適用（コードフェンス内は変換しない）
-    content = applyOutsideCodeBlocks(content, (chunk) => transformWikiLinks(chunk, rel));
+  const pages = createSourcePages(vaultDir);
+  const registry = createRegistry(pages);
+  const issues: string[] = [];
+  const generated = pages.map((page) => {
+    let content = applyOutsideCodeBlocks(page.content, (chunk) =>
+      transformWikiLinks(chunk, page, registry, issues),
+    );
     content = applyOutsideCodeBlocks(content, transformCallouts);
+    return { page, content };
+  });
 
-    fs.writeFileSync(destPath, content, "utf-8");
+  if (issues.length > 0) {
+    throw new ContentValidationError(issues);
   }
 
-  console.log(`Successfully preprocessed ${files.length} markdown files into ${OUT_DIR}`);
+  fs.rmSync(outDir, { recursive: true, force: true });
+  fs.mkdirSync(outDir, { recursive: true });
+
+  for (const { page, content } of generated) {
+    const destination = path.join(outDir, destinationRelativePath(page));
+    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    fs.writeFileSync(destination, content, "utf-8");
+  }
+
+  console.log(`Successfully preprocessed ${pages.length} Markdown files into ${outDir}`);
 }
 
-preprocess();
+const isMainModule =
+  process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isMainModule) {
+  try {
+    preprocess();
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+  }
+}

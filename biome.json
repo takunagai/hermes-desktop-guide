@@ -19,11 +19,11 @@
     "lineWidth": 100
   },
   "files": {
-    "ignore": ["node_modules", "dist", ".astro", "src/content/docs"]
+    "ignore": ["node_modules", "dist", ".astro", "src/content/docs", "vault-symlink"]
   },
   "overrides": [
     {
-      "include": ["*.astro"],
+      "include": ["**/*.astro"],
       "linter": {
         "rules": {
           "correctness": {

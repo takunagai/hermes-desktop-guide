@@ -1,0 +1,49 @@
+@layer starlight.core, starlight.content, hermes;
+
+@layer hermes {
+  :root {
+    --sl-font: Inter, "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", system-ui, sans-serif;
+    --sl-color-accent-low: #e0e7ff;
+    --sl-color-accent: #4f46e5;
+    --sl-color-accent-high: #312e81;
+    --sl-content-width: 52rem;
+  }
+
+  :root[data-theme="dark"] {
+    --sl-color-accent-low: #1e1b4b;
+    --sl-color-accent: #818cf8;
+    --sl-color-accent-high: #e0e7ff;
+  }
+
+  .site-title {
+    font-weight: 750;
+    letter-spacing: -0.02em;
+  }
+
+  .sl-markdown-content {
+    line-height: 1.8;
+  }
+
+  .sl-markdown-content :is(h2, h3) {
+    scroll-margin-top: calc(var(--sl-nav-height) + 2rem);
+  }
+
+  .sl-markdown-content table {
+    font-size: var(--sl-text-sm);
+  }
+
+  .sl-markdown-content :not(pre) > code {
+    overflow-wrap: anywhere;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+}
