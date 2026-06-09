@@ -8,7 +8,7 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ## プロジェクト概要
 
-Obsidian VaultのMarkdownをAstro Starlightでドキュメントサイト化し、「Hermes Desktop ガイド」として公開するプロジェクト。デプロイ先はCloudflare Workersを予定しているが未設定。
+Obsidian VaultのMarkdownをAstro Starlightでドキュメントサイト化し、「Hermes Desktop ガイド」として公開するプロジェクト。Cloudflare Workers（Static Assets）へWorkers Builds（GitHub連携）でデプロイする。`main`へpushすると自動でビルド・デプロイされる。
 
 **コンテンツの正本は`vault/`**。`src/content/docs/`は`scripts/preprocess.ts`が毎回再生成するgitignore対象の中間生成物なので直接編集しない。
 
@@ -155,10 +155,21 @@ Starlight標準機能を使う:
 6. Pagefindインデックス
 7. ブラウザでデスクトップ・モバイル・キーボード操作
 
+## デプロイ
+
+Cloudflare Workers（Static Assets）にWorkers Builds（GitHub連携）でデプロイする。SSRアダプタは使わない（純静的サイト）。
+
+- 設定ファイルは`wrangler.jsonc`。`assets.directory`は`./dist`、`not_found_handling`は`404-page`（`src/pages/404.astro`を配信）。
+- ビルドコマンド`npm run build`、デプロイコマンド`npx wrangler deploy`をWorkers Builds側で実行する。
+- `main`へpushすると本番デプロイ、非本番ブランチは`npx wrangler versions upload`でプレビューが作られる。
+- ビルド環境のNodeは`.nvmrc`（22）で固定する。
+- 現在の公開URLは`https://hermes-desktop-guide.<subdomain>.workers.dev`。カスタムドメインは未設定。
+- ローカルから手動デプロイする場合は`npm run deploy`（`astro build && wrangler deploy`）。
+- カスタムドメイン紐付け後は`wrangler.jsonc`の`workers_dev`を`false`にしてworkers.dev URLを無効化できる。
+
 ## 重要な注意事項
 
 - Vaultはリポジトリ内の`vault/`にあり、これが正本。Obsidianで`vault/`をVaultとして開いて編集する。
 - `src/content/docs/`を直接編集しない。
 - `site`、canonical、sitemapの本番URLはドメイン確定後に設定する。
-- Cloudflare Workersデプロイは未設定。
 - Vaultの`.obsidian/`はBiome対象外。
