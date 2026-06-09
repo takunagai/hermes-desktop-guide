@@ -37,17 +37,41 @@
     text-wrap: balance;
   }
 
+  .sl-markdown-content h2::before {
+    content: "⚚";
+    display: inline-block;
+    margin-inline-end: 0.35em;
+    color: var(--sl-color-accent);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.18em;
+    font-weight: 400;
+    line-height: 1;
+    vertical-align: -0.02em;
+  }
+
   .sl-markdown-content li + li {
     margin-top: 0.4rem;
   }
 
   .sl-markdown-content table {
+    width: 100%;
+    overscroll-behavior-inline: contain;
     font-size: var(--sl-text-sm);
+    scrollbar-gutter: stable;
   }
 
   .sl-markdown-content table th {
     overflow-wrap: normal;
     white-space: nowrap;
+  }
+
+  .sl-markdown-content table td:not(:last-child) {
+    overflow-wrap: normal;
+    word-break: keep-all;
+  }
+
+  .sl-markdown-content table td:last-child {
+    min-width: 18rem;
   }
 
   .sl-markdown-content :not(pre) > code {
