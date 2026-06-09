@@ -19,14 +19,7 @@
     "lineWidth": 100
   },
   "files": {
-    "ignore": [
-      "node_modules",
-      "dist",
-      ".astro",
-      ".antigravitycli",
-      "src/content/docs",
-      "vault-symlink"
-    ]
+    "ignore": ["node_modules", "dist", ".astro", ".antigravitycli", "src/content/docs", "vault"]
   },
   "overrides": [
     {

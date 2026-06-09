@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { dump as dumpYaml, load as loadYaml } from "js-yaml";
 
-const VAULT_DIR = path.resolve("vault-symlink");
+const VAULT_DIR = path.resolve("vault");
 
 interface PageMigration {
   title: string;

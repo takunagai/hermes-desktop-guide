@@ -2,6 +2,14 @@
   "name": "hermes-desktop-guide",
   "type": "module",
   "version": "0.0.1",
+  "description": "Hermes Desktop（Nous Research 製デスクトップ AI エージェント）の非公式日本語ガイド。Obsidian Vault を正本に Astro Starlight で静的サイト化する。",
+  "author": "Taku Nagai (ながたく)",
+  "license": "CC-BY-4.0 AND MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/takunagai/hermes-desktop-guide.git"
+  },
+  "homepage": "https://github.com/takunagai/hermes-desktop-guide#readme",
   "engines": {
     "node": ">=22.12.0"
   },

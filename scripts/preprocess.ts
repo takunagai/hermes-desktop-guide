@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 import { slug as slugifyHeading } from "github-slugger";
 import { load as loadYaml } from "js-yaml";
 
-const DEFAULT_VAULT_DIR = path.resolve("vault-symlink");
+const DEFAULT_VAULT_DIR = path.resolve("vault");
 const DEFAULT_OUT_DIR = path.resolve("src/content/docs");
 const SLUG_PATTERN = /^(?:index|[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*)$/;
 

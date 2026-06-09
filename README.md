@@ -32,12 +32,7 @@
 npm install
 ```
 
-記事の正本はObsidian Vaultにあり、リポジトリ内の`vault-symlink/`がそこへのシンボリックリンクになっている。別環境では自分のVaultパスへ張り替える。
-
-```bash
-rm vault-symlink
-ln -s /path/to/your/obsidian-vault vault-symlink
-```
+記事の正本はリポジトリ内の`vault/`にある。ObsidianでこのフォルダをVaultとして開けば、サイトと同じリポジトリでコンテンツを編集できる。
 
 ## コマンド
 
@@ -57,7 +52,7 @@ ln -s /path/to/your/obsidian-vault vault-symlink
 ## コンテンツパイプライン
 
 ```text
-vault-symlink/              Obsidian Vault、コンテンツの正本
+vault/                      Obsidian Vault、コンテンツの正本
     ↓ npm run preprocess
 scripts/preprocess.ts       frontmatter・slug・WikiLink・コールアウトを検証変換
     ↓
@@ -150,6 +145,13 @@ Obsidian記法をStarlight Asideへ変換する。
 
 Cloudflare Workersを予定しているが未設定。現時点では`npm run build`で静的出力を生成する。
 
-## 設計資料
+## ライセンス
 
-- [サイト構成の再編計画](./docs/サイト構成の再編計画-設定特化から製品全般ハブへ.md)
+このリポジトリはドキュメントとコードで異なるライセンスを併用する。
+
+- **ドキュメント・コンテンツ**（`vault/`配下のMarkdownと画像）: [CC BY 4.0](./LICENSE)（クリエイティブ・コモンズ 表示 4.0 国際）
+- **ソースコード**（`scripts/`、`src/`、設定ファイル）: [MIT License](./LICENSE-CODE)
+
+© 2026 Taku Nagai（ながたく）
+
+Hermes Desktopは[Nous Research](https://github.com/NousResearch/hermes-agent)の製品であり、本リポジトリはコミュニティによる非公式の日本語ガイドである。最新かつ正確な情報は公式ドキュメントを参照すること。

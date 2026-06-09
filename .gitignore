@@ -31,3 +31,7 @@ pnpm-debug.log*
 
 # generated content docs
 src/content/docs/
+
+# local development notes (not published)
+/design-qa.md
+/docs/
