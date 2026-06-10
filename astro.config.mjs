@@ -8,6 +8,46 @@ import remarkHomeDirectoryGrid from "./scripts/remark-home-directory-grid.ts";
 
 const editorialAssets = fileURLToPath(new URL("./src/assets/editorial", import.meta.url));
 
+const isProduction = process.env.NODE_ENV === "production";
+// Google Analytics (GA4) 測定ID。HTMLに露出する公開値のため直書きで問題ない。
+const GA_MEASUREMENT_ID = "G-2CQLJNTXY0";
+// OGP / Twitter カード画像の絶対URL（site と同一ドメイン配下の静的アセット）。
+const OG_IMAGE_URL = "https://hermes.ai-deck.app/og-image.png";
+
+// 本番ビルドのみ gtag を出力する。Starlightは View Transitions を使うため
+// send_page_view: false にし、astro:page-load で手動 page_view を発火して
+// SPA的なページ遷移も計測する。
+const googleAnalyticsHead =
+  isProduction && GA_MEASUREMENT_ID
+    ? [
+        {
+          tag: "script",
+          attrs: {
+            src: `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`,
+            async: true,
+          },
+        },
+        {
+          tag: "script",
+          content: [
+            "window.dataLayer = window.dataLayer || [];",
+            "function gtag(){dataLayer.push(arguments);}",
+            "gtag('js', new Date());",
+            `gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: false });`,
+            "document.addEventListener('astro:page-load', function () {",
+            "  if (typeof gtag === 'function') {",
+            "    gtag('event', 'page_view', {",
+            "      page_path: location.pathname,",
+            "      page_location: location.href,",
+            "      page_title: document.title,",
+            "    });",
+            "  }",
+            "});",
+          ].join("\n"),
+        },
+      ]
+    : [];
+
 const preprocessIntegration = () => ({
   name: "preprocess-obsidian",
   hooks: {
@@ -134,6 +174,28 @@ export default defineConfig({
             content: "#4f46e5",
           },
         },
+        // OGP / Twitter カード画像（Starlight は og:image を出さないため補う）。
+        {
+          tag: "meta",
+          attrs: { property: "og:image", content: OG_IMAGE_URL },
+        },
+        {
+          tag: "meta",
+          attrs: { property: "og:image:width", content: "1200" },
+        },
+        {
+          tag: "meta",
+          attrs: { property: "og:image:height", content: "630" },
+        },
+        {
+          tag: "meta",
+          attrs: { property: "og:image:alt", content: "Hermes Desktop ガイド" },
+        },
+        {
+          tag: "meta",
+          attrs: { name: "twitter:image", content: OG_IMAGE_URL },
+        },
+        ...googleAnalyticsHead,
       ],
     }),
   ],
