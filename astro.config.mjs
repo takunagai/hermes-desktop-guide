@@ -12,7 +12,7 @@ const isProduction = process.env.NODE_ENV === "production";
 // Google Analytics (GA4) 測定ID。HTMLに露出する公開値のため直書きで問題ない。
 const GA_MEASUREMENT_ID = "G-2CQLJNTXY0";
 // OGP / Twitter カード画像の絶対URL（site と同一ドメイン配下の静的アセット）。
-const OG_IMAGE_URL = "https://hermes.ai-deck.app/og-image.png";
+const OG_IMAGE_URL = "https://hermes.ai-deck.app/og-image.jpg";
 
 // 本番ビルドのみ gtag を出力する。Starlightは View Transitions を使うため
 // send_page_view: false にし、astro:page-load で手動 page_view を発火して
@@ -189,7 +189,10 @@ export default defineConfig({
         },
         {
           tag: "meta",
-          attrs: { property: "og:image:alt", content: "Hermes Desktop ガイド" },
+          attrs: {
+            property: "og:image:alt",
+            content: "ヘッドホンを着けた少女と、翼の帽子とカドゥケウスを持つヘルメス神を描いたイラスト",
+          },
         },
         {
           tag: "meta",
