@@ -114,11 +114,13 @@ export default defineConfig({
           lang: "ja",
         },
       },
+      // ヘッダーのソーシャルリンクはこのガイド自身のリポジトリを指す。
+      // 公式リポジトリ（NousResearch/hermes-agent）への導線はリファレンス「公式リンク集」で確保する。
       social: [
         {
           icon: "github",
-          label: "Hermes Agent GitHub",
-          href: "https://github.com/NousResearch/hermes-agent",
+          label: "このガイドのGitHubリポジトリ",
+          href: "https://github.com/takunagai/hermes-desktop-guide",
         },
       ],
       customCss: ["./src/styles/starlight.css"],

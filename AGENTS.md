@@ -8,7 +8,7 @@ This file provides guidance to Codex when working with code in this repository.
 
 ## プロジェクト概要
 
-Obsidian VaultのMarkdownをAstro Starlightでドキュメントサイト化し、「Hermes Desktop ガイド」として公開するプロジェクト。デプロイ先はCloudflare Workersを予定しているが未設定。
+Obsidian VaultのMarkdownをAstro Starlightでドキュメントサイト化し、「Hermes Desktop ガイド」として公開するプロジェクト。Cloudflare Workers（Static Assets）へWorkers Builds（GitHub連携）でデプロイする。`main`へpushすると自動でビルド・デプロイされる。
 
 **コンテンツの正本は`vault/`**。`src/content/docs/`は`scripts/preprocess.ts`が毎回再生成するgitignore対象の中間生成物なので直接編集しない。
 
@@ -155,10 +155,18 @@ Starlight標準機能を使う:
 6. Pagefindインデックス
 7. ブラウザでデスクトップ・モバイル・キーボード操作
 
+## デプロイ
+
+Cloudflare Workers（Static Assets）にWorkers Builds（GitHub連携）でデプロイする。SSRアダプタは使わない（純静的サイト）。
+
+- 設定ファイルは`wrangler.jsonc`。`assets.directory`は`./dist`、`not_found_handling`は`404-page`。
+- `main`へpushすると本番デプロイ、非本番ブランチは`npx wrangler versions upload`でプレビュー。
+- 公開URLはカスタムドメイン`https://hermes.ai-deck.app`。`astro.config.mjs`の`site`も同URL。
+- ローカルから手動デプロイする場合は`npm run deploy`（`astro build && wrangler deploy`）。
+
 ## 重要な注意事項
 
 - Vaultはリポジトリ内の`vault/`にあり、これが正本。Obsidianで`vault/`をVaultとして開いて編集する。
 - `src/content/docs/`を直接編集しない。
-- `site`、canonical、sitemapの本番URLはドメイン確定後に設定する。
-- Cloudflare Workersデプロイは未設定。
+- 本番URLは`https://hermes.ai-deck.app`で確定（`site`・canonical・sitemap設定済み）。
 - Vaultの`.obsidian/`はBiome対象外。

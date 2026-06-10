@@ -1,5 +1,13 @@
 # Hermes Desktop ガイド
 
+<p align="center">
+  <a href="https://hermes.ai-deck.app">
+    <img src="./public/og-image.jpg" alt="Hermes Desktop ガイド" width="720">
+  </a>
+</p>
+
+公開サイト: **https://hermes.ai-deck.app**
+
 [Hermes Desktop](https://github.com/NousResearch/hermes-agent)の導入、基本操作、設定、安全な運用、問題解決を日本語でまとめた非公式ドキュメントサイト。Obsidian Vaultを正本に、Astro Starlightで静的サイト化する。
 
 ## 特徴
@@ -19,8 +27,9 @@
 - Pagefind
 - TypeScript
 - Biome
+- Cloudflare Workers（Static Assets / Workers Builds）
 
-デプロイ先はCloudflare Workersを予定しているが、まだ設定していない。
+本番サイトは`https://hermes.ai-deck.app`で公開中。`main`へpushするとWorkers Builds（GitHub連携）が自動でビルド・デプロイする。
 
 ## 必要要件
 
@@ -139,11 +148,11 @@ Obsidian記法をStarlight Asideへ変換する。
 
 ## URLとSEO
 
-旧番号付きURLは`astro.config.mjs`で恒久URLへリダイレクトする。本番ドメイン確定後に`site`を設定し、canonical、OGP URL、sitemapを最終化する。
+旧番号付きURLは`astro.config.mjs`で恒久URLへリダイレクトする。本番ドメイン`https://hermes.ai-deck.app`を`site`に設定済みで、canonical、OGP絶対URL、sitemap（`/sitemap-index.xml`）が有効。`public/robots.txt`がsitemapを参照する。
 
 ## デプロイ
 
-Cloudflare Workersを予定しているが未設定。現時点では`npm run build`で静的出力を生成する。
+Cloudflare Workers（Static Assets）にWorkers Builds（GitHub連携）でデプロイする。`main`へpushすると本番デプロイ、非本番ブランチは`npx wrangler versions upload`でプレビューが作られる。公開URLはカスタムドメイン`https://hermes.ai-deck.app`。ローカルから手動デプロイする場合は`npm run deploy`（`astro build && wrangler deploy`）。
 
 ## ライセンス
 

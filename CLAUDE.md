@@ -129,6 +129,8 @@ Starlight標準機能を使う:
 
 独自JavaScriptで検索、テーマ、サイドバー、TOCを再実装しない。
 
+ヘッダーのソーシャルリンク（`astro.config.mjs`の`social`）はこのガイド自身のリポジトリ`https://github.com/takunagai/hermes-desktop-guide`を指す。公式リポジトリ`NousResearch/hermes-agent`への導線はリファレンス「公式リンク集」（`vault/06_リファレンス/03_公式リンク集.md`）で確保し、ヘッダーには公式リンクを置かない。
+
 `src/components/PageTitle.astro`はStarlight標準PageTitleをラップし、確認日、バージョン、コミット、status、tagsを表示する。
 
 `src/styles/starlight.css`は配色、本文幅、読みやすさ、`prefers-reduced-motion`だけを調整する。Starlight標準のアクセシビリティを壊す上書きを避ける。
