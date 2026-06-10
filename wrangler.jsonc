@@ -6,9 +6,7 @@
   // workers.dev URL は当面併存。安定後に "workers_dev": false で無効化できる。
   "workers_dev": true,
   "preview_urls": true,
-  "routes": [
-    { "pattern": "hermes.ai-deck.app", "custom_domain": true }
-  ],
+  "routes": [{ "pattern": "hermes.ai-deck.app", "custom_domain": true }],
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page"

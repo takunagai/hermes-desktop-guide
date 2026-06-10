@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hermes.ai-deck.app/sitemap-index.xml

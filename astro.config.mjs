@@ -42,6 +42,7 @@ const legacyRedirects = {
 };
 
 export default defineConfig({
+  site: "https://hermes.ai-deck.app",
   image: {
     layout: "constrained",
     responsiveStyles: true,
