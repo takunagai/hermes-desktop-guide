@@ -154,6 +154,15 @@ Obsidian記法をStarlight Asideへ変換する。
 
 Cloudflare Workers（Static Assets）にWorkers Builds（GitHub連携）でデプロイする。`main`へpushすると本番デプロイ、非本番ブランチは`npx wrangler versions upload`でプレビューが作られる。公開URLはカスタムドメイン`https://hermes.ai-deck.app`。ローカルから手動デプロイする場合は`npm run deploy`（`astro build && wrangler deploy`）。
 
+## 貢献
+
+誤りの指摘・修正を歓迎する。
+
+- 気軽な報告: [Issue](https://github.com/takunagai/hermes-desktop-guide/issues) または X（[@nagataku_ai](https://x.com/nagataku_ai)）
+- 直接修正: Pull Request。**編集対象は`vault/`配下のみ**（`src/content/docs/`は自動生成の中間生成物のため編集しない）
+- 設定値・既定値の変更報告には、確認したアプリのバージョン（設定 > 情報）を添えてもらえると検証が速い
+- PR前に`npm run quality`を実行すると、リンク切れやfrontmatter不備を事前に検出できる
+
 ## ライセンス
 
 このリポジトリはドキュメントとコードで異なるライセンスを併用する。
