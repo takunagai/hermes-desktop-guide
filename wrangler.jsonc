@@ -2,9 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hermes-desktop-guide",
   "compatibility_date": "2026-06-10",
-  // 公開はカスタムドメイン hermes.ai-deck.app。
-  // workers.dev URL は当面併存。安定後に "workers_dev": false で無効化できる。
-  "workers_dev": true,
+  // 公開はカスタムドメイン hermes.ai-deck.app に一本化。
+  // workers.dev URL は無効化済み（戻す場合は true）。
+  "workers_dev": false,
   "preview_urls": true,
   "routes": [{ "pattern": "hermes.ai-deck.app", "custom_domain": true }],
   "assets": {
