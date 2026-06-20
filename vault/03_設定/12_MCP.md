@@ -34,7 +34,7 @@ verified: '2026-06-07'
 
 一覧のバッジは `stdio`, `http`, `custom` を示す。実行時にサーバーを無効化する正式なキーは `enabled: false`。
 
-> [!warning] v0.16.0 の「無効」バッジ
+> [!warning] v0.17.0 の「無効」バッジ
 > デスクトップ UI は「無効」バッジの表示だけを `disabled: true` で判定しているが、実際の MCP ランタイムは `enabled: false` で停止する。`disabled` は正式な停止キーではない。確実に停止するには `enabled: false` を使い、現行 UI ではバッジが出ない場合がある。
 
 ## stdio の最小例
@@ -138,3 +138,11 @@ Sampling は、MCP サーバーが `sampling/createMessage` で Hermes のモデ
 7. 保存後に再読み込みし、新しいターンで動作確認する。
 
 公式: [MCP ガイド](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp) / [MCP Config Reference](https://hermes-agent.nousresearch.com/docs/reference/mcp-config-reference)
+
+<!-- WAVE3-CHECK -->
+## 実機確認チェックリスト（Wave 3 用）
+
+- [ ] `disabled: true`（バッジ判定）と `enabled: false`（ランタイム停止）の挙動不一致が v0.17 でも継続しているか確認する。
+- [ ] MCP elicitation handler・`tools/list` capability-gating・stdio の Windows env passthrough・per-MCP catalog detail・stdio security scanning などの新機能が MCP 設定画面に露出していないことを確認する。露出していれば本ページへの追記を検討する。
+
+<!-- /WAVE3-CHECK -->
