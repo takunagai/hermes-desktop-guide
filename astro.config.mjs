@@ -156,6 +156,14 @@ export default defineConfig({
           items: [{ autogenerate: { directory: "settings" } }],
         },
         {
+          label: "ダッシュボード",
+          items: [{ autogenerate: { directory: "dashboard" } }],
+        },
+        {
+          label: "連携・チャネル",
+          items: [{ autogenerate: { directory: "channels" } }],
+        },
+        {
           label: "ガイド",
           items: [{ autogenerate: { directory: "guides" } }],
         },
