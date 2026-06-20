@@ -10,9 +10,9 @@ tags:
   - mcp
 audience:
   - Hermes Desktop利用者
-status: needs-review
+status: verified
 hermes_version: 0.17.0
-verified: '2026-06-07'
+verified: '2026-06-20'
 ---
 
 外部の Model Context Protocol サーバーを追加し、Hermes にツールを公開する。
@@ -95,6 +95,9 @@ OAuth 対応例:
 > [!warning] TLS
 > `ssl_verify: false` はサーバー証明書を検証しない。実サービスでは使わず、プライベート CA は CA bundle のパスを指定する。
 
+> [!note] `type` キー
+> 保存後のサーバー JSON には、一覧バッジ（`stdio` / `http` / `custom`）に対応する `type` キーが付与されることがある（例: stdio サーバーでは `"type": "stdio"`）。最小例のように `type` を書かなくても、`command`/`args` か `url` の有無からトランスポートが判定される。
+
 ## `tools` の全キー
 
 | 内部キー（JSON） | 型 | 製品既定値 | 動作 |
@@ -142,7 +145,7 @@ Sampling は、MCP サーバーが `sampling/createMessage` で Hermes のモデ
 <!-- WAVE3-CHECK -->
 ## 実機確認チェックリスト（Wave 3 用）
 
-- [ ] `disabled: true`（バッジ判定）と `enabled: false`（ランタイム停止）の挙動不一致が v0.17 でも継続しているか確認する。
-- [ ] MCP elicitation handler・`tools/list` capability-gating・stdio の Windows env passthrough・per-MCP catalog detail・stdio security scanning などの新機能が MCP 設定画面に露出していないことを確認する。露出していれば本ページへの追記を検討する。
+- [x] `disabled: true`（バッジ判定）と `enabled: false`（ランタイム停止）の挙動不一致が v0.17 でも継続しているか確認する。→ Wave 2 ソース確認で v0.17 継続を確定済み（警告ブロック維持）。実機は MCP 設定画面の構成一致を確認（2026-06-20）
+- [x] MCP elicitation handler・`tools/list` capability-gating・stdio の Windows env passthrough・per-MCP catalog detail・stdio security scanning などの新機能が MCP 設定画面に露出していないことを確認する。露出していれば本ページへの追記を検討する。→ 専用設定 UI は非露出を実機確認（JSON エディタ方式のまま）。保存済み JSON に `type` キー（例 `stdio`）が含まれる点を本文へ注記追加
 
 <!-- /WAVE3-CHECK -->
