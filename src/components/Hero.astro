@@ -63,6 +63,8 @@ const isHome = data.slug === "index";
     .hermes-hero {
       --hero-blue: #2116ff;
 
+      position: relative;
+      isolation: isolate;
       display: grid;
       grid-template-columns: minmax(0, 1.35fr) minmax(19rem, 0.65fr);
       min-height: clamp(28rem, 44vw, 34rem);
@@ -70,6 +72,22 @@ const isHome = data.slug === "index";
       border: 1px solid color-mix(in srgb, var(--hero-blue) 72%, white);
       background: var(--hero-blue);
       color: white;
+    }
+
+    /* 雲模様＋グレインのテクスチャ。青背景にブレンドして質感を出す。
+       テキストは前面（z-index 自動）に乗るため可読性に影響しない。 */
+    .hermes-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: url("/images/hero-texture.svg") repeat;
+      background-size: 300px 300px;
+      /* 青背景は青チャンネルが最大のため overlay/soft-light では変化しない。
+         multiply で暗くする方向に変調するとグレイン・雲模様が見え、白文字の可読性も保てる。 */
+      mix-blend-mode: multiply;
+      opacity: 0.72;
+      pointer-events: none;
     }
 
     .hero-copy {

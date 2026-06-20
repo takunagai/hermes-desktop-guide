@@ -1,0 +1,25 @@
+---
+import Default from "@astrojs/starlight/components/Footer.astro";
+---
+
+<Default />
+
+<p class="reuse-notice">
+  © 2026 Hermes Desktop ガイド（非公式）。引用・部分転載は、出典として本ページへのリンクを添えていただければ歓迎します。記事全文の無断複製・転載はご遠慮ください。
+</p>
+
+<style>
+  @layer hermes {
+    .reuse-notice {
+      max-width: var(--sl-content-width);
+      margin: 2.5rem auto 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--sl-color-hairline);
+      color: var(--sl-color-gray-3);
+      font-size: var(--sl-text-xs);
+      line-height: 1.7;
+      text-align: center;
+      text-wrap: pretty;
+    }
+  }
+</style>

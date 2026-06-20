@@ -14,6 +14,11 @@
     --sl-color-accent-high: #312e81;
     --sl-content-width: 50rem;
     --sl-content-gap-y: 1.25rem;
+    /* 見出しを Starlight 既定からワンサイズずつ下げる（大画面側を縮小）。 */
+    --sl-text-h1: var(--sl-text-4xl);
+    --sl-text-h2: var(--sl-text-3xl);
+    --sl-text-h3: var(--sl-text-2xl);
+    --sl-text-h4: var(--sl-text-xl);
   }
 
   :root[data-theme="dark"] {
@@ -38,7 +43,7 @@
   }
 
   .sl-markdown-content h2::before {
-    content: "⚚";
+    content: "\269A";
     display: inline-block;
     margin-inline-end: 0.35em;
     color: var(--sl-color-accent);
@@ -51,6 +56,18 @@
 
   .sl-markdown-content li + li {
     margin-top: 0.4rem;
+  }
+
+  /* リンク下線を上品に: 細く・少し離し・色をやわらげる（ホバーでも強すぎない） */
+  .sl-markdown-content a:not(:where(.not-content *)) {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 38%, transparent);
+    transition: color 150ms ease, text-decoration-color 150ms ease;
+  }
+
+  .sl-markdown-content a:hover:not(:where(.not-content *)) {
+    text-decoration-color: color-mix(in srgb, currentColor 68%, transparent);
   }
 
   .sl-markdown-content table {
@@ -140,82 +157,218 @@
     color: var(--sl-color-gray-3);
   }
 
-  .home-directory-grid {
-    display: grid;
-    gap: 1.25rem;
+  /* ホーム索引: 共通ブロック */
+  .home-block {
     margin-block: clamp(2.5rem, 6vw, 4rem);
   }
 
-  .home-directory-grid > .home-directory-section {
+  .home-block > .sl-heading-wrapper:first-child,
+  .home-block > h2:first-child {
+    margin: 0 0 1.5rem;
+  }
+
+  .home-block h2 {
+    font-size: clamp(var(--sl-text-h4), 2.5vw, var(--sl-text-h3));
+    letter-spacing: -0.01em;
+  }
+
+  /* カード内の見出しラッパー: Starlight 既定マージンを打ち消し、開始位置を揃える */
+  .home-intent-card .sl-heading-wrapper,
+  .home-area-card .sl-heading-wrapper {
+    margin: 0;
+  }
+
+  /* グリッド内カードに付く Starlight のフロー上マージン（--sl-content-gap-y）を打ち消す。
+     これが残ると先頭以外のカードが押し下がり、行内で高さ・上端が揃わない。 */
+  .home-intent-grid > .home-intent-card,
+  .home-area-grid > .home-area-card {
+    margin: 0;
+  }
+
+  /* カード共通: 見出しサイズ（目的・領域でそろえる） */
+  .home-intent-card h3,
+  .home-area-card h3 {
+    font-size: 1.25rem;
+    line-height: 1.35;
+  }
+
+  /* 目的から探す（意図別カード） */
+  .home-intent-grid {
+    display: grid;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .home-intent-card {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
-    margin-top: 0;
     border: 1px solid var(--sl-color-hairline);
-    padding: clamp(1.25rem, 3vw, 2rem);
-    background: color-mix(in srgb, var(--sl-color-bg-nav) 72%, transparent);
+    border-top: 3px solid var(--sl-color-accent);
+    padding: clamp(1.1rem, 2.5vw, 1.5rem);
+    background: color-mix(in srgb, var(--sl-color-bg-nav) 60%, transparent);
   }
 
-  .home-directory-section > .sl-heading-wrapper:first-child {
-    margin-top: 0;
-    border-bottom: 1px solid var(--sl-color-hairline);
-    padding-bottom: 0.75rem;
+  .home-intent-card h3 {
+    margin: 0 0 0.85rem;
   }
 
-  .home-directory-section > .sl-heading-wrapper:first-child h2 {
-    font-size: clamp(var(--sl-text-h3), 3vw, var(--sl-text-h2));
+  /* 領域から探す（網羅カード + 細線アイコン） */
+  .home-area-grid {
+    display: grid;
+    align-items: stretch;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
   }
 
-  .home-directory-section > p:has(img[src$="hermes-desktop-settings-view.webp"]) {
-    overflow: hidden;
-    margin-top: 1rem;
-    border: 1px solid var(--sl-color-hairline-light);
-    background: #0d0d0f;
+  .home-area-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid var(--sl-color-hairline);
+    padding: clamp(1.1rem, 2.5vw, 1.5rem);
+    background: color-mix(in srgb, var(--sl-color-bg-nav) 60%, transparent);
+    transition: border-color 160ms ease, background-color 160ms ease;
   }
 
-  .home-directory-section > p:has(img[src$="hermes-desktop-settings-view.webp"]) > a {
-    display: block;
+  .home-area-card:hover,
+  .home-area-card:focus-within {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 65%, var(--sl-color-hairline));
+    background: color-mix(in srgb, var(--sl-color-bg-nav) 88%, transparent);
   }
 
-  .home-directory-section img[src$="hermes-desktop-settings-view.webp"] {
-    display: block;
-    width: 100%;
-    aspect-ratio: 800 / 546;
-    transition: transform 180ms ease;
+  .home-area-card__top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
-  .home-directory-section > p:has(img[src$="hermes-desktop-settings-view.webp"]) > a:focus-visible {
-    outline: 2px solid var(--sl-color-accent-high);
-    outline-offset: -3px;
+  .home-area-card__icon {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    color: var(--sl-color-accent);
   }
 
-  .home-directory-section > p:has(img[src$="hermes-desktop-settings-view.webp"]) > a:hover img {
-    transform: scale(1.015);
-  }
-
-  .home-directory-section > p:has(img[src$="hermes-desktop-settings-view.webp"]) + p {
-    margin-top: 0.6rem;
+  .home-area-card__eyebrow {
+    font-family: var(--__sl-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
     color: var(--sl-color-gray-3);
-    font-size: var(--sl-text-xs);
-    line-height: 1.6;
   }
 
-  .home-directory-section > ol {
-    columns: 2 9rem;
-    column-gap: 2rem;
+  .home-area-card h3 {
+    margin: 0 0 0.5rem;
   }
 
-  .home-directory-section > ol > li {
-    break-inside: avoid;
+  .home-area-card > p {
+    margin: 0 0 0.85rem;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+    line-height: 1.65;
   }
 
-  @media (min-width: 48rem) {
-    .home-directory-grid {
-      grid-template-columns: minmax(0, 1.08fr) minmax(16rem, 0.92fr);
-      align-items: start;
-      gap: clamp(1.25rem, 3vw, 2rem);
-    }
+  /* カード共通: リンクリスト（目的・領域でそろえる） */
+  .home-intent-card > :is(ul, ol),
+  .home-area-card > :is(ul, ol) {
+    margin: 0;
+    padding: 0.85rem 0 0;
+    border-top: 1px solid var(--sl-color-hairline);
+    list-style: none;
+  }
 
-    .home-directory-section {
-      height: 100%;
+  .home-intent-card li,
+  .home-area-card li {
+    font-size: var(--sl-text-sm);
+  }
+
+  .home-intent-card li + li,
+  .home-area-card li + li {
+    margin-top: 0.45rem;
+  }
+
+  .home-intent-card li a,
+  .home-area-card li a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    text-decoration-line: none;
+  }
+
+  .home-intent-card li a::before,
+  .home-area-card li a::before {
+    content: "→";
+    color: var(--sl-color-accent);
+  }
+
+  .home-intent-card li a:hover,
+  .home-area-card li a:hover {
+    text-decoration-line: underline;
+  }
+
+  /* v0.17の新機能（再訪導線） */
+  .home-whatsnew {
+    border: 1px solid color-mix(in srgb, var(--sl-color-accent) 32%, var(--sl-color-hairline));
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    background: color-mix(in srgb, var(--sl-color-accent) 7%, transparent);
+  }
+
+  .home-whatsnew > .sl-heading-wrapper:first-child,
+  .home-whatsnew > h2:first-child {
+    margin-bottom: 0.6rem;
+  }
+
+  .home-whatsnew > p {
+    margin: 0 0 1rem;
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-sm);
+  }
+
+  .home-whatsnew ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-whatsnew li {
+    margin: 0;
+  }
+
+  .home-whatsnew li + li {
+    margin-top: 0;
+  }
+
+  .home-whatsnew li a {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--sl-color-hairline);
+    padding: 0.5rem 0.9rem;
+    background: var(--sl-color-bg);
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 160ms ease, color 160ms ease;
+  }
+
+  .home-whatsnew li a:hover {
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-accent);
+  }
+
+  /* ホーム末尾「非公式ガイド」注記の上に余白を足す */
+  .sl-markdown-content > .starlight-aside:last-child {
+    margin-block-start: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  @media (min-width: 36rem) {
+    .home-intent-grid {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 

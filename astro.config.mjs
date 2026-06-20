@@ -132,6 +132,7 @@ export default defineConfig({
         Hero: "./src/components/Hero.astro",
         PageTitle: "./src/components/PageTitle.astro",
         SiteTitle: "./src/components/SiteTitle.astro",
+        Footer: "./src/components/Footer.astro",
       },
       tableOfContents: {
         minHeadingLevel: 2,
