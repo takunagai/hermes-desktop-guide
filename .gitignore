@@ -35,3 +35,6 @@ src/content/docs/
 # local development notes (not published)
 /design-qa.md
 /docs/
+
+# firecrawl CLI output
+.firecrawl/
