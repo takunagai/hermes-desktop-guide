@@ -17,6 +17,10 @@ const OG_IMAGE_URL = "https://hermes.ai-deck.app/og-image.jpg";
 // 本番ビルドのみ gtag を出力する。Starlightは View Transitions を使うため
 // send_page_view: false にし、astro:page-load で手動 page_view を発火して
 // SPA的なページ遷移も計測する。
+// @type 注釈で tag をリテラル型に固定する（Starlight head 型と整合させ ts(2322) を防ぐ）。
+/**
+ * @type {Array<{ tag: "title" | "base" | "link" | "style" | "meta" | "script" | "noscript" | "template", attrs?: Record<string, string | boolean | undefined>, content?: string }>}
+ */
 const googleAnalyticsHead =
   isProduction && GA_MEASUREMENT_ID
     ? [
@@ -201,7 +205,8 @@ export default defineConfig({
           tag: "meta",
           attrs: {
             property: "og:image:alt",
-            content: "ヘッドホンを着けた少女と、翼の帽子とカドゥケウスを持つヘルメス神を描いたイラスト",
+            content:
+              "ヘッドホンを着けた少女と、翼の帽子とカドゥケウスを持つヘルメス神を描いたイラスト",
           },
         },
         {
