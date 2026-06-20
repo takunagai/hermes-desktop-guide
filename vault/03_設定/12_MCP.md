@@ -3,7 +3,7 @@ title: MCP
 description: Hermes DesktopでMCPサーバーを登録、接続、無効化するときの設定項目と安全上の注意。
 slug: settings/mcp
 sidebar:
-  order: 12
+  order: 13
 tags:
   - hermes
   - settings
