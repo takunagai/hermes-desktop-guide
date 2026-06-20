@@ -141,11 +141,3 @@ Sampling は、MCP サーバーが `sampling/createMessage` で Hermes のモデ
 7. 保存後に再読み込みし、新しいターンで動作確認する。
 
 公式: [MCP ガイド](https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp) / [MCP Config Reference](https://hermes-agent.nousresearch.com/docs/reference/mcp-config-reference)
-
-<!-- WAVE3-CHECK -->
-## 実機確認チェックリスト（Wave 3 用）
-
-- [x] `disabled: true`（バッジ判定）と `enabled: false`（ランタイム停止）の挙動不一致が v0.17 でも継続しているか確認する。→ Wave 2 ソース確認で v0.17 継続を確定済み（警告ブロック維持）。実機は MCP 設定画面の構成一致を確認（2026-06-20）
-- [x] MCP elicitation handler・`tools/list` capability-gating・stdio の Windows env passthrough・per-MCP catalog detail・stdio security scanning などの新機能が MCP 設定画面に露出していないことを確認する。露出していれば本ページへの追記を検討する。→ 専用設定 UI は非露出を実機確認（JSON エディタ方式のまま）。保存済み JSON に `type` キー（例 `stdio`）が含まれる点を本文へ注記追加
-
-<!-- /WAVE3-CHECK -->
