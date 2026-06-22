@@ -361,6 +361,97 @@
     color: var(--sl-color-accent);
   }
 
+  /* ホーム末尾: AI Deck 紹介カード（本ガイド作者の別プロダクト導線） */
+  .ai-deck-promo {
+    margin-block: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .ai-deck-promo__link {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 1.5rem);
+    border: 1px solid var(--sl-color-hairline);
+    border-top: 3px solid var(--sl-color-accent);
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    background: color-mix(in srgb, var(--sl-color-bg-nav) 60%, transparent);
+    color: var(--sl-color-white);
+    text-decoration: none;
+    transition: border-color 160ms ease, background-color 160ms ease;
+  }
+
+  .ai-deck-promo__link:hover,
+  .ai-deck-promo__link:focus-visible {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 65%, var(--sl-color-hairline));
+    background: color-mix(in srgb, var(--sl-color-bg-nav) 88%, transparent);
+  }
+
+  .ai-deck-promo__logo {
+    flex: none;
+    width: clamp(2.75rem, 8vw, 3.5rem);
+    height: auto;
+  }
+
+  .ai-deck-promo__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  .ai-deck-promo__eyebrow {
+    font-family: var(--__sl-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--sl-color-gray-3);
+  }
+
+  .ai-deck-promo__title {
+    font-size: var(--sl-text-lg);
+    font-weight: bold;
+    line-height: 1.35;
+  }
+
+  .ai-deck-promo__desc {
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-sm);
+    line-height: 1.65;
+  }
+
+  .ai-deck-promo__cta {
+    margin-top: 0.35rem;
+    color: var(--sl-color-accent);
+    font-size: var(--sl-text-sm);
+    font-weight: bold;
+  }
+
+  /* ホーム末尾: AI Deck クレジット（非公式ガイド callout の直後） */
+  .ai-deck-credit {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    width: fit-content;
+    margin-top: 1.25rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--sl-color-hairline);
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-xs);
+    line-height: 1.5;
+  }
+
+  .ai-deck-credit img {
+    flex: none;
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+
+  .ai-deck-credit a {
+    color: var(--sl-color-white);
+    font-weight: bold;
+    text-underline-offset: 0.2em;
+  }
+
   /* ホーム末尾「非公式ガイド」注記の上に余白を足す */
   .sl-markdown-content > .starlight-aside:last-child {
     margin-block-start: clamp(2.5rem, 6vw, 4rem);
