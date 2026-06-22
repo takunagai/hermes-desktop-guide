@@ -38,3 +38,6 @@ src/content/docs/
 
 # firecrawl CLI output
 .firecrawl/
+
+# handover docs (session instructions, not published)
+_handover/

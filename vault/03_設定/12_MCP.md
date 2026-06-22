@@ -3,7 +3,7 @@ title: MCP
 description: Hermes DesktopでMCPサーバーを登録、接続、無効化するときの設定項目と安全上の注意。
 slug: settings/mcp
 sidebar:
-  order: 12
+  order: 13
 tags:
   - hermes
   - settings
@@ -11,8 +11,8 @@ tags:
 audience:
   - Hermes Desktop利用者
 status: verified
-hermes_version: 0.16.0
-verified: '2026-06-07'
+hermes_version: 0.17.0
+verified: '2026-06-20'
 ---
 
 外部の Model Context Protocol サーバーを追加し、Hermes にツールを公開する。
@@ -34,7 +34,7 @@ verified: '2026-06-07'
 
 一覧のバッジは `stdio`, `http`, `custom` を示す。実行時にサーバーを無効化する正式なキーは `enabled: false`。
 
-> [!warning] v0.16.0 の「無効」バッジ
+> [!warning] v0.17.0 の「無効」バッジ
 > デスクトップ UI は「無効」バッジの表示だけを `disabled: true` で判定しているが、実際の MCP ランタイムは `enabled: false` で停止する。`disabled` は正式な停止キーではない。確実に停止するには `enabled: false` を使い、現行 UI ではバッジが出ない場合がある。
 
 ## stdio の最小例
@@ -94,6 +94,9 @@ OAuth 対応例:
 
 > [!warning] TLS
 > `ssl_verify: false` はサーバー証明書を検証しない。実サービスでは使わず、プライベート CA は CA bundle のパスを指定する。
+
+> [!note] `type` キー
+> 保存後のサーバー JSON には、一覧バッジ（`stdio` / `http` / `custom`）に対応する `type` キーが付与されることがある（例: stdio サーバーでは `"type": "stdio"`）。最小例のように `type` を書かなくても、`command`/`args` か `url` の有無からトランスポートが判定される。
 
 ## `tools` の全キー
 

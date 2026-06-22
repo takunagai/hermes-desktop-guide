@@ -83,8 +83,9 @@ dist/                       静的サイトとPagefindインデックス
 03_設定/
 04_ガイド/
 05_トラブルシューティング/
-└── 01_問題の切り分け.md
 06_リファレンス/
+07_ダッシュボード/
+08_連携/
 ```
 
 フォルダとファイルの数字はObsidian内の並び順にだけ使う。公開URLはfrontmatter `slug`から生成する。
@@ -107,9 +108,9 @@ tags: [hermes, settings, mcp]
 audience: [Hermes Desktop利用者]
 platforms: [macOS, Windows, Linux]
 status: verified
-hermes_version: "0.16.0"
-hermes_commit: "d165933"
-verified: 2026-06-07
+hermes_version: "0.17.0"
+hermes_commit: "857d024"
+verified: 2026-06-20
 ---
 ```
 
