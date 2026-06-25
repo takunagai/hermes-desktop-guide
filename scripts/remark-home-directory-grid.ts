@@ -2,10 +2,18 @@ import path from "node:path";
 import type { Heading, Root, RootContent } from "mdast";
 import type { Plugin } from "unified";
 
+const ENTRANCE_HEADING = "学ぶか、探すか";
 const INTENT_HEADING = "目的から探す";
 const AREA_HEADING = "領域から探す";
 const WHATSNEW_HEADING = "v0.17の新機能";
 const LEGEND_HEADING = "このガイドの読み方";
+
+// 2入口カード（H3 見出しテキスト）→ 英字・和文のアイブロウ。
+// 企画書 §5 の読者2層（まず学ぶ＝初学者 / やりたいことから探す＝中級者）に対応する。
+const ENTRANCE_META: Record<string, { eyebrow: string }> = {
+  まず学ぶ: { eyebrow: "START HERE / はじめての方" },
+  やりたいことから探す: { eyebrow: "BY TASK / 慣れてきた方" },
+};
 
 // 細線アイコン（currentColor / stroke）を hast 要素として持つ。
 interface HastElement {
@@ -138,12 +146,12 @@ function iconNode(icon: HastElement[]): RootContent {
   } as unknown as RootContent;
 }
 
-function eyebrowNode(text: string): RootContent {
+function eyebrowNode(text: string, className = "home-area-card__eyebrow"): RootContent {
   return {
     type: "homeEyebrowNode",
     data: {
       hName: "span",
-      hProperties: { className: ["home-area-card__eyebrow"] },
+      hProperties: { className: [className] },
     },
     children: [{ type: "text", value: text } as RootContent],
   } as unknown as RootContent;
@@ -165,6 +173,21 @@ function splitCards(slice: RootContent[]): RootContent[][] {
   }
 
   return cards;
+}
+
+// 2入口ブロック（学習導線の主役）。H3 区切りの2カードに、読者層別アイブロウを付与する。
+function buildEntranceBlock(slice: RootContent[]): RootContent {
+  const heading = slice[0];
+  const cards = splitCards(slice).map((cardNodes) => {
+    const title = getText(cardNodes[0]).trim();
+    const meta = ENTRANCE_META[title];
+    const children = meta
+      ? [eyebrowNode(meta.eyebrow, "home-entrance-card__eyebrow"), ...cardNodes]
+      : [...cardNodes];
+    return element("div", ["home-entrance-card"], children);
+  });
+  const grid = element("div", ["home-entrance-grid"], cards);
+  return element("section", ["home-block", "home-block--entrance"], [heading, grid]);
 }
 
 function buildIntentBlock(slice: RootContent[]): RootContent {
@@ -209,6 +232,23 @@ const remarkHomeDirectoryGrid: Plugin<[], Root> = () => {
       path.basename(path.dirname(file.path)) !== "docs"
     ) {
       return;
+    }
+
+    // 2入口ブロックは既存3ブロックと独立して処理する（片方が欠けても他方を壊さない）。
+    // 範囲は ENTRANCE 見出しから次の H2 直前まで。splice 後のインデックス変化は
+    // 後段の findHeadingIndex 再計算で吸収される。
+    const entranceStart = findHeadingIndex(tree.children, ENTRANCE_HEADING);
+    if (entranceStart !== -1) {
+      let entranceEnd = tree.children.length;
+      for (let i = entranceStart + 1; i < tree.children.length; i++) {
+        const node = tree.children[i];
+        if (node.type === "heading" && (node as Heading).depth === 2) {
+          entranceEnd = i;
+          break;
+        }
+      }
+      const entranceBlock = buildEntranceBlock(tree.children.slice(entranceStart, entranceEnd));
+      tree.children.splice(entranceStart, entranceEnd - entranceStart, entranceBlock);
     }
 
     const legendIndex = findHeadingIndex(tree.children, LEGEND_HEADING);

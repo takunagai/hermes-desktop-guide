@@ -24,6 +24,7 @@
       "dist",
       ".astro",
       ".antigravitycli",
+      ".claude",
       "src/content/docs",
       "vault",
       ".firecrawl",

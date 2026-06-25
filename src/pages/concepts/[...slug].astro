@@ -5,7 +5,9 @@ import { getCollection, render } from "astro:content";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 
 export async function getStaticPaths() {
-  const entries = await getCollection("tutorials", (entry) => entry.data.slug.startsWith("concepts/"));
+  const entries = await getCollection("tutorials", (entry) =>
+    entry.data.slug.startsWith("concepts/"),
+  );
   return entries.map((entry) => ({
     params: { slug: entry.data.slug.replace(/^concepts\//, "") },
     props: { entry },
