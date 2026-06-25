@@ -147,6 +147,12 @@ export default defineConfig({
           slug: "index",
           label: "ホーム",
         },
+        // 入門コース（tutorials コレクション）は docsLoader の autogenerate 対象外のため、
+        // 動的ルート /learn/* へのリンクを手動エントリで最上部に置く（設計判断 B-1）。
+        {
+          label: "入門コース",
+          items: [{ label: "Hermes Desktop の世界", link: "/learn/world/" }],
+        },
         {
           label: "はじめに",
           items: [{ autogenerate: { directory: "getting-started" } }],

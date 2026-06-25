@@ -1,0 +1,107 @@
+---
+// 入門コースの章ヘッダー。frontmatter の goal / prerequisite / chapter / status を
+// 本文の冒頭に表示する。Wave 4 で装飾を本実装するため、ここでは機能する最小実装に留める。
+interface Props {
+  chapter?: number;
+  goal?: string;
+  prerequisite?: string[];
+  status?: "verified" | "needs-review";
+}
+
+const { chapter, goal, prerequisite, status } = Astro.props;
+const hasContent = Boolean(goal || prerequisite?.length);
+---
+
+{
+  hasContent && (
+    <aside class="tutorial-chapter-header" aria-label="この章のゴールと前提">
+      {(chapter || status === "needs-review") && (
+        <p class="meta">
+          {chapter && <span class="chapter">第{chapter}章</span>}
+          {status === "needs-review" && <span class="review">下書き（要再確認）</span>}
+        </p>
+      )}
+      {goal && (
+        <p class="goal">
+          <span class="label">ゴール</span>
+          {goal}
+        </p>
+      )}
+      {prerequisite?.length && (
+        <div class="prereq">
+          <p class="label">前提</p>
+          <ul>
+            {prerequisite.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </aside>
+  )
+}
+
+<style>
+  .tutorial-chapter-header {
+    margin-block: 0 1.75rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--sl-color-gray-7, var(--sl-color-gray-6));
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 0.5rem;
+    font-size: var(--sl-text-xs);
+  }
+
+  .chapter,
+  .review {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    font-weight: 600;
+  }
+
+  .chapter {
+    color: var(--sl-color-accent-high);
+    background: color-mix(in srgb, var(--sl-color-accent) 14%, transparent);
+  }
+
+  .review {
+    color: var(--sl-color-orange-high);
+    background: color-mix(in srgb, var(--sl-color-orange) 14%, transparent);
+  }
+
+  .goal {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .label {
+    display: inline-block;
+    margin-inline-end: 0.5rem;
+    color: var(--sl-color-accent-high);
+    font-size: var(--sl-text-xs);
+    font-weight: 700;
+  }
+
+  .prereq {
+    margin-top: 0.75rem;
+  }
+
+  .prereq .label {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .prereq ul {
+    margin: 0;
+    padding-inline-start: 1.25rem;
+    font-size: var(--sl-text-sm);
+  }
+</style>

@@ -31,6 +31,8 @@ pnpm-debug.log*
 
 # generated content docs
 src/content/docs/
+# generated tutorials content (preprocess 出力。動的ルートで描画)
+src/content/tutorials/
 
 # local development notes (not published)
 /design-qa.md

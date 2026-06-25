@@ -65,6 +65,46 @@ test("WikiLink、アンカー、コールアウトを変換し、コードフェ
   assert.match(generated, /> \[!warning\] 変換しない/);
 });
 
+test("チュートリアル系フォルダを tutorials へ振り分け、コレクション跨ぎWikiLinkを解決する", () => {
+  const fixture = createFixture();
+  const tutorialsOutDir = path.join(fixture.root, "tutorials");
+  writePage(fixture.vaultDir, "03_設定/12_MCP.md", {
+    title: "MCP",
+    slug: "settings/mcp",
+  });
+  writePage(fixture.vaultDir, "09_入門コース/01_世界.md", {
+    title: "世界",
+    slug: "learn/world",
+    body: "外部ツールは[[03_設定/12_MCP|MCP]]で広げる。",
+  });
+
+  preprocess({ vaultDir: fixture.vaultDir, outDir: fixture.outDir, tutorialsOutDir });
+
+  // docs は従来どおり outDir、tutorial は tutorialsOutDir に振り分けられる。
+  assert.ok(fs.existsSync(path.join(fixture.outDir, "settings", "mcp.md")));
+  assert.ok(fs.existsSync(path.join(tutorialsOutDir, "learn", "world.md")));
+  // tutorial は docs 側には出力されない。
+  assert.ok(!fs.existsSync(path.join(fixture.outDir, "learn", "world.md")));
+
+  // tutorial → docs のコレクション跨ぎ WikiLink が正しい URL に解決される。
+  const tutorial = fs.readFileSync(path.join(tutorialsOutDir, "learn", "world.md"), "utf-8");
+  assert.match(tutorial, /\[MCP\]\(\/settings\/mcp\/\)/);
+});
+
+test("番号プレフィックスが変わってもチュートリアル振り分けが効く", () => {
+  const fixture = createFixture();
+  const tutorialsOutDir = path.join(fixture.root, "tutorials");
+  writePage(fixture.vaultDir, "20_概念解説/01_アーキテクチャ.md", {
+    title: "アーキテクチャ",
+    slug: "concepts/architecture",
+  });
+
+  preprocess({ vaultDir: fixture.vaultDir, outDir: fixture.outDir, tutorialsOutDir });
+
+  assert.ok(fs.existsSync(path.join(tutorialsOutDir, "concepts", "architecture.md")));
+  assert.ok(!fs.existsSync(path.join(fixture.outDir, "concepts", "architecture.md")));
+});
+
 test("basename重複をエラーにする", () => {
   const fixture = createFixture();
   writePage(fixture.vaultDir, "01_A/01_概要.md", {
