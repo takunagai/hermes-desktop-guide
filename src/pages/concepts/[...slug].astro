@@ -1,0 +1,29 @@
+---
+// 概念解説（tutorials コレクションの concepts/* ）の動的ルート。
+// Starlight 標準シェルで描画する。
+import { getCollection, render } from "astro:content";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("tutorials", (entry) => entry.data.slug.startsWith("concepts/"));
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug.replace(/^concepts\//, "") },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const { title, description, slug } = entry.data;
+
+const frontmatter = {
+  title,
+  description,
+  slug,
+  editUrl: false as const,
+};
+---
+
+<StarlightPage frontmatter={frontmatter} headings={headings}>
+  <Content />
+</StarlightPage>
