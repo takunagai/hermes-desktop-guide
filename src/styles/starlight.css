@@ -8,7 +8,8 @@
 
 @layer hermes {
   :root {
-    --sl-font: Inter, "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", system-ui, sans-serif;
+    --sl-font:
+      Inter, "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", system-ui, sans-serif;
     --sl-color-accent-low: #e0e7ff;
     --sl-color-accent: #4f46e5;
     --sl-color-accent-high: #312e81;
@@ -63,7 +64,9 @@
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
     text-decoration-color: color-mix(in srgb, currentColor 38%, transparent);
-    transition: color 150ms ease, text-decoration-color 150ms ease;
+    transition:
+      color 150ms ease,
+      text-decoration-color 150ms ease;
   }
 
   .sl-markdown-content a:hover:not(:where(.not-content *)) {
@@ -107,7 +110,7 @@
 
   .pagination-links {
     gap: 0;
-    margin-top: clamp(3rem, 8vw, 5rem);
+    margin-top: 0;
     border-block: 1px solid var(--sl-color-hairline);
   }
 
@@ -119,7 +122,9 @@
     padding: 0.9rem 0.75rem;
     color: var(--sl-color-gray-3);
     box-shadow: none;
-    transition: background-color 160ms ease, color 160ms ease;
+    transition:
+      background-color 160ms ease,
+      color 160ms ease;
   }
 
   .pagination-links > a + a {
@@ -228,12 +233,18 @@
     border: 1px solid var(--sl-color-hairline);
     padding: clamp(1.1rem, 2.5vw, 1.5rem);
     background: color-mix(in srgb, var(--sl-color-bg-nav) 60%, transparent);
-    transition: border-color 160ms ease, background-color 160ms ease;
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease;
   }
 
   .home-area-card:hover,
   .home-area-card:focus-within {
-    border-color: color-mix(in srgb, var(--sl-color-accent) 65%, var(--sl-color-hairline));
+    border-color: color-mix(
+      in srgb,
+      var(--sl-color-accent) 65%,
+      var(--sl-color-hairline)
+    );
     background: color-mix(in srgb, var(--sl-color-bg-nav) 88%, transparent);
   }
 
@@ -311,7 +322,8 @@
 
   /* v0.17の新機能（再訪導線） */
   .home-whatsnew {
-    border: 1px solid color-mix(in srgb, var(--sl-color-accent) 32%, var(--sl-color-hairline));
+    border: 1px solid
+      color-mix(in srgb, var(--sl-color-accent) 32%, var(--sl-color-hairline));
     padding: clamp(1.25rem, 3vw, 1.75rem);
     background: color-mix(in srgb, var(--sl-color-accent) 7%, transparent);
   }
@@ -353,7 +365,9 @@
     font-size: var(--sl-text-sm);
     font-weight: 600;
     text-decoration: none;
-    transition: border-color 160ms ease, color 160ms ease;
+    transition:
+      border-color 160ms ease,
+      color 160ms ease;
   }
 
   .home-whatsnew li a:hover {
@@ -376,12 +390,18 @@
     background: color-mix(in srgb, var(--sl-color-bg-nav) 60%, transparent);
     color: var(--sl-color-white);
     text-decoration: none;
-    transition: border-color 160ms ease, background-color 160ms ease;
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease;
   }
 
   .ai-deck-promo__link:hover,
   .ai-deck-promo__link:focus-visible {
-    border-color: color-mix(in srgb, var(--sl-color-accent) 65%, var(--sl-color-hairline));
+    border-color: color-mix(
+      in srgb,
+      var(--sl-color-accent) 65%,
+      var(--sl-color-hairline)
+    );
     background: color-mix(in srgb, var(--sl-color-bg-nav) 88%, transparent);
   }
 
@@ -426,13 +446,17 @@
     font-weight: bold;
   }
 
-  /* ホーム末尾: AI Deck クレジット（非公式ガイド callout の直後） */
+  /* ホーム末尾: AI Deck クレジット（前後ナビの直上） */
   .ai-deck-credit {
     display: flex;
     align-items: center;
-    gap: 0.7rem;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.7rem;
     width: fit-content;
-    margin-top: 1.25rem;
+    max-width: 100%;
+    margin-top: clamp(3rem, 8vw, 5rem);
+    margin-bottom: 0.75rem;
+    margin-inline-start: 0;
     padding: 0.6rem 1rem;
     border: 1px solid var(--sl-color-hairline);
     color: var(--sl-color-gray-2);
@@ -447,6 +471,7 @@
   }
 
   .ai-deck-credit a {
+    white-space: nowrap;
     color: var(--sl-color-white);
     font-weight: bold;
     text-underline-offset: 0.2em;
