@@ -19,7 +19,7 @@ const hermesVersion = versionReference?.data.hermes_version;
       <a
         class="version-badge print:hidden"
         href="/reference/version-evidence/"
-        aria-label={`このサイトの対応Hermes Desktopバージョンはv${hermesVersion}です。調査根拠を開く`}
+        aria-label={`対応 v${hermesVersion} ─ このサイトのHermes Desktop対応バージョン。調査根拠を開く`}
       >
         <span class="version-label">対応</span>
         <span>v{hermesVersion}</span>
@@ -78,7 +78,7 @@ const hermesVersion = versionReference?.data.hermes_version;
     }
 
     .version-label {
-      color: var(--sl-color-gray-3);
+      color: var(--sl-color-gray-2);
       font-family: var(--sl-font);
       font-size: 0.625rem;
       letter-spacing: 0;

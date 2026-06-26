@@ -139,6 +139,7 @@ export default defineConfig({
         PageTitle: "./src/components/PageTitle.astro",
         SiteTitle: "./src/components/SiteTitle.astro",
         Footer: "./src/components/Footer.astro",
+        Search: "./src/components/Search.astro",
       },
       tableOfContents: {
         minHeadingLevel: 2,
