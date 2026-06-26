@@ -179,6 +179,7 @@
 
   /* グリッド内カードに付く Starlight のフロー上マージン（--sl-content-gap-y）を打ち消す。
      これが残ると先頭以外のカードが押し下がり、行内で高さ・上端が揃わない。 */
+  .home-entrance-grid > .home-entrance-card,
   .home-area-grid > .home-area-card {
     margin: 0;
   }
@@ -315,10 +316,18 @@
   .home-flagship__badges {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.5rem;
     margin: 0 0 1.25rem;
     padding: 0;
     list-style: none;
+  }
+
+  /* Starlight の li + li 上マージン（.sl-markdown-content li + li と同詳細度で後勝ち）を
+     打ち消し、チップの上端を揃える */
+  .home-flagship__badges li,
+  .home-flagship__badges li + li {
+    margin: 0;
   }
 
   .home-flagship__badge {
