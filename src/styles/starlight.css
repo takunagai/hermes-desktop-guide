@@ -8,8 +8,7 @@
 
 @layer hermes {
   :root {
-    --sl-font:
-      Inter, "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", system-ui, sans-serif;
+    --sl-font: Inter, "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", system-ui, sans-serif;
     --sl-color-accent-low: #e0e7ff;
     --sl-color-accent: #4f46e5;
     --sl-color-accent-high: #312e81;
@@ -64,9 +63,7 @@
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
     text-decoration-color: color-mix(in srgb, currentColor 38%, transparent);
-    transition:
-      color 150ms ease,
-      text-decoration-color 150ms ease;
+    transition: color 150ms ease, text-decoration-color 150ms ease;
   }
 
   .sl-markdown-content a:hover:not(:where(.not-content *)) {
@@ -122,9 +119,7 @@
     padding: 0.9rem 0.75rem;
     color: var(--sl-color-gray-3);
     box-shadow: none;
-    transition:
-      background-color 160ms ease,
-      color 160ms ease;
+    transition: background-color 160ms ease, color 160ms ease;
   }
 
   .pagination-links > a + a {
@@ -178,44 +173,215 @@
   }
 
   /* カード内の見出しラッパー: Starlight 既定マージンを打ち消し、開始位置を揃える */
-  .home-intent-card .sl-heading-wrapper,
   .home-area-card .sl-heading-wrapper {
     margin: 0;
   }
 
   /* グリッド内カードに付く Starlight のフロー上マージン（--sl-content-gap-y）を打ち消す。
      これが残ると先頭以外のカードが押し下がり、行内で高さ・上端が揃わない。 */
-  .home-intent-grid > .home-intent-card,
+  .home-entrance-grid > .home-entrance-card,
   .home-area-grid > .home-area-card {
     margin: 0;
   }
 
-  /* カード共通: 見出しサイズ（目的・領域でそろえる） */
-  .home-intent-card h3,
+  /* カード共通: 見出しサイズ（領域でそろえる） */
   .home-area-card h3 {
     font-size: 1.25rem;
     line-height: 1.35;
   }
 
-  /* 目的から探す（意図別カード） */
-  .home-intent-grid {
+  /* 学ぶか、探すか（2入口・学習導線の主役） */
+  .home-block--entrance {
+    margin-top: clamp(2rem, 5vw, 3rem);
+  }
+
+  .home-entrance-grid {
     display: grid;
     align-items: stretch;
     gap: 1rem;
   }
 
-  .home-intent-card {
+  .home-entrance-card {
     display: flex;
     flex-direction: column;
     min-width: 0;
     border: 1px solid var(--sl-color-hairline);
-    border-top: 3px solid var(--sl-color-accent);
-    padding: clamp(1.1rem, 2.5vw, 1.5rem);
+    padding: clamp(1.5rem, 3.5vw, 2rem);
     background: color-mix(in srgb, var(--sl-color-bg-nav) 60%, transparent);
+    transition: border-color 160ms ease, background-color 160ms ease;
   }
 
-  .home-intent-card h3 {
-    margin: 0 0 0.85rem;
+  .home-entrance-card:hover,
+  .home-entrance-card:focus-within {
+    border-color: color-mix(in srgb, var(--sl-color-accent) 65%, var(--sl-color-hairline));
+  }
+
+  .home-entrance-card__eyebrow {
+    font-family: var(--__sl-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sl-color-gray-3);
+  }
+
+  .home-entrance-card h3 {
+    margin: 0.5rem 0 0.6rem;
+    font-size: clamp(1.35rem, 3vw, 1.6rem);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .home-entrance-card > p {
+    margin: 0;
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-sm);
+    line-height: 1.7;
+  }
+
+  /* CTA リンク群: 下端に寄せてカード高さをそろえ、行動を明確にする */
+  .home-entrance-card > :is(ul, ol) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 0.75rem;
+    margin: auto 0 0;
+    padding: 1.25rem 0 0;
+    list-style: none;
+  }
+
+  .home-entrance-card li {
+    margin: 0;
+  }
+
+  .home-entrance-card li + li {
+    margin-top: 0;
+  }
+
+  .home-entrance-card li a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid var(--sl-color-accent);
+    padding: 0.7rem 1.1rem;
+    color: var(--sl-color-accent);
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+  }
+
+  .home-entrance-card li a::after {
+    content: "→";
+  }
+
+  /* 各カード先頭の主 CTA を塗りボタンに（accent / accent-low はテーマ間で
+     明度が反転するため、light・dark 双方で文字コントラストを確保できる） */
+  .home-entrance-card li:first-child a {
+    background: var(--sl-color-accent);
+    color: var(--sl-color-accent-low);
+  }
+
+  .home-entrance-card li:first-child a:hover {
+    border-color: var(--sl-color-accent-high);
+    background: var(--sl-color-accent-high);
+  }
+
+  .home-entrance-card li:not(:first-child) a:hover {
+    background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+  }
+
+  .home-entrance-card li a:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 0.25rem;
+  }
+
+  /* 設定・機能リファレンス（フラッグシップ・主役パネル） */
+  .home-flagship {
+    border: 2px solid color-mix(in srgb, var(--sl-color-accent) 45%, var(--sl-color-hairline));
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    background: color-mix(in srgb, var(--sl-color-accent) 5%, transparent);
+  }
+
+  .home-flagship > .sl-heading-wrapper:first-child,
+  .home-flagship > h2:first-child {
+    margin: 0 0 1rem;
+  }
+
+  .home-flagship__lead {
+    margin: 0 0 1rem;
+    color: var(--sl-color-gray-2);
+    line-height: 1.7;
+  }
+
+  .home-flagship__badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1.25rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Starlight の li + li 上マージン（.sl-markdown-content li + li と同詳細度で後勝ち）を
+     打ち消し、チップの上端を揃える */
+  .home-flagship__badges li,
+  .home-flagship__badges li + li {
+    margin: 0;
+  }
+
+  .home-flagship__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid color-mix(in srgb, var(--sl-color-accent) 35%, var(--sl-color-hairline));
+    padding: 0.3rem 0.75rem;
+    background: color-mix(in srgb, var(--sl-color-accent) 10%, transparent);
+    font-family: var(--__sl-font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--sl-color-gray-2);
+  }
+
+  .home-flagship__badge::before {
+    content: "✓";
+    color: var(--sl-color-accent);
+  }
+
+  .home-flagship__cta {
+    margin: 0 0 1.75rem;
+  }
+
+  .home-flagship__cta a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 2px solid var(--sl-color-accent);
+    padding: 0.85rem 1.5rem;
+    background: var(--sl-color-accent);
+    color: var(--sl-color-accent-low);
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 160ms ease, border-color 160ms ease;
+  }
+
+  .home-flagship__cta a::after {
+    content: "→";
+  }
+
+  .home-flagship__cta a:hover {
+    border-color: var(--sl-color-accent-high);
+    background: var(--sl-color-accent-high);
+  }
+
+  .home-flagship__cta a:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 0.25rem;
+  }
+
+  .home-flagship .home-area-card {
+    background: var(--sl-color-bg);
   }
 
   /* 領域から探す（網羅カード + 細線アイコン） */
@@ -233,18 +399,12 @@
     border: 1px solid var(--sl-color-hairline);
     padding: clamp(1.1rem, 2.5vw, 1.5rem);
     background: color-mix(in srgb, var(--sl-color-bg-nav) 60%, transparent);
-    transition:
-      border-color 160ms ease,
-      background-color 160ms ease;
+    transition: border-color 160ms ease, background-color 160ms ease;
   }
 
   .home-area-card:hover,
   .home-area-card:focus-within {
-    border-color: color-mix(
-      in srgb,
-      var(--sl-color-accent) 65%,
-      var(--sl-color-hairline)
-    );
+    border-color: color-mix(in srgb, var(--sl-color-accent) 65%, var(--sl-color-hairline));
     background: color-mix(in srgb, var(--sl-color-bg-nav) 88%, transparent);
   }
 
@@ -282,8 +442,7 @@
     line-height: 1.65;
   }
 
-  /* カード共通: リンクリスト（目的・領域でそろえる） */
-  .home-intent-card > :is(ul, ol),
+  /* カード共通: リンクリスト（領域でそろえる） */
   .home-area-card > :is(ul, ol) {
     margin: 0;
     padding: 0.85rem 0 0;
@@ -291,17 +450,14 @@
     list-style: none;
   }
 
-  .home-intent-card li,
   .home-area-card li {
     font-size: var(--sl-text-sm);
   }
 
-  .home-intent-card li + li,
   .home-area-card li + li {
     margin-top: 0.45rem;
   }
 
-  .home-intent-card li a,
   .home-area-card li a {
     display: inline-flex;
     align-items: baseline;
@@ -309,21 +465,18 @@
     text-decoration-line: none;
   }
 
-  .home-intent-card li a::before,
   .home-area-card li a::before {
     content: "→";
     color: var(--sl-color-accent);
   }
 
-  .home-intent-card li a:hover,
   .home-area-card li a:hover {
     text-decoration-line: underline;
   }
 
   /* v0.17の新機能（再訪導線） */
   .home-whatsnew {
-    border: 1px solid
-      color-mix(in srgb, var(--sl-color-accent) 32%, var(--sl-color-hairline));
+    border: 1px solid color-mix(in srgb, var(--sl-color-accent) 32%, var(--sl-color-hairline));
     padding: clamp(1.25rem, 3vw, 1.75rem);
     background: color-mix(in srgb, var(--sl-color-accent) 7%, transparent);
   }
@@ -365,9 +518,7 @@
     font-size: var(--sl-text-sm);
     font-weight: 600;
     text-decoration: none;
-    transition:
-      border-color 160ms ease,
-      color 160ms ease;
+    transition: border-color 160ms ease, color 160ms ease;
   }
 
   .home-whatsnew li a:hover {
@@ -390,18 +541,12 @@
     background: color-mix(in srgb, var(--sl-color-bg-nav) 60%, transparent);
     color: var(--sl-color-white);
     text-decoration: none;
-    transition:
-      border-color 160ms ease,
-      background-color 160ms ease;
+    transition: border-color 160ms ease, background-color 160ms ease;
   }
 
   .ai-deck-promo__link:hover,
   .ai-deck-promo__link:focus-visible {
-    border-color: color-mix(
-      in srgb,
-      var(--sl-color-accent) 65%,
-      var(--sl-color-hairline)
-    );
+    border-color: color-mix(in srgb, var(--sl-color-accent) 65%, var(--sl-color-hairline));
     background: color-mix(in srgb, var(--sl-color-bg-nav) 88%, transparent);
   }
 
@@ -483,8 +628,8 @@
   }
 
   @media (min-width: 36rem) {
-    .home-intent-grid {
-      grid-template-columns: repeat(3, 1fr);
+    .home-entrance-grid {
+      grid-template-columns: 1fr 1fr;
     }
   }
 

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" role="img"
+  aria-label="セッションの中にあるコンテキストの窓と、セッションをまたいで残るメモリの関係。会話の要点がメモリへ流れ、次の会話でコンテキストへ戻る循環を示した図">
+  <title>セッション・コンテキスト・メモリの循環</title>
+  <desc>セッション（会話のまとまり）の中にコンテキスト（毎ターン渡す有限の窓）があり、会話の要点がメモリ（セッションをまたぐ長期記憶）へ流れ、次のセッション開始時にメモリからコンテキストへ注入される循環を示す。</desc>
+  <style>
+    text { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", sans-serif; font-weight: bold; }
+    .box { fill: #ffffff; stroke: #c7d2fe; stroke-width: 1.5; }
+    .box-accent { fill: #4f46e5; }
+    .session { fill: #eef2ff; stroke: #c7d2fe; stroke-width: 1.5; stroke-dasharray: 7 5; }
+    .label { fill: #312e81; }
+    .label-accent { fill: #ffffff; }
+    .sub { fill: #475569; font-weight: normal; }
+    .sub-accent { fill: #e0e7ff; font-weight: normal; }
+    .note { fill: #64748b; font-weight: normal; }
+    .link { stroke: #818cf8; stroke-width: 2.5; fill: none; }
+    .arrowhead { fill: #818cf8; }
+    @media (prefers-color-scheme: dark) {
+      .box { fill: #1e1b3a; stroke: #4338ca; }
+      .box-accent { fill: #6366f1; }
+      .session { fill: #181633; stroke: #4338ca; }
+      .label { fill: #e0e7ff; }
+      .sub { fill: #cbd5e1; }
+      .note { fill: #94a3b8; }
+      .link { stroke: #a5b4fc; }
+      .arrowhead { fill: #a5b4fc; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="arrowhead" />
+    </marker>
+  </defs>
+
+  <!-- セッション枠（会話のまとまり） -->
+  <rect class="session" x="40" y="64" width="300" height="276" rx="14" />
+  <text class="note" x="190" y="92" text-anchor="middle" font-size="12.5">セッション（会話のまとまり）</text>
+
+  <!-- コンテキスト枠（毎ターンの有限の窓） -->
+  <rect class="box-accent" x="68" y="118" width="244" height="170" rx="12" />
+  <text class="label-accent" x="190" y="172" text-anchor="middle" font-size="17">コンテキスト</text>
+  <text class="sub-accent" x="190" y="202" text-anchor="middle" font-size="12.5">モデルに毎ターン渡す窓</text>
+  <text class="sub-accent" x="190" y="224" text-anchor="middle" font-size="12.5">（有限）</text>
+
+  <!-- メモリ枠（長期記憶） -->
+  <rect class="box" x="436" y="118" width="244" height="170" rx="12" />
+  <text class="label" x="558" y="172" text-anchor="middle" font-size="17">メモリ</text>
+  <text class="sub" x="558" y="202" text-anchor="middle" font-size="12.5">セッションをまたぐ</text>
+  <text class="sub" x="558" y="224" text-anchor="middle" font-size="12.5">長期記憶</text>
+
+  <!-- 会話の要点 → メモリ -->
+  <line class="link" x1="318" y1="172" x2="430" y2="172" marker-end="url(#arrow)" />
+  <text class="note" x="374" y="160" text-anchor="middle" font-size="11.5">会話の要点</text>
+
+  <!-- 次の開始で メモリ → コンテキスト へ注入 -->
+  <line class="link" x1="430" y1="234" x2="318" y2="234" marker-end="url(#arrow)" />
+  <text class="note" x="374" y="254" text-anchor="middle" font-size="11.5">次の開始で注入</text>
+</svg>

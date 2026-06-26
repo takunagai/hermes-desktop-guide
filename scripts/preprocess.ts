@@ -8,6 +8,21 @@ const DEFAULT_VAULT_DIR = path.resolve("vault");
 const DEFAULT_OUT_DIR = path.resolve("src/content/docs");
 const SLUG_PATTERN = /^(?:index|[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)*)$/;
 
+// チュートリアル系コレクション（StarlightPage ラップで描画する動的ルート）へ振り分ける
+// vault トップフォルダのラベル。番号プレフィックス（例 09_）を除いた名前で判定するので、
+// フォルダ再採番に強い。出力先だけが変わり、WikiLink registry は全 vault で1つに保つ。
+const TUTORIAL_FOLDER_LABELS = new Set(["入門コース", "概念解説", "実践レシピ"]);
+
+function stripNumericPrefix(folderName: string): string {
+  return folderName.replace(/^\d+[_-]?/, "");
+}
+
+function isTutorialPage(page: SourcePage): boolean {
+  if (!page.rel.includes("/")) return false;
+  const topFolder = page.rel.split("/")[0];
+  return TUTORIAL_FOLDER_LABELS.has(stripNumericPrefix(topFolder));
+}
+
 interface Frontmatter {
   title?: unknown;
   description?: unknown;
@@ -331,9 +346,11 @@ function destinationRelativePath(page: SourcePage): string {
 export function preprocess({
   vaultDir = DEFAULT_VAULT_DIR,
   outDir = DEFAULT_OUT_DIR,
+  tutorialsOutDir = path.join(path.dirname(outDir), "tutorials"),
 }: {
   vaultDir?: string;
   outDir?: string;
+  tutorialsOutDir?: string;
 } = {}): void {
   console.log("Starting preprocessing Obsidian Vault...");
 
@@ -349,23 +366,31 @@ export function preprocess({
       transformWikiLinks(chunk, page, registry, issues),
     );
     content = applyOutsideCodeBlocks(content, transformCallouts);
-    return { page, content };
+    return { page, content, outDir: isTutorialPage(page) ? tutorialsOutDir : outDir };
   });
 
   if (issues.length > 0) {
     throw new ContentValidationError(issues);
   }
 
-  fs.rmSync(outDir, { recursive: true, force: true });
-  fs.mkdirSync(outDir, { recursive: true });
+  for (const dir of [outDir, tutorialsOutDir]) {
+    fs.rmSync(dir, { recursive: true, force: true });
+    fs.mkdirSync(dir, { recursive: true });
+  }
 
-  for (const { page, content } of generated) {
-    const destination = path.join(outDir, destinationRelativePath(page));
+  let tutorialCount = 0;
+  for (const { page, content, outDir: destDir } of generated) {
+    if (destDir === tutorialsOutDir) tutorialCount += 1;
+    const destination = path.join(destDir, destinationRelativePath(page));
     fs.mkdirSync(path.dirname(destination), { recursive: true });
     fs.writeFileSync(destination, content, "utf-8");
   }
 
-  console.log(`Successfully preprocessed ${pages.length} Markdown files into ${outDir}`);
+  const docsCount = pages.length - tutorialCount;
+  console.log(
+    `Successfully preprocessed ${pages.length} Markdown files ` +
+      `(${docsCount} → ${outDir}, ${tutorialCount} → ${tutorialsOutDir}).`,
+  );
 }
 
 const isMainModule =

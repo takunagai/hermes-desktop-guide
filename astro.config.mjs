@@ -83,6 +83,12 @@ const legacyRedirects = {
   "/03_リファレンス/01_全設定項目索引": "/reference/settings-index/",
   "/03_リファレンス/02_バージョンと調査根拠": "/reference/version-evidence/",
   "/03_リファレンス/03_公式リンク集": "/reference/official-links/",
+  // Wave 3: getting-started・basics を /learn/* に統合したリダイレクト
+  "/getting-started/overview": "/learn/world/",
+  "/getting-started/installation": "/learn/install/",
+  "/getting-started/first-setup": "/learn/install/",
+  "/basics/first-chat": "/learn/first-chat/",
+  "/basics/workspace-files": "/learn/workspace/",
 };
 
 export default defineConfig({
@@ -133,6 +139,7 @@ export default defineConfig({
         PageTitle: "./src/components/PageTitle.astro",
         SiteTitle: "./src/components/SiteTitle.astro",
         Footer: "./src/components/Footer.astro",
+        Search: "./src/components/Search.astro",
       },
       tableOfContents: {
         minHeadingLevel: 2,
@@ -147,13 +154,38 @@ export default defineConfig({
           slug: "index",
           label: "ホーム",
         },
+        // 入門コース・概念解説・実践レシピは tutorials コレクション（動的ルート）のため
+        // docsLoader の autogenerate 対象外。手動エントリで最上部に配置（設計判断 B-1）。
         {
-          label: "はじめに",
-          items: [{ autogenerate: { directory: "getting-started" } }],
+          label: "入門コース",
+          items: [
+            { label: "1. Hermes Desktop の世界", link: "/learn/world/" },
+            { label: "2. インストールと初回起動", link: "/learn/install/" },
+            { label: "3. 最初のチャットを成功させる", link: "/learn/first-chat/" },
+            { label: "4. ワークスペースで作業する", link: "/learn/workspace/" },
+            { label: "5. モデルとプロバイダーを整える", link: "/learn/models/" },
+            { label: "6. 安全に使う設定", link: "/learn/safety/" },
+            { label: "7. MCP で能力を広げる（入門）", link: "/learn/mcp/" },
+            { label: "8. スキルとプロファイルを使う", link: "/learn/skills/" },
+          ],
         },
         {
-          label: "基本操作",
-          items: [{ autogenerate: { directory: "basics" } }],
+          label: "概念解説",
+          items: [
+            { label: "アーキテクチャ", link: "/concepts/architecture/" },
+            { label: "セッション・メモリ・コンテキスト", link: "/concepts/sessions-memory/" },
+            { label: "スキルとツールの違い", link: "/concepts/skills-vs-tools/" },
+            { label: "MCP とは何か", link: "/concepts/mcp/" },
+          ],
+        },
+        {
+          label: "実践レシピ",
+          items: [
+            { label: "自分のスキルを作る", link: "/recipes/custom-skills/" },
+            { label: "MCP サーバー追加の実践", link: "/recipes/mcp-advanced/" },
+            { label: "メモリとコンテキスト運用", link: "/recipes/memory-tuning/" },
+            { label: "スケジュール自動化", link: "/recipes/schedule-automation/" },
+          ],
         },
         {
           label: "設定",
@@ -175,6 +207,10 @@ export default defineConfig({
         {
           label: "トラブルシューティング",
           items: [{ autogenerate: { directory: "troubleshooting" } }],
+        },
+        {
+          label: "基本操作",
+          items: [{ autogenerate: { directory: "basics" } }],
         },
         {
           label: "リファレンス",
