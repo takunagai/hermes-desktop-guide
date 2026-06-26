@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 350" role="img"
+  aria-label="セッション開始から会話・圧縮・終了を経て、要点がメモリに残り、次のセッションで再び注入されるまでの時間的な流れを示した図">
+  <title>セッションのライフサイクル</title>
+  <desc>セッション開始、会話（コンテキストに蓄積）、上限に近づくと圧縮、セッション終了で要点をメモリへ、次のセッション開始でメモリ・プロファイルを注入、という時間軸の流れと、次のセッションへ戻るループを示す。</desc>
+  <style>
+    text { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", sans-serif; font-weight: bold; }
+    .box { fill: #ffffff; stroke: #c7d2fe; stroke-width: 1.5; }
+    .label { fill: #312e81; }
+    .sub { fill: #475569; font-weight: normal; }
+    .note { fill: #64748b; font-weight: normal; }
+    .link { stroke: #818cf8; stroke-width: 2.5; fill: none; }
+    .loop { stroke: #818cf8; stroke-width: 2.5; fill: none; stroke-dasharray: 7 5; }
+    .arrowhead { fill: #818cf8; }
+    @media (prefers-color-scheme: dark) {
+      .box { fill: #1e1b3a; stroke: #4338ca; }
+      .label { fill: #e0e7ff; }
+      .sub { fill: #cbd5e1; }
+      .note { fill: #94a3b8; }
+      .link { stroke: #a5b4fc; }
+      .loop { stroke: #a5b4fc; }
+      .arrowhead { fill: #a5b4fc; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="arrowhead" />
+    </marker>
+  </defs>
+
+  <!-- 5ステップを横一列に。各ステップ間を右向き矢印で連結。 -->
+  <!-- 1 -->
+  <rect class="box" x="14" y="96" width="130" height="92" rx="11" />
+  <text class="label" x="79" y="148" text-anchor="middle" font-size="13.5">セッション開始</text>
+  <line class="link" x1="146" y1="142" x2="166" y2="142" marker-end="url(#arrow)" />
+  <!-- 2 -->
+  <rect class="box" x="168" y="96" width="130" height="92" rx="11" />
+  <text class="label" x="233" y="136" text-anchor="middle" font-size="13.5">会話</text>
+  <text class="sub" x="233" y="160" text-anchor="middle" font-size="11">コンテキストに蓄積</text>
+  <line class="link" x1="300" y1="142" x2="320" y2="142" marker-end="url(#arrow)" />
+  <!-- 3 -->
+  <rect class="box" x="322" y="96" width="130" height="92" rx="11" />
+  <text class="label" x="387" y="136" text-anchor="middle" font-size="13.5">圧縮</text>
+  <text class="sub" x="387" y="160" text-anchor="middle" font-size="11">上限に近づくと</text>
+  <line class="link" x1="454" y1="142" x2="474" y2="142" marker-end="url(#arrow)" />
+  <!-- 4 -->
+  <rect class="box" x="476" y="96" width="130" height="92" rx="11" />
+  <text class="label" x="541" y="136" text-anchor="middle" font-size="13.5">セッション終了</text>
+  <text class="sub" x="541" y="160" text-anchor="middle" font-size="11">要点をメモリへ</text>
+  <line class="link" x1="608" y1="142" x2="628" y2="142" marker-end="url(#arrow)" />
+  <!-- 5 -->
+  <rect class="box" x="630" y="96" width="136" height="92" rx="11" />
+  <text class="label" x="698" y="136" text-anchor="middle" font-size="13.5">次の開始</text>
+  <text class="sub" x="698" y="160" text-anchor="middle" font-size="11">メモリ・プロファイル注入</text>
+
+  <!-- ループ: 5 → 1（次のセッションへ） -->
+  <path class="loop" d="M698,188 L698,300 L79,300 L79,188" marker-end="url(#arrow)" />
+  <text class="note" x="388" y="322" text-anchor="middle" font-size="11.5">次のセッションへ（記憶を引き継ぐ）</text>
+</svg>

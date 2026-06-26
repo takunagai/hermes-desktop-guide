@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 420" role="img"
+  aria-label="Hermesコアからstdioでローカルプロセスへつなぐ経路と、HTTPでリモートサーバーへつなぐ経路。外部サーバーが信頼境界の外側にあることを点線で示した図">
+  <title>MCP の接続経路と信頼境界</title>
+  <desc>中央のHermesコアから、左へstdio接続でローカル子プロセス（command/args/env）、右へHTTP接続でリモートMCPサーバー（url/headers/auth）へつなぐ。信頼境界を点線で囲み、リモートサーバーが境界の外側にあることを示す。各サーバーはツール・リソース・プロンプトをHermesに公開する。</desc>
+  <style>
+    text { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", sans-serif; font-weight: bold; }
+    .box { fill: #ffffff; stroke: #c7d2fe; stroke-width: 1.5; }
+    .box-accent { fill: #4f46e5; }
+    .boundary { fill: none; stroke: #818cf8; stroke-width: 1.5; stroke-dasharray: 7 5; }
+    .label { fill: #312e81; }
+    .label-accent { fill: #ffffff; }
+    .sub { fill: #475569; font-weight: normal; }
+    .sub-accent { fill: #e0e7ff; font-weight: normal; }
+    .note { fill: #64748b; font-weight: normal; }
+    .link { stroke: #818cf8; stroke-width: 2.5; fill: none; }
+    .arrowhead { fill: #818cf8; }
+    @media (prefers-color-scheme: dark) {
+      .box { fill: #1e1b3a; stroke: #4338ca; }
+      .box-accent { fill: #6366f1; }
+      .boundary { stroke: #a5b4fc; }
+      .label { fill: #e0e7ff; }
+      .sub { fill: #cbd5e1; }
+      .note { fill: #94a3b8; }
+      .link { stroke: #a5b4fc; }
+      .arrowhead { fill: #a5b4fc; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="arrowhead" />
+    </marker>
+  </defs>
+
+  <!-- 信頼境界（自分の環境）。Hermes と ローカル子プロセスを囲む。 -->
+  <rect class="boundary" x="28" y="120" width="494" height="200" rx="14" />
+  <text class="note" x="46" y="146" font-size="12">信頼境界（自分の環境）</text>
+
+  <!-- ローカル子プロセス（境界の内側） -->
+  <rect class="box" x="54" y="186" width="150" height="96" rx="11" />
+  <text class="label" x="129" y="222" text-anchor="middle" font-size="14.5">ローカル子プロセス</text>
+  <text class="sub" x="129" y="248" text-anchor="middle" font-size="11.5">command / args / env</text>
+
+  <!-- Hermes コア（境界の内側・中央） -->
+  <rect class="box-accent" x="296" y="186" width="156" height="96" rx="11" />
+  <text class="label-accent" x="374" y="228" text-anchor="middle" font-size="18">Hermes</text>
+  <text class="sub-accent" x="374" y="252" text-anchor="middle" font-size="11.5">（コア）</text>
+
+  <!-- リモートMCPサーバー（境界の外側） -->
+  <rect class="box" x="572" y="186" width="180" height="96" rx="11" />
+  <text class="label" x="662" y="222" text-anchor="middle" font-size="14.5">リモートMCPサーバー</text>
+  <text class="sub" x="662" y="248" text-anchor="middle" font-size="11.5">url / headers / auth</text>
+  <text class="note" x="662" y="166" text-anchor="middle" font-size="11.5">信頼境界の外</text>
+
+  <!-- stdio: Hermes ↔ ローカル -->
+  <line class="link" x1="294" y1="234" x2="206" y2="234" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+  <text class="note" x="250" y="222" text-anchor="middle" font-size="11.5">stdio</text>
+
+  <!-- HTTP: Hermes ↔ リモート（境界を跨ぐ） -->
+  <line class="link" x1="454" y1="234" x2="570" y2="234" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+  <text class="note" x="512" y="222" text-anchor="middle" font-size="11.5">HTTP</text>
+
+  <!-- 公開物の注記 -->
+  <text class="note" x="390" y="356" text-anchor="middle" font-size="12">各サーバーは ツール・リソース・プロンプト を Hermes に公開する</text>
+</svg>

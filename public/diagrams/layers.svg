@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 460" role="img"
+  aria-label="入り口・接続先バックエンド（ゲートウェイ）・実行バックエンドの3層を縦に積み重ねた図。上の層ほど利用者に近く、下の層ほど実際の処理に近い">
+  <title>Hermes の3層アーキテクチャ</title>
+  <desc>上から、層1 入り口、層2 接続先バックエンド（ゲートウェイ）、層3 実行バックエンドを縦に積み、上の層ほど利用者に近く、下の層ほど実際の処理に近いことを示す。</desc>
+  <style>
+    text { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", sans-serif; font-weight: bold; }
+    .box { fill: #ffffff; stroke: #c7d2fe; stroke-width: 1.5; }
+    .label { fill: #312e81; }
+    .sub { fill: #475569; font-weight: normal; }
+    .note { fill: #64748b; font-weight: normal; }
+    .link { stroke: #818cf8; stroke-width: 2.5; fill: none; }
+    .arrowhead { fill: #818cf8; }
+    .axisline { stroke: #94a3b8; stroke-width: 1.5; }
+    .axistri { fill: #94a3b8; }
+    @media (prefers-color-scheme: dark) {
+      .box { fill: #1e1b3a; stroke: #4338ca; }
+      .label { fill: #e0e7ff; }
+      .sub { fill: #cbd5e1; }
+      .note { fill: #94a3b8; }
+      .link { stroke: #a5b4fc; }
+      .arrowhead { fill: #a5b4fc; }
+      .axisline { stroke: #64748b; }
+      .axistri { fill: #64748b; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="arrowhead" />
+    </marker>
+  </defs>
+
+  <!-- 層1: 入り口 -->
+  <rect class="box" x="60" y="44" width="520" height="92" rx="12" />
+  <text class="label" x="84" y="82" font-size="17">層1 ─ 入り口</text>
+  <text class="sub" x="84" y="110" font-size="12.5">Desktop App / CLI / TUI / Web Dashboard ─ 利用者が操作する画面</text>
+
+  <line class="link" x1="320" y1="136" x2="320" y2="176" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+
+  <!-- 層2: 接続先バックエンド（ゲートウェイ） -->
+  <rect class="box" x="60" y="178" width="520" height="92" rx="12" />
+  <text class="label" x="84" y="216" font-size="17">層2 ─ 接続先バックエンド（ゲートウェイ）</text>
+  <text class="sub" x="84" y="244" font-size="12.5">ローカル or リモート。認証とルーティングを担う</text>
+
+  <line class="link" x1="320" y1="270" x2="320" y2="310" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+
+  <!-- 層3: 実行バックエンド -->
+  <rect class="box" x="60" y="312" width="520" height="92" rx="12" />
+  <text class="label" x="84" y="350" font-size="17">層3 ─ 実行バックエンド</text>
+  <text class="sub" x="84" y="378" font-size="12.5">local / docker / ssh など。実際の処理を行う</text>
+
+  <!-- 軸: 上ほど利用者に近く、下ほど処理に近い -->
+  <line class="axisline" x1="624" y1="78" x2="624" y2="370" />
+  <path class="axistri" d="M624,64 L618,80 L630,80 z" />
+  <path class="axistri" d="M624,384 L618,368 L630,368 z" />
+  <text class="note" x="640" y="86" font-size="11.5">利用者に近い</text>
+  <text class="note" x="640" y="372" font-size="11.5">処理に近い</text>
+</svg>

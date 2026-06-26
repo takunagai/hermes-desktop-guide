@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 470" role="img"
+  aria-label="中央のHermes Agentコアを囲むように、Desktop App・CLI・TUI・Web Dashboardの4つの入り口が配置され、それぞれが双方向にコアと接続している図">
+  <title>Hermes Agent のアーキテクチャ ─ 4つの入り口と共有コア</title>
+  <desc>中央の「Hermes Agent コア（設定・APIキー・セッション・スキル・メモリ）」を、Desktop App・CLI・TUI・Web Dashboard の4つの入り口が囲み、各入り口がコアと双方向に接続している。</desc>
+  <style>
+    text {
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", sans-serif;
+      font-weight: bold;
+    }
+    .core-rect { fill: #4f46e5; }
+    .entry-rect { fill: #ffffff; stroke: #c7d2fe; stroke-width: 1.5; }
+    .core-title { fill: #ffffff; }
+    .core-sub { fill: #e0e7ff; font-weight: normal; }
+    .entry-label { fill: #312e81; }
+    .entry-kind { fill: #6366f1; font-weight: normal; }
+    .link { stroke: #818cf8; stroke-width: 2.5; }
+    .arrowhead { fill: #818cf8; }
+    @media (prefers-color-scheme: dark) {
+      .core-rect { fill: #6366f1; }
+      .entry-rect { fill: #1e1b3a; stroke: #4338ca; }
+      .core-title { fill: #ffffff; }
+      .core-sub { fill: #c7d2fe; }
+      .entry-label { fill: #e0e7ff; }
+      .entry-kind { fill: #a5b4fc; }
+      .link { stroke: #a5b4fc; }
+      .arrowhead { fill: #a5b4fc; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5"
+      markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" class="arrowhead" />
+    </marker>
+  </defs>
+
+  <!-- 接続線（双方向）。各入り口とコアが同じ設定・セッションを共有することを示す。 -->
+  <line class="link" x1="380" y1="100" x2="380" y2="178" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+  <line class="link" x1="202" y1="237" x2="273" y2="237" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+  <line class="link" x1="558" y1="237" x2="487" y2="237" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+  <line class="link" x1="380" y1="370" x2="380" y2="296" marker-start="url(#arrow)" marker-end="url(#arrow)" />
+
+  <!-- 中央コア -->
+  <rect class="core-rect" x="275" y="178" width="210" height="118" rx="14" />
+  <text class="core-title" x="380" y="216" text-anchor="middle" font-size="21">Hermes Agent コア</text>
+  <text class="core-sub" x="380" y="246" text-anchor="middle" font-size="12.5">設定・APIキー・セッション</text>
+  <text class="core-sub" x="380" y="266" text-anchor="middle" font-size="12.5">スキル・メモリ</text>
+
+  <!-- 入り口1: Desktop App（上） -->
+  <rect class="entry-rect" x="288" y="42" width="184" height="58" rx="10" />
+  <text class="entry-kind" x="380" y="64" text-anchor="middle" font-size="10.5">入り口</text>
+  <text class="entry-label" x="380" y="84" text-anchor="middle" font-size="16.5">Desktop App</text>
+
+  <!-- 入り口2: Web Dashboard（左） -->
+  <rect class="entry-rect" x="30" y="208" width="172" height="58" rx="10" />
+  <text class="entry-kind" x="116" y="230" text-anchor="middle" font-size="10.5">入り口</text>
+  <text class="entry-label" x="116" y="250" text-anchor="middle" font-size="16.5">Web Dashboard</text>
+
+  <!-- 入り口3: CLI（右） -->
+  <rect class="entry-rect" x="558" y="208" width="172" height="58" rx="10" />
+  <text class="entry-kind" x="644" y="230" text-anchor="middle" font-size="10.5">入り口</text>
+  <text class="entry-label" x="644" y="250" text-anchor="middle" font-size="16.5">CLI</text>
+
+  <!-- 入り口4: TUI（下） -->
+  <rect class="entry-rect" x="288" y="370" width="184" height="58" rx="10" />
+  <text class="entry-kind" x="380" y="392" text-anchor="middle" font-size="10.5">入り口</text>
+  <text class="entry-label" x="380" y="412" text-anchor="middle" font-size="16.5">TUI</text>
+</svg>

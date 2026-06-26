@@ -2,11 +2,11 @@
 // 入門コース（tutorials コレクションの learn/* ）の動的ルート。
 // Vault 正本の Markdown を StarlightPage にラップし、Starlight 共通シェル
 // （ヘッダー／フッター／検索／サイドバー）と Pagefind インデックスを継承する。
-// 本文はステップUIコンポーネントで囲む（Wave 4 で本実装）。
+// 本文は ChapterHeader（章扉）で導入し、章末の「つまずいたら」は本文側を正本にする
+// （ルートでの StumbleBlock 自動付与は二重表示になるため廃止）。
 import { getCollection, render } from "astro:content";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import ChapterHeader from "../../components/tutorial/ChapterHeader.astro";
-import StumbleBlock from "../../components/tutorial/StumbleBlock.astro";
 
 export async function getStaticPaths() {
   const entries = await getCollection("tutorials", (entry) => entry.data.slug.startsWith("learn/"));
@@ -20,6 +20,9 @@ const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
 const { title, description, slug, goal, prerequisite, chapter, status } = entry.data;
 
+// 入門コースは一本道の8章。章進行表示の母数として渡す。
+const TOTAL_CHAPTERS = 8;
+
 // StarlightPage には Starlight 既知の frontmatter のみを渡す。
 // goal/prerequisite/chapter/status は ChapterHeader に props で直接渡す。
 const frontmatter = {
@@ -31,7 +34,49 @@ const frontmatter = {
 ---
 
 <StarlightPage frontmatter={frontmatter} headings={headings}>
-  <ChapterHeader chapter={chapter} goal={goal} prerequisite={prerequisite} status={status} />
-  <Content />
-  <StumbleBlock />
+  <div class="learn-article">
+    <ChapterHeader
+      chapter={chapter}
+      total={TOTAL_CHAPTERS}
+      goal={goal}
+      prerequisite={prerequisite}
+      status={status}
+    />
+    <Content />
+  </div>
 </StarlightPage>
+
+<style>
+  /* 入門コース本文の柔らかいトーン。learn-article 配下にのみ適用し、
+     concepts / reference には影響させない（柔らかさのグラデーション）。
+     starlight.css（共有・@layer hermes）は触らず、このスコープ付き style で閉じる。 */
+
+  /* 「つまずいたら」「問題が起きたら」: 章末の助け舟をアクセントの薄帯ブロックにする。
+     見出しと直後のリストを上下で連結し、ひとつのブロックに見せる。 */
+  .learn-article :global(:is(h2[id="つまずいたら"], h2[id="問題が起きたら"])) {
+    margin-block-start: 2.75rem;
+    border: 1px solid color-mix(in srgb, var(--sl-color-accent) 22%, var(--sl-color-hairline));
+    border-block-end: 0;
+    border-radius: 0.85rem 0.85rem 0 0;
+    padding: 0.9rem 1.15rem 0.55rem;
+    background: color-mix(in srgb, var(--sl-color-accent) 7%, var(--sl-color-bg));
+  }
+
+  .learn-article :global(:is(h2[id="つまずいたら"], h2[id="問題が起きたら"]) + ul) {
+    margin-block-start: 0;
+    border: 1px solid color-mix(in srgb, var(--sl-color-accent) 22%, var(--sl-color-hairline));
+    border-block-start: 0;
+    border-radius: 0 0 0.85rem 0.85rem;
+    padding: 0.5rem 1.2rem 1rem 2.5rem;
+    background: color-mix(in srgb, var(--sl-color-accent) 7%, var(--sl-color-bg));
+  }
+
+  /* 「次の一歩」「入門コースの修了…」: 次の章へ進む達成の合図。アクセント枠の小カード。 */
+  .learn-article :global(:is(h2[id="次の一歩"], h2[id^="入門コースの修了"])) {
+    margin-block-start: 2.75rem;
+    border-radius: 0.85rem;
+    padding: 0.9rem 1.2rem;
+    border: 1px solid color-mix(in srgb, var(--sl-color-accent) 28%, var(--sl-color-hairline));
+    background: color-mix(in srgb, var(--sl-color-accent) 10%, var(--sl-color-bg));
+  }
+</style>

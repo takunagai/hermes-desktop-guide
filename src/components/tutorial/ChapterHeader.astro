@@ -1,40 +1,89 @@
 ---
-// 入門コースの章ヘッダー。frontmatter の goal / prerequisite / chapter / status を
-// 本文の冒頭に表示する。Wave 4 で装飾を本実装するため、ここでは機能する最小実装に留める。
+// 入門コースの章ヘッダー（章扉）。frontmatter の chapter / goal / prerequisite / status を
+// 章の冒頭にカード表示する。章進行（全何章中の第何章か）と章扉イラストで
+// 「柔らかい・達成感のある入口」のトーンを与える（企画書第9章）。
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import girlWorkspace from "../../assets/editorial/editorial-01-girl-workspace.webp";
+import girlGlobe from "../../assets/editorial/editorial-02-girl-globe.webp";
+import girlWingedHelmet from "../../assets/editorial/editorial-03-girl-winged-helmet.webp";
+import girlCaduceus from "../../assets/editorial/editorial-04-girl-caduceus.webp";
+import girlSubagents from "../../assets/editorial/editorial-05-girl-subagents.webp";
+import girlDatastream from "../../assets/editorial/editorial-06-girl-datastream.webp";
+import girlMessages from "../../assets/editorial/editorial-08-girl-messages.webp";
+import girlSandbox from "../../assets/editorial/editorial-09-girl-sandbox.webp";
+
 interface Props {
   chapter?: number;
+  total?: number;
   goal?: string;
   prerequisite?: string[];
   status?: "verified" | "needs-review";
 }
 
-const { chapter, goal, prerequisite, status } = Astro.props;
-const hasContent = Boolean(goal || prerequisite?.length);
+const { chapter, total = 8, goal, prerequisite, status } = Astro.props;
+
+// 章番号ごとの章扉イラスト（装飾。alt は空にしてスクリーンリーダーから隠す）。
+const chapterArt: Record<number, ImageMetadata> = {
+  1: girlGlobe, // 1. Hermes Desktop の世界
+  2: girlWorkspace, // 2. インストールと初回起動
+  3: girlMessages, // 3. 最初のチャットを成功させる
+  4: girlSandbox, // 4. ワークスペースで作業する
+  5: girlDatastream, // 5. モデルとプロバイダーを整える
+  6: girlWingedHelmet, // 6. 安全に使う設定
+  7: girlCaduceus, // 7. MCP で能力を広げる
+  8: girlSubagents, // 8. スキルとプロファイルを使う
+};
+const art = chapter ? chapterArt[chapter] : undefined;
+const hasContent = Boolean(goal || prerequisite?.length || chapter);
+const progress = chapter ? Array.from({ length: total }, (_, i) => i + 1) : [];
 ---
 
 {
   hasContent && (
-    <aside class="tutorial-chapter-header" aria-label="この章のゴールと前提">
-      {(chapter || status === "needs-review") && (
-        <p class="meta">
-          {chapter && <span class="chapter">第{chapter}章</span>}
-          {status === "needs-review" && <span class="review">下書き（要再確認）</span>}
-        </p>
-      )}
-      {goal && (
-        <p class="goal">
-          <span class="label">ゴール</span>
-          {goal}
-        </p>
-      )}
-      {prerequisite?.length && (
-        <div class="prereq">
-          <p class="label">前提</p>
-          <ul>
-            {prerequisite.map((item) => (
-              <li>{item}</li>
+    <aside class="chapter-hero" aria-label="この章のゴールと前提">
+      <div class="ch-body">
+        {chapter && (
+          <p class="ch-meta">
+            <span class="ch-num">
+              第{chapter}章
+              <span class="ch-total"> ／ 全{total}章</span>
+            </span>
+            {status === "needs-review" && <span class="ch-review">下書き（要再確認）</span>}
+          </p>
+        )}
+        {progress.length > 0 && (
+          <ol class="ch-progress" aria-hidden="true">
+            {progress.map((n) => (
+              <li
+                class:list={[
+                  "ch-dot",
+                  { done: chapter && n < chapter, current: n === chapter },
+                ]}
+              />
             ))}
-          </ul>
+          </ol>
+        )}
+        {goal && (
+          <p class="ch-goal">
+            <span class="ch-goal-label">この章のゴール</span>
+            <span class="ch-goal-text">{goal}</span>
+          </p>
+        )}
+        {prerequisite?.length && (
+          <div class="ch-prereq">
+            <p class="ch-prereq-label">前提</p>
+            <ul>
+              {prerequisite.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      {art && (
+        <div class="ch-art" aria-hidden="true">
+          <Image src={art} alt="" widths={[180, 360]} sizes="180px" loading="eager" />
         </div>
       )}
     </aside>
@@ -42,66 +91,173 @@ const hasContent = Boolean(goal || prerequisite?.length);
 }
 
 <style>
-  .tutorial-chapter-header {
-    margin-block: 0 1.75rem;
-    border: 1px solid var(--sl-color-hairline-light);
-    border-radius: 0.5rem;
-    padding: 1rem 1.25rem;
-    background: var(--sl-color-gray-7, var(--sl-color-gray-6));
-  }
+  @layer hermes {
+    .chapter-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: stretch;
+      gap: clamp(1rem, 3vw, 2rem);
+      margin-block: 0 2rem;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--sl-color-accent) 22%, var(--sl-color-hairline));
+      border-radius: 1rem;
+      padding: clamp(1.25rem, 3vw, 1.75rem);
+      background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--sl-color-accent) 12%, var(--sl-color-bg)),
+        color-mix(in srgb, var(--sl-color-accent) 4%, var(--sl-color-bg))
+      );
+    }
 
-  .meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 0 0 0.5rem;
-    font-size: var(--sl-text-xs);
-  }
+    .ch-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      min-width: 0;
+    }
 
-  .chapter,
-  .review {
-    display: inline-flex;
-    align-items: center;
-    border-radius: 999px;
-    padding: 0.1rem 0.6rem;
-    font-weight: 600;
-  }
+    .ch-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.75rem;
+      margin: 0;
+    }
 
-  .chapter {
-    color: var(--sl-color-accent-high);
-    background: color-mix(in srgb, var(--sl-color-accent) 14%, transparent);
-  }
+    .ch-num {
+      font-family: var(--__sl-font-mono);
+      font-size: var(--sl-text-sm);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--sl-color-accent-high);
+    }
 
-  .review {
-    color: var(--sl-color-orange-high);
-    background: color-mix(in srgb, var(--sl-color-orange) 14%, transparent);
-  }
+    .ch-total {
+      color: var(--sl-color-gray-3);
+      font-weight: 600;
+    }
 
-  .goal {
-    margin: 0;
-    font-weight: 600;
-  }
+    .ch-review {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 0.1rem 0.65rem;
+      font-size: var(--sl-text-xs);
+      font-weight: 600;
+      color: var(--sl-color-orange-high);
+      background: color-mix(in srgb, var(--sl-color-orange) 16%, transparent);
+    }
 
-  .label {
-    display: inline-block;
-    margin-inline-end: 0.5rem;
-    color: var(--sl-color-accent-high);
-    font-size: var(--sl-text-xs);
-    font-weight: 700;
-  }
+    /* 章進行ドット（視覚補助。読み上げは「第N章 / 全total章」テキストが担う）。 */
+    .ch-progress {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
 
-  .prereq {
-    margin-top: 0.75rem;
-  }
+    .ch-dot {
+      width: 0.7rem;
+      height: 0.7rem;
+      margin: 0;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--sl-color-accent) 18%, var(--sl-color-hairline));
+    }
 
-  .prereq .label {
-    display: block;
-    margin-bottom: 0.25rem;
-  }
+    .ch-dot.done {
+      background: color-mix(in srgb, var(--sl-color-accent) 60%, transparent);
+    }
 
-  .prereq ul {
-    margin: 0;
-    padding-inline-start: 1.25rem;
-    font-size: var(--sl-text-sm);
+    .ch-dot.current {
+      background: var(--sl-color-accent);
+      box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--sl-color-accent) 24%, transparent);
+    }
+
+    .ch-goal {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      margin: 0.25rem 0 0;
+    }
+
+    .ch-goal-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      width: fit-content;
+      font-size: var(--sl-text-xs);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--sl-color-accent-high);
+    }
+
+    .ch-goal-label::before {
+      content: "\2691"; /* 旗。達成目標の合図（装飾） */
+      font-size: 1.05em;
+      line-height: 1;
+    }
+
+    .ch-goal-text {
+      font-size: var(--sl-text-base);
+      font-weight: 600;
+      line-height: 1.65;
+    }
+
+    .ch-prereq {
+      margin-top: 0.15rem;
+    }
+
+    .ch-prereq-label {
+      margin: 0 0 0.3rem;
+      font-size: var(--sl-text-xs);
+      font-weight: 700;
+      color: var(--sl-color-gray-2);
+    }
+
+    .ch-prereq ul {
+      margin: 0;
+      padding-inline-start: 1.1rem;
+      font-size: var(--sl-text-sm);
+      color: var(--sl-color-gray-2);
+    }
+
+    .ch-prereq li {
+      margin: 0;
+    }
+
+    .ch-prereq li + li {
+      margin-top: 0.2rem;
+    }
+
+    .ch-art {
+      display: grid;
+      place-items: center;
+      width: clamp(5.5rem, 16vw, 8.5rem);
+      border-radius: 0.75rem;
+      background: #f4f0e7;
+    }
+
+    .ch-art :global(img) {
+      width: 100%;
+      height: auto;
+      border-radius: 0.75rem;
+      mix-blend-mode: multiply;
+    }
+
+    :global([data-theme="dark"]) .ch-art {
+      background: color-mix(in srgb, #f4f0e7 88%, black);
+    }
+
+    @media (max-width: 36rem) {
+      .chapter-hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .ch-art {
+        display: none; /* 狭幅では章扉イラストを省き、本文への到達を優先 */
+      }
+    }
   }
 </style>
