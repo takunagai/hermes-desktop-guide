@@ -385,11 +385,31 @@
   }
 
   /* 領域から探す（網羅カード + 細線アイコン） */
+  /* 設定・機能リファレンスの3エリア。設定を主役に広く取り、ダッシュボード・連携を
+     狭める非対称レイアウト（設定・ダッシュボード・連携の3枚固定を前提とする）。 */
   .home-area-grid {
     display: grid;
-    align-items: stretch;
+    align-items: start;
     gap: 1rem;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  /* 設定カード（先頭）は全15画面を並べるので、リンクを自動多列で詰めて縦の間延びを抑える。 */
+  .home-area-grid > .home-area-card:first-child > ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 8.5rem), 1fr));
+    gap: 0.4rem 0.9rem;
+  }
+
+  .home-area-grid > .home-area-card:first-child li + li {
+    margin-top: 0;
+  }
+
+  /* 幅が狭いときは非対称をやめ、各カードをフル幅で縦積みにする。 */
+  @media (max-width: 50rem) {
+    .home-area-grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   .home-area-card {
