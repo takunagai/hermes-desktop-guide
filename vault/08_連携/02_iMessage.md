@@ -13,13 +13,13 @@ audience:
 platforms:
   - macOS
 status: verified
-hermes_version: 0.17.0
-hermes_commit: 857d024
-verified: '2026-06-20'
+hermes_version: 0.19.0
+hermes_commit: '967e078a'
+verified: '2026-07-22'
 ---
 
 > [!note] 確認状況
-> v0.17 実機（ビルド `857d024`）のメッセージングパネルで Photon・BlueBubbles の両チャネルと設定項目を確認。接続項目・既定値・CLI コマンド構成はコミット `857d024` のソースと公式ドキュメントで照合済み。実際に iMessage で応答が返るかの end-to-end 動作は外部サービス（Photon Spectrum / BlueBubbles サーバー）依存のため未実行。
+> v0.19 実機（コミット `967e078a`、タグ `v2026.7.20`）のソースで Photon・BlueBubbles の両チャネルの設定項目・既定値・CLI コマンド構成、およびメッセージングパネルの必須欄描画ロジックを再照合。接続項目は公式ドキュメントとも照合済み。実際に iMessage で応答が返るかの end-to-end 動作は外部サービス（Photon Spectrum / BlueBubbles サーバー）依存のため未実行。
 
 iMessage で Hermes を使うには、Desktop のメッセージングパネルから 2 通りの経路がある。リレー不要で手早く始めるなら **Photon**、すでに BlueBubbles サーバーを運用しているなら **BlueBubbles**。
 
@@ -38,7 +38,7 @@ v0.17 で追加。リレー用サーバーを別途立てずにネイティブ�
 > デバイスコード認証は `hermes photon setup` の最初のステップとして自動実行される。独立した `hermes photon login` コマンドは無い。
 
 > [!note] パネルの必須欄
-> Photon の必須欄は「トークン不要（セットアップガイドを使ってから有効化）」と表示される。実際の認証と資格情報の設定は `hermes photon setup` で行う。
+> Photon の「必須」欄には「Photon Spectrum project id」「Photon project secret」の 2 欄が必須フィールドとして表示される（「トークン不要」とは出ない）。ただしこの 2 欄は手入力せず、`hermes photon setup` が自動発行して `~/.hermes/.env` に書き込むのが基本。setup 実行後は既に埋まった状態になる。
 
 ### 主な設定項目（抜粋）
 
