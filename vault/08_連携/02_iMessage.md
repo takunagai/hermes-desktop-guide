@@ -19,13 +19,13 @@ verified: '2026-07-22'
 ---
 
 > [!note] 確認状況
-> v0.19 実機（コミット `967e078a`、タグ `v2026.7.20`）のソースで Photon・BlueBubbles の両チャネルの設定項目・既定値・CLI コマンド構成、およびメッセージングパネルの必須欄描画ロジックを再照合。接続項目は公式ドキュメントとも照合済み。実際に iMessage で応答が返るかの end-to-end 動作は外部サービス（Photon Spectrum / BlueBubbles サーバー）依存のため未実行。
+> Photon・BlueBubbles の両チャネルの設定項目・既定値・CLI コマンド構成と、メッセージングパネルの必須欄の描画ロジックは実機ソースで照合済み。接続項目は公式ドキュメントとも照合している。ただし実際に iMessage で応答が返るかの end-to-end 動作は、外部サービス（Photon Spectrum / BlueBubbles サーバー）に依存するため未検証。
 
 iMessage で Hermes を使うには、Desktop のメッセージングパネルから 2 通りの経路がある。リレー不要で手早く始めるなら **Photon**、すでに BlueBubbles サーバーを運用しているなら **BlueBubbles**。
 
 ## Photon（Spectrum）
 
-v0.17 で追加。リレー用サーバーを別途立てずにネイティブな iMessage 連携ができる。セットアップは CLI（`hermes photon …`）で行い、パネルでは挙動を調整する。
+リレー用サーバーを別途立てずにネイティブな iMessage 連携ができる。セットアップは CLI（`hermes photon …`）で行い、パネルでは挙動を調整する。
 
 ### セットアップ
 
