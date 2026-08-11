@@ -12,9 +12,9 @@ tags:
 audience:
   - Hermes Desktop利用者
 status: verified
-hermes_version: 0.19.0
-hermes_commit: '967e078a'
-verified: '2026-07-22'
+hermes_version: 0.20.0
+hermes_commit: '3bd844ed'
+verified: '2026-08-11'
 ---
 
 外部の Model Context Protocol サーバーを追加し、Hermes にツールを公開する。
