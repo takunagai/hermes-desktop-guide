@@ -394,15 +394,20 @@
     grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) minmax(0, 1fr);
   }
 
-  /* 設定カード（先頭）は全15画面を並べるので、リンクを自動多列で詰めて縦の間延びを抑える。 */
+  /* 設定カードは設定画面を全部並べるので、多列に詰めて縦の間延びを抑える。
+     アプリの設定メニューが縦1列なので、grid の行送り（左上→右上）ではなく
+     multi-column の列送り（左列を上から埋め、あふれた分を右列へ）にして、
+     アプリのメニュー順とそのまま目で追えるようにする。
+     `columns: <幅> <列数>` は幅が足りなければ列数を自動で減らすため、
+     狭い画面では1列に落ちる。 */
   .home-area-grid > .home-area-card:first-child > ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 8.5rem), 1fr));
-    gap: 0.4rem 0.9rem;
+    columns: 8.5rem 2;
+    column-gap: 0.9rem;
   }
 
-  .home-area-grid > .home-area-card:first-child li + li {
-    margin-top: 0;
+  .home-area-grid > .home-area-card:first-child li {
+    margin-block: 0 0.4rem;
+    break-inside: avoid;
   }
 
   /* 幅が狭いときは非対称をやめ、各カードをフル幅で縦積みにする。 */
