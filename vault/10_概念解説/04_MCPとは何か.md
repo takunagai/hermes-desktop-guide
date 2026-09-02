@@ -16,9 +16,9 @@ platforms:
   - Windows
   - Linux
 status: verified
-hermes_version: 0.20.0
-hermes_commit: '3bd844ed'
-verified: '2026-08-11'
+hermes_version: 0.21.0
+hermes_commit: '18029116'
+verified: '2026-09-02'
 ---
 
 MCP（Model Context Protocol）は、[[10_概念解説/03_スキルとツールの違い|スキルとツールの違い]]で触れた「拡張の三つめの道」です。組み込みツールやスキルでは届かない外部の機能を、エージェントに取り込めます。とても強力ですが、設定リファレンスの[[03_設定/12_MCP|MCP]]には安全上の注意が繰り返し出てきます。なお、MCPの管理画面は設定画面ではなく、サイドバーの「スキルとツール」画面の「MCP」タブにあります。

@@ -13,9 +13,9 @@ audience:
 platforms:
   - macOS
 status: verified
-hermes_version: 0.20.0
-hermes_commit: '3bd844ed'
-verified: '2026-08-11'
+hermes_version: 0.21.0
+hermes_commit: '18029116'
+verified: '2026-09-02'
 ---
 
 > [!note] 確認状況

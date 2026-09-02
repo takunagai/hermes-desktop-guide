@@ -18,9 +18,9 @@ platforms:
   - Windows
   - Linux
 status: verified
-hermes_version: 0.20.0
-hermes_commit: '3bd844ed'
-verified: '2026-08-11'
+hermes_version: 0.21.0
+hermes_commit: '18029116'
+verified: '2026-09-02'
 ---
 
 入門コースの[[09_入門コース/07_MCPで能力を広げる|MCPで能力を広げる（入門）]]では、信頼できるサーバーかを判定し、最小構成で1つ接続するところまでを扱いました。このレシピはその先 ─ **実務でMCPを運用するときに効く設定**を、目的別にまとめます。MCPの仕組みとリスクの全体像は[[10_概念解説/04_MCPとは何か|MCPとは何か、なぜ慎重に扱うか]]を、各キーの完全な一覧は[[03_設定/12_MCP|MCP]]を前提とします。

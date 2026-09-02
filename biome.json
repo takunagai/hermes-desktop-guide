@@ -25,6 +25,7 @@
       ".astro",
       ".antigravitycli",
       ".claude",
+      ".superset",
       "src/content/docs",
       "vault",
       ".firecrawl",

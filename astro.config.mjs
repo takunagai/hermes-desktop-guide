@@ -7,6 +7,7 @@ import { defineConfig } from "astro/config";
 import remarkHomeDirectoryGrid from "./scripts/remark-home-directory-grid.ts";
 
 const editorialAssets = fileURLToPath(new URL("./src/assets/editorial", import.meta.url));
+const screenshotAssets = fileURLToPath(new URL("./src/assets/screenshots", import.meta.url));
 
 const isProduction = process.env.NODE_ENV === "production";
 // Google Analytics (GA4) 測定ID。HTMLに露出する公開値のため直書きで問題ない。
@@ -259,6 +260,7 @@ export default defineConfig({
     resolve: {
       alias: {
         "@editorial": editorialAssets,
+        "@screenshots": screenshotAssets,
       },
     },
   },

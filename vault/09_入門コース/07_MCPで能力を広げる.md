@@ -14,9 +14,9 @@ tags:
 audience:
   - Hermes Desktopで外部ツールを接続したい人
 status: verified
-hermes_version: 0.20.0
-hermes_commit: '3bd844ed'
-verified: '2026-08-11'
+hermes_version: 0.21.0
+hermes_commit: '18029116'
+verified: '2026-09-02'
 ---
 
 MCP（Model Context Protocol）は、外部のサーバーが提供するツールをHermesに公開し、エージェントの能力を広げる仕組みです。たとえば、特定のサービスの操作や独自のデータ参照を、ツールとして使えるようになります。
