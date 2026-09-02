@@ -44,3 +44,6 @@ src/content/tutorials/
 
 # handover docs (session instructions, not published)
 _handover/
+
+# Superset local config
+.superset/
