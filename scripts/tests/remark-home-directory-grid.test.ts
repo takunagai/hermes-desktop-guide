@@ -51,12 +51,6 @@ Hermes Desktop が初めての方へ。
 
 - 実践レシピを見る
 
-## v0.17の新機能
-
-新機能の説明。
-
-- プロファイル管理
-
 ## このガイドについて
 
 - 確認済み
@@ -73,7 +67,7 @@ async function render(value: string, path: string): Promise<string> {
   );
 }
 
-test("トップページをフラッグシップ・入口・新機能の3ブロックに再構成する", async () => {
+test("トップページをフラッグシップ・入口の2ブロックに再構成する", async () => {
   const html = await render(homepage, "/project/src/content/docs/index.md");
 
   // フラッグシップブロックが1つ生成される。
@@ -105,9 +99,6 @@ test("トップページをフラッグシップ・入口・新機能の3ブロ�
     /<span class="home-entrance-card__eyebrow">START HERE \/ はじめての方<\/span>/,
   );
 
-  // 新機能ブロックが生成される。
-  assert.match(html, /<section class="home-block home-whatsnew"><h2>v0.17の新機能<\/h2>/);
-
   // このガイドについてはブロックの外（素の見出し）に残る。
   assert.match(html, /<\/section>\s*<h2>このガイドについて<\/h2>/);
 });
@@ -128,5 +119,4 @@ test("トップページ以外のindex.mdには適用しない", async () => {
 
   assert.doesNotMatch(html, /home-flagship/);
   assert.doesNotMatch(html, /home-entrance-grid/);
-  assert.doesNotMatch(html, /home-whatsnew/);
 });

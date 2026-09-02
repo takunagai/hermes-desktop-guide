@@ -4,7 +4,6 @@ import type { Plugin } from "unified";
 
 const FLAGSHIP_HEADING = "設定・機能リファレンス";
 const ENTRANCE_HEADING = "学ぶ・使いこなす";
-const WHATSNEW_HEADING = "v0.17の新機能";
 
 // 2入口カード（H3 見出しテキスト）→ 英字・和文のアイブロウ。
 const ENTRANCE_META: Record<string, { eyebrow: string }> = {
@@ -237,10 +236,6 @@ function buildEntranceBlock(slice: RootContent[]): RootContent {
   return element("section", ["home-block", "home-block--entrance"], [heading, grid]);
 }
 
-function buildWhatsNewBlock(slice: RootContent[]): RootContent {
-  return element("section", ["home-block", "home-whatsnew"], [...slice]);
-}
-
 // H2 見出しとその次の H2 までの範囲を1ブロックに変換する。
 // splice 後のインデックスずれは各呼び出しで findHeadingIndex を取り直すことで吸収する。
 function transformBlock(
@@ -273,7 +268,6 @@ const remarkHomeDirectoryGrid: Plugin<[], Root> = () => {
 
     transformBlock(tree, FLAGSHIP_HEADING, buildFlagshipBlock);
     transformBlock(tree, ENTRANCE_HEADING, buildEntranceBlock);
-    transformBlock(tree, WHATSNEW_HEADING, buildWhatsNewBlock);
   };
 };
 
