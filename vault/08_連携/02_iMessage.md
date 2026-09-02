@@ -14,7 +14,7 @@ platforms:
   - macOS
 status: verified
 hermes_version: 0.21.0
-hermes_commit: '18029116'
+hermes_commit: 'c5c9aa8d'
 verified: '2026-09-02'
 ---
 
