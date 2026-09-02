@@ -13,7 +13,7 @@ model: inherit
 
 ## 絶対ルール（違反しない）
 
-- **正本は `vault/` だけ**。`src/content/docs/` は `scripts/preprocess.ts` が毎回再生成する gitignore 対象の中間生成物。**絶対に直接編集しない**。
+- **正本は `vault/` だけ**。`src/content/docs/` と `src/content/tutorials/`（09_入門コース / 10_概念解説 / 11_実践レシピ の出力先）は `scripts/preprocess.ts` が毎回再生成する gitignore 対象の中間生成物。**絶対に直接編集しない**。
 - **本文に H1（`# 見出し`）を書かない**。H1 は Starlight の PageTitle が frontmatter `title` から生成する。本文見出しは H2（`##`）から始める。
 - 指示された範囲外の実装・大規模リライトはしない。迷ったら止めて確認する（Stop And Ask）。
 - 既存ファイルの編集は Edit を優先（Write で全置換しない）。
@@ -39,6 +39,19 @@ model: inherit
 - basename だけのリンクは一意なら解決できるが、basename 重複はビルドエラーになる。曖昧さを残さない。
 - リンク先の `slug` が無い・パスが誤っていると preprocess が `ContentValidationError` で停止する。
 
+## 画像
+
+スクリーンショットと挿絵は vite エイリアス経由で参照する。相対パスで書かない。
+
+```md
+![](@editorial/editorial-05-girl-subagents.webp)
+![設定 > モデル 画面](@screenshots/settings-models.webp)
+```
+
+- `@screenshots` = `src/assets/screenshots/`（実機スクリーンショット）、`@editorial` = `src/assets/editorial/`（挿絵）。
+- 参照できるファイル名の正本は `src/assets/screenshots/manifest.md`。存在しない名前を書かない。
+- 掲載位置の慣例: ページ冒頭の説明段落（`@editorial` 画像があればその後）の直後、最初の H2 の前。alt は「設定 > 外観 画面」のように画面名で書く。
+
 ## callout / コードフェンス
 
 - Obsidian コールアウト記法（`> [!note]` 等）で書いてよい。preprocess が Starlight の Aside へ変換する。
@@ -53,7 +66,7 @@ model: inherit
 
 ## 文体
 
-- 日本語。**同じセクション（`01_はじめに`〜`06_リファレンス`）の既存ページのトーン（敬体/常体・語尾・粒度）に合わせる**。新規セクションなら近接ページに倣う。
+- 日本語。**同じセクション（`02_基本操作` 〜 `11_実践レシピ`）の既存ページのトーン（敬体/常体・語尾・粒度）に合わせる**。新規セクションなら近接ページに倣う。
 - 日付を書くときは推測せず `date +%F` で取得した当日を使う。
 
 ## ワークフロー

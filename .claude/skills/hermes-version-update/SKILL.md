@@ -84,6 +84,7 @@ npm run quality
 
 - コミットメッセージは前回（`git log --grep 'Hermes v0.2'`）の書式に揃える。`main` へ push すると Workers Builds が本番デプロイする。反映は `curl` で新規ページの 200 と画像名の埋め込みを実測する
 - memory `hermes-rolling-main-version-pinned` の「現在の状態」をピン・画面数・件数で更新する
+- 派生ドキュメントを見直す: `KNOWN_ISSUES.md`（設定画面の表示順とファイル接頭辞の対応表）、`README.md` の frontmatter 例のピン、`docs/` 配下の版数・ページ数の記述、`templates/writer-common.md` の例示値
 - 残った未確認項目は本文に明記した状態で終える。ユーザーが「残課題も」と言ったら Phase 2 を条件付き（`--local` 起動、ゲートウェイ切替）で再実行する
 
 ## 所要の目安（v0.21.0 実績）

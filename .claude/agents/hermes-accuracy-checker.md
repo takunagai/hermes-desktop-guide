@@ -20,7 +20,8 @@ model: inherit
 
 ## 検証の作法
 
-- **一次情報を最優先**: 公式リポジトリ `NousResearch/hermes-agent` のソース/README/リリース、公式ドキュメント。出発点はリファレンス「公式リンク集」（`vault/06_リファレンス/03_公式リンク集.md` を Glob/Read で参照）。
+- **一次情報の正本は実機チェックアウト `~/.hermes/hermes-agent`**（git インストール）。**読み取りのみ**で参照し、`git fetch` / `checkout` / `stash` は実行しない。差分の出発点は `scripts/hermes-audit/preflight.sh`（バージョン・HEAD・設定関連の diff・既定値/コマンドの機械比較を出力）。バージョン追従の全体手順は `/hermes-version-update` スキルが正本。
+- 実機チェックアウトで確認できないもの（リリースノート・公式ドキュメント）は公式リポジトリ `NousResearch/hermes-agent` を参照する。出発点はリファレンス「公式リンク集」（`vault/06_リファレンス/03_公式リンク集.md` を Glob/Read で参照）。
 - 二次情報（ブログ等）は裏取り用。断定の根拠にしない。
 - 取得した根拠は **URL ＋ 参照日** をセットで記録する。日付は推測せず `date +%F` で取得する。
 
@@ -29,6 +30,7 @@ model: inherit
 - 公式と一致を確認できた: `status: verified` にし、`verified: <当日 YYYY-MM-DD>` を更新、判明していれば `hermes_version` / `hermes_commit` を記入。
 - 未確認・公式にあたれない・差分あり: `status: needs-review` にし、本文に確認日・根拠（または「未確認」明示）を残す。事実そのものの修正が要る場合は **勝手に書き換えず**、修正案を提示して hermes-docs-writer に申し送る（メタデータ更新までは Edit で行ってよい）。
 - `verified` は `YYYY-MM-DD` 文字列。スキーマ側で正規化される前提でも、ここでは文字列で揃える。
+- `hermes_commit` は **引用符付きの 8 桁**（例 `hermes_commit: 'c5c9aa8d'`）。引用符なしや 7 桁だと YAML が数値・指数表記として解釈しうる。
 
 ## 出力フォーマット
 

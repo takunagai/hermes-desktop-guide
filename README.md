@@ -17,7 +17,7 @@
 - キーボード操作と支援技術に配慮したStarlight標準UI
 - frontmatter `slug`によるフォルダ構成と独立した恒久URL
 - Obsidian WikiLinkとコールアウトの自動変換
-- basename、slug、未解決リンクをビルド前に検出
+- frontmatter必須項目・slug形式・basename/slug重複・未解決WikiLinkをビルド前に検出
 - 「実機・内容確認日」「対応バージョン／コミット」の表示
 
 ## 技術スタック
@@ -50,13 +50,16 @@ npm install
 | `npm run dev` | 開発サーバーを起動 |
 | `npm run build` | 本番ビルドとPagefindインデックス生成 |
 | `npm run preview` | ビルド結果をローカルプレビュー |
-| `npm run preprocess` | Vaultを検証して`src/content/docs/`へ変換 |
+| `npm run preprocess` | Vaultを検証して`src/content/docs/`・`src/content/tutorials/`へ変換 |
 | `npm run validate:content` | コンテンツ変換と前処理テスト |
 | `npm run lint` | Biomeチェック |
+| `npm run format` | Biomeで整形 |
 | `npm run check` | Astro型チェック |
 | `npm test` | 前処理の自動テスト |
 | `npm run check:links` | ビルド済み内部リンク・アンカーを検査 |
 | `npm run quality` | Lint、型、テスト、ビルド、リンク検査を一括実行 |
+| `npm run deploy` | ビルドしてCloudflare Workersへ手動デプロイ |
+| `npm run cf:preview` | ビルドして`wrangler dev`でローカル確認 |
 
 ## コンテンツパイプライン
 
@@ -65,20 +68,21 @@ vault/                      Obsidian Vault、コンテンツの正本
     ↓ npm run preprocess
 scripts/preprocess.ts       frontmatter・slug・WikiLink・コールアウトを検証変換
     ↓
-src/content/docs/           生成物、gitignore対象
+src/content/docs/           生成物、gitignore対象。Starlightが直接ルーティング
+src/content/tutorials/      生成物。09_入門コース・10_概念解説・11_実践レシピの出力先で、
+                            src/pages/learn|concepts|recipes/[...slug].astro が描画する
     ↓
 Astro Starlight             ルーティング、ナビ、目次、検索、SEO
     ↓
 dist/                       静的サイトとPagefindインデックス
 ```
 
-`src/content/docs/`は毎回全削除して再生成するため、直接編集しない。
+どちらの出力先も毎回全削除して再生成するため、直接編集しない。
 
 ## Vault構成
 
 ```text
 00_ホーム.md
-01_はじめに/
 02_基本操作/
 03_設定/
 04_ガイド/
@@ -86,6 +90,9 @@ dist/                       静的サイトとPagefindインデックス
 06_リファレンス/
 07_ダッシュボード/
 08_連携/
+09_入門コース/
+10_概念解説/
+11_実践レシピ/
 ```
 
 フォルダとファイルの数字はObsidian内の並び順にだけ使う。公開URLはfrontmatter `slug`から生成する。
@@ -93,6 +100,7 @@ dist/                       静的サイトとPagefindインデックス
 ```text
 03_設定/12_MCP.md → /settings/mcp/
 04_ガイド/01_推奨設定プリセット.md → /guides/recommended-presets/
+09_入門コース/01_Hermes Desktopの世界.md → /learn/world/
 ```
 
 ## frontmatter
@@ -108,17 +116,34 @@ tags: [hermes, settings, mcp]
 audience: [Hermes Desktop利用者]
 platforms: [macOS, Windows, Linux]
 status: verified
-hermes_version: "0.17.0"
-hermes_commit: "857d024"
-verified: 2026-06-20
+hermes_version: 0.21.0
+hermes_commit: 'c5c9aa8d'
+verified: '2026-09-02'
 ---
 ```
 
 - `title`、`description`、`slug`は必須
 - `slug`はASCII小文字、数字、ハイフン、`/`だけを使う
+- `sidebar.order`はサイドバーと索引の表示順。ファイル名の数字接頭辞とは独立している
+- `hermes_commit`は引用符付きの8桁で書く。引用符なしや7桁だとYAMLが数値・指数表記として解釈しうる
 - `draft: true`のページは本番ビルドから除外される
 - `status`は`verified`または`needs-review`
 - 内容のない準備中ページは公開しない
+
+## 画像
+
+画像は`src/assets/`に置き、viteエイリアス経由で参照する。Astroが最適化してWebPで配信する。
+
+```md
+![](@editorial/editorial-05-girl-subagents.webp)
+![設定 > モデル 画面](@screenshots/settings-models.webp)
+```
+
+`@editorial`は`src/assets/editorial/`（挿絵）、`@screenshots`は`src/assets/screenshots/`（実機スクリーンショット）を指す。スクリーンショットの一覧と撮影条件は`src/assets/screenshots/manifest.md`にまとめている。
+
+## バージョン追従
+
+Hermes Desktopの新バージョンへの追従は`.claude/skills/hermes-version-update/`の手順を正本とし、`scripts/hermes-audit/`のスクリプト群（差分抽出、frontmatterの一括更新、画像参照とピンの整合チェック、実機スクリーンショットの撮影・加工）で行う。
 
 ## WikiLink
 

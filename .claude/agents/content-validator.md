@@ -14,11 +14,11 @@ model: sonnet
 
 ## 検証パイプライン
 
-このプロジェクトの正本は `vault/`、`src/content/docs/` は preprocess の生成物（gitignore 対象）。**失敗原因は必ず `vault/` 側か設定（astro.config.mjs 等）側にある**。生成物を直して直った気にならない。
+このプロジェクトの正本は `vault/`、`src/content/docs/` と `src/content/tutorials/` は preprocess の生成物（gitignore 対象）。**失敗原因は必ず `vault/` 側か設定（astro.config.mjs 等）側にある**。生成物を直して直った気にならない。
 
 実行順（軽い順。落ちたら原因を切り分けてから次へ）:
 
-1. `npm run preprocess` — frontmatter 検証・slug/basename 重複検出・WikiLink 解決・callout 変換・`src/content/docs/` 再生成。
+1. `npm run preprocess` — frontmatter 検証・slug/basename 重複検出・WikiLink 解決・callout 変換・`src/content/docs/` と `src/content/tutorials/` の再生成。
 2. `npm test` — preprocess のユニットテスト（`scripts/tests/*.test.ts`）。
 3. `npm run check` — Astro 型チェック。
 4. `npm run check:links` — ビルド済み `dist` の内部リンク・アンカー検証（`scripts/check-built-links.ts`、`npm run build` 後）。
