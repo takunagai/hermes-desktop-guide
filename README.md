@@ -116,9 +116,9 @@ tags: [hermes, settings, mcp]
 audience: [Hermes Desktop利用者]
 platforms: [macOS, Windows, Linux]
 status: verified
-hermes_version: 0.21.0
-hermes_commit: 'c5c9aa8d'
-verified: '2026-09-02'
+hermes_version: 0.22.1
+hermes_commit: '297552a9'
+verified: '2026-10-15'
 ---
 ```
 

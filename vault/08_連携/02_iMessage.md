@@ -13,9 +13,9 @@ audience:
 platforms:
   - macOS
 status: verified
-hermes_version: 0.21.0
-hermes_commit: 'c5c9aa8d'
-verified: '2026-09-02'
+hermes_version: 0.22.1
+hermes_commit: '297552a9'
+verified: '2026-10-15'
 ---
 
 > [!note] 確認状況
@@ -51,6 +51,7 @@ iMessage で Hermes を使うには、Desktop のメッセージングパネル�
 | Render replies as markdown?（true/false） | 返信を Markdown で送る。iMessage はそのまま描画、他 Spectrum プラットフォームはプレーン化（既定 true） |
 | Require a mention in group chats?（true/false） | グループではメンション（ウェイクワード）時のみ反応（既定 false） |
 | Enable reaction tapbacks?（true/false） | 処理状況をタップバックで示す（既定 false） |
+| Send read receipts?（true/false） | Hermes へ転送した受信メッセージを既読にする（既定 true） |
 | Auto-start the sidecar?（true/false） | 接続時に Node サイドカーを起動（既定 true） |
 | Sidecar control port | サイドカー制御用ループバックポート（既定 `8789`） |
 

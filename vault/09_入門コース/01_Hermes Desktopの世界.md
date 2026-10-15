@@ -17,9 +17,9 @@ platforms:
   - Windows
   - Linux
 status: verified
-hermes_version: 0.21.0
-hermes_commit: 'c5c9aa8d'
-verified: '2026-09-02'
+hermes_version: 0.22.1
+hermes_commit: '297552a9'
+verified: '2026-10-15'
 ---
 
 入門コースの最初の章です。ここではHermes Desktopが「何者」で、どんなときに役立つのかを大づかみに掴みます。細かい設定は後の章で扱うので、まずは全体像だけ持ち帰ってください。

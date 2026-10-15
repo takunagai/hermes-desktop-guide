@@ -500,11 +500,12 @@
   }
 
   /* 設定画面のアイコン（アプリと同一）
-     Hermes Desktop は Tabler Icons 3.44.0（MIT）を使っている。実機の設定メニューと
+     Hermes Desktop は Tabler Icons 3.44.0（MIT）を使っている（プラグインのみ
+     @vscode/codicons 0.0.45 の extensions、CC BY 4.0）。実機の設定メニューと
      見た目を揃えるため、同じアイコンを data URI の mask として持たせ、色は
      currentColor・アクセント色に追従させる（ライト / ダーク両対応、外部リクエストなし）。
      vault/ の Markdown は素のリンク・見出しのままに保ち、href と見出し id で出し分ける。
-     対象は下で列挙した 18 画面だけに限定する ─ --screen-icon が未定義の要素に
+     対象は下で列挙した 19 画面だけに限定する ─ --screen-icon が未定義の要素に
      マスクを掛けると、塗りつぶしの矩形が出てしまうため。
      Tabler Icons https://tabler.io/icons ─ MIT License, Copyright (c) 2020-2024 Paweł Kuna */
   a[href="/settings/models/"],
@@ -537,63 +538,68 @@
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-globe%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M7 9a4 4 0 1 0 8 0a4 4 0 0 0 -8 0%22 /><path d=%22M5.75 15a8.015 8.015 0 1 0 9.25 -13%22 /><path d=%22M11 17v4%22 /><path d=%22M7 21h8%22 /></svg>");
   }
 
+  a[href="/settings/passwords/"],
+  h2[id="07-パスワードとログイン"] {
+    --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-shield-lock%22 > <path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /> <path d=%22M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3%22 /> <path d=%22M11 11a1 1 0 1 0 2 0a1 1 0 1 0 -2 0%22 /> <path d=%22M12 12l0 2.5%22 /> </svg>");
+  }
+
   a[href="/settings/memory-context/"],
-  h2[id="07-メモリとコンテキスト"] {
+  h2[id="08-メモリとコンテキスト"] {
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-brain%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M15.5 13a3.5 3.5 0 0 0 -3.5 3.5v1a3.5 3.5 0 0 0 7 0v-1.8%22 /><path d=%22M8.5 13a3.5 3.5 0 0 1 3.5 3.5v1a3.5 3.5 0 0 1 -7 0v-1.8%22 /><path d=%22M17.5 16a3.5 3.5 0 0 0 0 -7h-.5%22 /><path d=%22M19 9.3v-2.8a3.5 3.5 0 0 0 -7 0%22 /><path d=%22M6.5 16a3.5 3.5 0 0 1 0 -7h.5%22 /><path d=%22M5 9.3v-2.8a3.5 3.5 0 0 1 7 0v10%22 /></svg>");
   }
 
   a[href="/settings/voice/"],
-  h2[id="08-音声"] {
+  h2[id="09-音声"] {
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-microphone%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M9 5a3 3 0 0 1 3 -3a3 3 0 0 1 3 3v5a3 3 0 0 1 -3 3a3 3 0 0 1 -3 -3l0 -5%22 /><path d=%22M5 10a7 7 0 0 0 14 0%22 /><path d=%22M8 21l8 0%22 /><path d=%22M12 17l0 4%22 /></svg>");
   }
 
   a[href="/settings/advanced/"],
-  h2[id="09-詳細"] {
+  h2[id="10-詳細"] {
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-tool%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5%22 /></svg>");
   }
 
   a[href="/settings/notifications/"],
-  h2[id="10-通知"] {
+  h2[id="11-通知"] {
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-bell%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6%22 /><path d=%22M9 17v1a3 3 0 0 0 6 0v-1%22 /></svg>");
   }
 
   a[href="/settings/billing/"],
-  h2[id="11-請求"] {
+  h2[id="12-請求"] {
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-chart-bar%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -6%22 /><path d=%22M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -10%22 /><path d=%22M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -14%22 /><path d=%22M4 20h14%22 /></svg>");
   }
 
   a[href="/settings/providers/"],
-  h2[id="12-プロバイダー"] {
+  h2[id="13-プロバイダー"] {
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-bolt%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11%22 /></svg>");
   }
 
   a[href="/settings/gateway/"],
-  h2[id="13-ゲートウェイ"] {
+  h2[id="14-ゲートウェイ"] {
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-globe%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M7 9a4 4 0 1 0 8 0a4 4 0 0 0 -8 0%22 /><path d=%22M5.75 15a8.015 8.015 0 1 0 9.25 -13%22 /><path d=%22M11 17v4%22 /><path d=%22M7 21h8%22 /></svg>");
   }
 
   a[href="/settings/keybinds/"],
-  h2[id="14-キーボードショートカット"] {
+  h2[id="15-キーボードショートカット"] {
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-keyboard%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M2 8a2 2 0 0 1 2 -2h16a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-16a2 2 0 0 1 -2 -2l0 -8%22 /><path d=%22M6 10l0 .01%22 /><path d=%22M10 10l0 .01%22 /><path d=%22M14 10l0 .01%22 /><path d=%22M18 10l0 .01%22 /><path d=%22M6 14l0 .01%22 /><path d=%22M18 14l0 .01%22 /><path d=%22M10 14l4 .01%22 /></svg>");
   }
 
   a[href="/settings/tools-keys/"],
-  h2[id="15-ツールとキー"] {
+  h2[id="16-ツールとキー"] {
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-key%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M16.555 3.843l3.602 3.602a2.877 2.877 0 0 1 0 4.069l-2.643 2.643a2.877 2.877 0 0 1 -4.069 0l-.301 -.301l-6.558 6.558a2 2 0 0 1 -1.239 .578l-.175 .008h-1.172a1 1 0 0 1 -.993 -.883l-.007 -.117v-1.172a2 2 0 0 1 .467 -1.284l.119 -.13l.414 -.414h2v-2h2v-2l2.144 -2.144l-.301 -.301a2.877 2.877 0 0 1 0 -4.069l2.643 -2.643a2.877 2.877 0 0 1 4.069 0%22 /><path d=%22M15 9h.01%22 /></svg>");
   }
 
-  a[href="/settings/plugins/"],
-  h2[id="16-plugins"] {
-    --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-package%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5%22 /><path d=%22M12 12l8 -4.5%22 /><path d=%22M12 12l0 9%22 /><path d=%22M12 12l-8 -4.5%22 /><path d=%22M16 5.25l-8 4.5%22 /></svg>");
-  }
-
   a[href="/settings/archived-chats/"],
-  h2[id="17-アーカイブ済みチャット"] {
+  h2[id="17-セッション"] {
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-archive%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M3 6a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2%22 /><path d=%22M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10%22 /><path d=%22M10 12l4 0%22 /></svg>");
   }
 
+  a[href="/settings/plugins/"],
+  h2[id="18-プラグイン"] {
+    --screen-icon: url("data:image/svg+xml,<svg width=%2216%22 height=%2216%22 viewBox=%220 0 16 16%22 xmlns=%22http://www.w3.org/2000/svg%22 fill=%22%23000%22><path d=%22M15 4.95703C15 4.58711 14.8563 4.24054 14.5949 3.97992L12.0096 1.39234C11.4879 0.86922 10.5788 0.86922 10.0571 1.39234L8 3.45119V3.32321C8 2.55068 7.37187 1.922 6.6 1.922H2.4C1.62813 1.922 1 2.55068 1 3.32321V13.5988C1 14.3713 1.62813 15 2.4 15H12.6667C13.4385 15 14.0667 14.3713 14.0667 13.5988V9.39514C14.0667 8.62261 13.4385 7.99393 12.6667 7.99393H12.5379L14.5949 5.93508C14.8553 5.67445 15 5.32602 15 4.95703ZM2.4 2.85521H6.6C6.85667 2.85521 7.06667 3.06446 7.06667 3.32228V7.99299H1.93333V3.32228C1.93333 3.06446 2.14333 2.85521 2.4 2.85521ZM1.93333 13.5979V8.92714H7.06667V14.0649H2.4C2.14333 14.0649 1.93333 13.8547 1.93333 13.5979ZM13.1333 9.39421V13.5979C13.1333 13.8547 12.9233 14.0649 12.6667 14.0649H8V8.92714H12.6667C12.9233 8.92714 13.1333 9.13638 13.1333 9.39421ZM8 7.99299V6.46287L9.5288 7.99299H8ZM13.9351 5.2737L11.3488 7.86221C11.1789 8.03223 10.8859 8.03223 10.716 7.86221L8.12973 5.2737C8.0448 5.18963 7.99813 5.07753 7.99813 4.95796C7.99813 4.83839 8.0448 4.7263 8.12973 4.64129L10.716 2.05278C10.8009 1.96777 10.9129 1.92106 11.0324 1.92106C11.1519 1.92106 11.2639 1.96777 11.3488 2.05278L13.9351 4.64129C14.02 4.72536 14.0667 4.83746 14.0667 4.95703C14.0667 5.0766 14.02 5.1887 13.9351 5.2737Z%22/></svg>");
+  }
+
   a[href="/settings/about/"],
-  h2[id="18-情報"] {
+  h2[id="19-情報"] {
     --screen-icon: url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23000%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 class=%22icon icon-tabler icons-tabler-outline icon-tabler-info-circle%22 ><path stroke=%22none%22 d=%22M0 0h24v24H0z%22 fill=%22none%22 /><path d=%22M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0%22 /><path d=%22M12 9h.01%22 /><path d=%22M11 12h1v4h1%22 /></svg>");
   }
 
@@ -608,6 +614,7 @@
       [href="/settings/workspace/"],
       [href="/settings/security/"],
       [href="/settings/browser/"],
+      [href="/settings/passwords/"],
       [href="/settings/memory-context/"],
       [href="/settings/voice/"],
       [href="/settings/advanced/"],
@@ -617,8 +624,8 @@
       [href="/settings/gateway/"],
       [href="/settings/keybinds/"],
       [href="/settings/tools-keys/"],
-      [href="/settings/plugins/"],
       [href="/settings/archived-chats/"],
+      [href="/settings/plugins/"],
       [href="/settings/about/"]
     )::before,
   #starlight__sidebar
@@ -629,6 +636,7 @@
       [href="/settings/workspace/"],
       [href="/settings/security/"],
       [href="/settings/browser/"],
+      [href="/settings/passwords/"],
       [href="/settings/memory-context/"],
       [href="/settings/voice/"],
       [href="/settings/advanced/"],
@@ -638,8 +646,8 @@
       [href="/settings/gateway/"],
       [href="/settings/keybinds/"],
       [href="/settings/tools-keys/"],
-      [href="/settings/plugins/"],
       [href="/settings/archived-chats/"],
+      [href="/settings/plugins/"],
       [href="/settings/about/"]
     )::before,
   .sl-markdown-content
@@ -650,18 +658,19 @@
       [id="04-ワークスペース"],
       [id="05-安全性"],
       [id="06-browser"],
-      [id="07-メモリとコンテキスト"],
-      [id="08-音声"],
-      [id="09-詳細"],
-      [id="10-通知"],
-      [id="11-請求"],
-      [id="12-プロバイダー"],
-      [id="13-ゲートウェイ"],
-      [id="14-キーボードショートカット"],
-      [id="15-ツールとキー"],
-      [id="16-plugins"],
-      [id="17-アーカイブ済みチャット"],
-      [id="18-情報"]
+      [id="07-パスワードとログイン"],
+      [id="08-メモリとコンテキスト"],
+      [id="09-音声"],
+      [id="10-詳細"],
+      [id="11-通知"],
+      [id="12-請求"],
+      [id="13-プロバイダー"],
+      [id="14-ゲートウェイ"],
+      [id="15-キーボードショートカット"],
+      [id="16-ツールとキー"],
+      [id="17-セッション"],
+      [id="18-プラグイン"],
+      [id="19-情報"]
     )::before {
     content: "";
     display: inline-block;
@@ -688,6 +697,7 @@
       [href="/settings/workspace/"],
       [href="/settings/security/"],
       [href="/settings/browser/"],
+      [href="/settings/passwords/"],
       [href="/settings/memory-context/"],
       [href="/settings/voice/"],
       [href="/settings/advanced/"],
@@ -697,8 +707,8 @@
       [href="/settings/gateway/"],
       [href="/settings/keybinds/"],
       [href="/settings/tools-keys/"],
-      [href="/settings/plugins/"],
       [href="/settings/archived-chats/"],
+      [href="/settings/plugins/"],
       [href="/settings/about/"]
     ) {
     align-items: center;
@@ -714,6 +724,7 @@
       [href="/settings/workspace/"],
       [href="/settings/security/"],
       [href="/settings/browser/"],
+      [href="/settings/passwords/"],
       [href="/settings/memory-context/"],
       [href="/settings/voice/"],
       [href="/settings/advanced/"],
@@ -723,8 +734,8 @@
       [href="/settings/gateway/"],
       [href="/settings/keybinds/"],
       [href="/settings/tools-keys/"],
-      [href="/settings/plugins/"],
       [href="/settings/archived-chats/"],
+      [href="/settings/plugins/"],
       [href="/settings/about/"]
     )::before {
     width: 1.05em;
@@ -741,6 +752,7 @@
       [href="/settings/workspace/"],
       [href="/settings/security/"],
       [href="/settings/browser/"],
+      [href="/settings/passwords/"],
       [href="/settings/memory-context/"],
       [href="/settings/voice/"],
       [href="/settings/advanced/"],
@@ -750,8 +762,8 @@
       [href="/settings/gateway/"],
       [href="/settings/keybinds/"],
       [href="/settings/tools-keys/"],
-      [href="/settings/plugins/"],
       [href="/settings/archived-chats/"],
+      [href="/settings/plugins/"],
       [href="/settings/about/"]
     ) {
     display: flex;
@@ -767,6 +779,7 @@
       [href="/settings/workspace/"],
       [href="/settings/security/"],
       [href="/settings/browser/"],
+      [href="/settings/passwords/"],
       [href="/settings/memory-context/"],
       [href="/settings/voice/"],
       [href="/settings/advanced/"],
@@ -776,8 +789,8 @@
       [href="/settings/gateway/"],
       [href="/settings/keybinds/"],
       [href="/settings/tools-keys/"],
-      [href="/settings/plugins/"],
       [href="/settings/archived-chats/"],
+      [href="/settings/plugins/"],
       [href="/settings/about/"]
     )::before {
     width: 1.05em;
@@ -793,18 +806,19 @@
       [id="04-ワークスペース"],
       [id="05-安全性"],
       [id="06-browser"],
-      [id="07-メモリとコンテキスト"],
-      [id="08-音声"],
-      [id="09-詳細"],
-      [id="10-通知"],
-      [id="11-請求"],
-      [id="12-プロバイダー"],
-      [id="13-ゲートウェイ"],
-      [id="14-キーボードショートカット"],
-      [id="15-ツールとキー"],
-      [id="16-plugins"],
-      [id="17-アーカイブ済みチャット"],
-      [id="18-情報"]
+      [id="07-パスワードとログイン"],
+      [id="08-メモリとコンテキスト"],
+      [id="09-音声"],
+      [id="10-詳細"],
+      [id="11-通知"],
+      [id="12-請求"],
+      [id="13-プロバイダー"],
+      [id="14-ゲートウェイ"],
+      [id="15-キーボードショートカット"],
+      [id="16-ツールとキー"],
+      [id="17-セッション"],
+      [id="18-プラグイン"],
+      [id="19-情報"]
     )::before {
     width: 0.8em;
     height: 0.8em;
