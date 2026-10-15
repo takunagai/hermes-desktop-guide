@@ -6,6 +6,9 @@ def resolve(node, module_consts):
     if isinstance(node, ast.Dict):
         result = {}
         for k, v in zip(node.keys, node.values):
+            if k is None:
+                result.update(resolve(v, module_consts))
+                continue
             key = resolve(k, module_consts)
             result[key] = resolve(v, module_consts)
         return result
@@ -69,6 +72,25 @@ def main(path, out_path):
     unresolved = []
     def resolve_dict(dict_node, prefix=""):
         for k, v in zip(dict_node.keys, dict_node.values):
+            if k is None:
+                # `**OTHER` 展開: Dict リテラルなら再帰、モジュール定数の dict なら平坦化して取り込む
+                if isinstance(v, ast.Dict):
+                    resolve_dict(v, prefix)
+                    continue
+                try:
+                    spread = resolve(v, module_consts)
+                except Exception as e:
+                    unresolved.append((f"{prefix}.**" if prefix else "**", str(e)))
+                    continue
+                def flatten(d, p):
+                    for sk, sv in d.items():
+                        fk = f"{p}.{sk}" if p else str(sk)
+                        if isinstance(sv, dict):
+                            flatten(sv, fk)
+                        else:
+                            result[fk] = sv
+                flatten(spread, prefix)
+                continue
             key = resolve(k, module_consts)
             full_key = f"{prefix}.{key}" if prefix else str(key)
             if isinstance(v, ast.Dict):

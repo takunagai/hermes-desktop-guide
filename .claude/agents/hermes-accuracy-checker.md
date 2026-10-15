@@ -30,7 +30,7 @@ model: inherit
 - 公式と一致を確認できた: `status: verified` にし、`verified: <当日 YYYY-MM-DD>` を更新、判明していれば `hermes_version` / `hermes_commit` を記入。
 - 未確認・公式にあたれない・差分あり: `status: needs-review` にし、本文に確認日・根拠（または「未確認」明示）を残す。事実そのものの修正が要る場合は **勝手に書き換えず**、修正案を提示して hermes-docs-writer に申し送る（メタデータ更新までは Edit で行ってよい）。
 - `verified` は `YYYY-MM-DD` 文字列。スキーマ側で正規化される前提でも、ここでは文字列で揃える。
-- `hermes_commit` は **引用符付きの 8 桁**（例 `hermes_commit: 'c5c9aa8d'`）。引用符なしや 7 桁だと YAML が数値・指数表記として解釈しうる。
+- `hermes_commit` は **引用符付きの 8 桁**（例 `hermes_commit: '297552a9'`）。引用符なしや 7 桁だと YAML が数値・指数表記として解釈しうる。
 
 ## 出力フォーマット
 

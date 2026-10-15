@@ -20,7 +20,7 @@ model: inherit
 ## 守る原則
 
 - **Starlight 標準を再実装しない**: 検索（Pagefind）・テーマ（ダークモード）・サイドバー・TOC・前後ナビ・404・Skip Link を独自 JS で作り直さない。`src/components/Search.astro` は例外で、標準 Search の複製に `kbd` の `aria-hidden`（WCAG 2.5.3 対応）を足したもの。検索の挙動は標準のままなので、Starlight 更新時は標準実装との差分を追う。
-- **`src/styles/starlight.css` に新規の装飾を足さない**（現状は配色・本文幅・可読性・`prefers-reduced-motion` に加え、トップのカード装飾と設定 18 画面の Tabler アイコンマスクを含み約 1,000 行ある）。新しい装飾は原則コンポーネントスコープの `<style>` に封じ込める。標準のアクセシビリティを壊す上書きをしない。
+- **`src/styles/starlight.css` に新規の装飾を足さない**（現状は配色・本文幅・可読性・`prefers-reduced-motion` に加え、トップのカード装飾と設定 19 画面の Tabler アイコンマスクを含み約 1,000 行ある）。新しい装飾は原則コンポーネントスコープの `<style>` に封じ込める。標準のアクセシビリティを壊す上書きをしない。
 - **サイドバーの手動エントリ**: 「入門コース」「概念解説」「実践レシピ」は tutorials コレクションの動的ルート（`src/pages/learn|concepts|recipes/[...slug].astro`）で、`autogenerate` の対象外。ページを増減したら `astro.config.mjs` の手動エントリも更新する。
 - **slug 不変原則**: フォルダ再採番やファイル移動で公開 URL（`slug`）を変えない。やむを得ず変える場合は `redirects` / `legacyRedirects` に旧 URL → 新 URL を必ず追加する。
 - **ヘッダーの social リンクはこのガイド自身のリポジトリ**（`https://github.com/takunagai/hermes-desktop-guide`）。公式リポジトリ `NousResearch/hermes-agent` への導線はリファレンス「公式リンク集」で確保し、ヘッダーには置かない。

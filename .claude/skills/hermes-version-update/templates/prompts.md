@@ -5,7 +5,8 @@
 ## 共通の冒頭（全エージェント）
 
 ```
-対象リポジトリ: /Users/takna/.hermes/hermes-agent（ユーザーの実機チェックアウト。**絶対に git fetch / pull / checkout / reset / stash / ファイル変更をしない**。読み取り専用: `git show OLD:path`、`git diff OLD..NEW -- path`、cat、grep のみ）
+対象リポジトリ: ~/.hermes/hermes-agent（ユーザーの実機チェックアウト。**絶対に git fetch / pull / checkout / reset / stash / ファイル変更をしない**。読み取り専用: `git show OLD:path`、`git diff OLD..NEW -- path`、cat、grep のみ）
+partial clone（blob:none）なので、git コマンドの前に必ず `export GIT_NO_LAZY_FETCH=1` を付ける（手元に無いオブジェクトの遅延 fetch を防ぐ。missing blob で失敗したら未確認に書き、fetch で回避しない）
 OLD={{OLD}}（前回監査）、NEW={{NEW}}（今回、HEAD＝作業ツリーと同一）
 出力: 詳細レポートを {{SCRATCHPAD}}/report-<名前>.md に Bash ヒアドキュメントで保存し（Write が拒否されることがある）、返答は 40 行以内のサマリ（結論 / 主要差分 1 行ずつ / 未確認）。根拠は path:line 付き、確信度（高/中/低）付き。日本語。
 ```

@@ -1,13 +1,16 @@
 #!/bin/zsh
 # 実機 Hermes のバージョン・コミット・タグ祖先関係を確定し、公式リリースノートを保存する。
-# 使い方: scripts/hermes-audit/preflight.sh <出力ディレクトリ> [前回監査コミット]
+# 使い方: scripts/hermes-audit/preflight.sh <出力ディレクトリ> [前回監査コミット] [対象タグ]
 # 実機 repo には読み取りしかしない（fetch / checkout 禁止）。
+# 対象タグを省略すると HEAD を指すタグ、無ければ最新リリースを使う（最新リリースが実機より新しいことがある）。
 set -eu
-OUT=${1:?出力ディレクトリ}; PREV=${2:-}
+OUT=${1:?出力ディレクトリ}; PREV=${2:-}; TAG=${3:-}
 D=$(cd "$(dirname "$0")" && pwd)
 REPO=${HERMES_REPO:-$HOME/.hermes/hermes-agent}
 mkdir -p "$OUT"
 cd "$REPO"
+# 実機は partial clone（blob:none）。手元に無いオブジェクトを参照すると git が遅延 fetch するので禁止する
+export GIT_NO_LAZY_FETCH=1
 VERSION_LINE=$(hermes --version 2>/dev/null | head -1)
 HEAD_FULL=$(git rev-parse HEAD); HEAD8=${HEAD_FULL:0:8}
 CFG_VER=$(grep -m1 '"_config_version"' hermes_cli/config_defaults.py | tr -dc '0-9')
@@ -17,11 +20,14 @@ echo "config  : _config_version=$CFG_VER"
 echo "__version__: $(grep -m1 '__version__' hermes_cli/__init__.py)"
 echo "--- releases (latest 8)"
 gh api "repos/NousResearch/hermes-agent/releases?per_page=8" --jq '.[] | "\(.tag_name) | \(.name) | \(.published_at)"' | tee "$OUT/releases.txt"
-TAG=$(head -1 "$OUT/releases.txt" | cut -d' ' -f1)
+[ -n "$TAG" ] || TAG=$(git tag --points-at HEAD | head -1)
+[ -n "$TAG" ] || TAG=$(head -1 "$OUT/releases.txt" | cut -d' ' -f1)
 TAG_OBJ=$(gh api "repos/NousResearch/hermes-agent/git/ref/tags/$TAG" --jq '.object.sha')
 TAG_COMMIT=$(gh api "repos/NousResearch/hermes-agent/git/tags/$TAG_OBJ" --jq '.object.sha' 2>/dev/null || echo "$TAG_OBJ")
 echo "tag     : $TAG -> commit ${TAG_COMMIT:0:8}"
-if git merge-base --is-ancestor "$TAG_COMMIT" HEAD; then
+if ! git cat-file -e "$TAG_COMMIT" 2>/dev/null; then
+  echo "ancestor: 判定不可（タグのコミットが手元に無い。実機はタグより古い可能性。hermes update を検討）"
+elif git merge-base --is-ancestor "$TAG_COMMIT" HEAD; then
   echo "ancestor: OK (HEAD is $(git rev-list --count "$TAG_COMMIT"..HEAD) commits ahead of tag)"
 else
   echo "ancestor: NG (実機はタグ以前。hermes update を検討)"

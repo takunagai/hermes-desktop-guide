@@ -15,15 +15,19 @@ description: "Hermes Desktop ガイドを新バージョンへ追従させる定
 - 探索・執筆はサブエージェントへ委譲し、親は 40 行サマリだけ受け取る（レポート本体は scratchpad）。使用上限で止まった子は、解除後に SendMessage「続きから」で再開できる
 - GUI 操作は `rules/gui-automation.md` に従う。**着手前に「Mac を触らないで」と伝え、終了時に「OK」と伝える**。作成・保存・更新ボタンは押さない
 - ユーザーが監査中に `hermes update` すると実機コミットが動く。撮影後・執筆後に `git rev-parse HEAD` を再確認し、動いていたら Phase 0 の差分確認をやり直して再ピンする
+- 実機は **partial clone（blob:none）**。手元に無いオブジェクトを参照すると git が黙って遅延 fetch する（v0.22.1 監査で最新タグの `merge-base` が fetch を始めた）。実機に対する git はすべて `export GIT_NO_LAZY_FETCH=1` を付ける。委譲プロンプトにも必ず書く
+- サブエージェントは Write でのレポート保存を拒否されることがある。その場合は返答本文が自動通知の途中で切れるので、「続きを SendMessage（to: team-lead）で」と頼み、親が scratchpad に保存する
 
 ## Phase 0 ─ ピン確定（自分で実行、5 分）
 
 ```bash
 OUT=<scratchpad>/audit
-scripts/hermes-audit/preflight.sh $OUT <前回監査コミット8桁>
+scripts/hermes-audit/preflight.sh $OUT <前回監査コミット8桁> [対象タグ]
 ```
 
-出力で確認: バージョン行、HEAD、`_config_version`、最新タグとその祖先関係、前回からのコミット数、設定関連 4 パスの diff stat、`diff-defaults.txt`（追加/削除/変更の件数）、`diff-commands.txt`。リリースノートは `$OUT/release-<tag>.md`。
+対象タグを省略すると HEAD を指すタグを使う（無ければ最新リリース。ユーザーが更新した直後に次のパッチが出ていることがあるので、最新リリース＝実機とは限らない）。
+
+出力で確認: バージョン行、HEAD、`_config_version`、対象タグとその祖先関係、前回からのコミット数、設定関連 4 パスの diff stat、`diff-defaults.txt`（追加/削除/変更の件数）、`diff-commands.txt`。リリースノートは `$OUT/release-<tag>.md`。
 
 前回コミットは memory `hermes-rolling-main-version-pinned` または `vault/06_リファレンス/02_バージョンと調査根拠.md` の対象表から取る。
 
@@ -47,11 +51,11 @@ scripts/hermes-audit/preflight.sh $OUT <前回監査コミット8桁>
 Hermes は Electron で AX ツリーを公開しないため、座標クリック + `screencapture`。詳細は memory `hermes-desktop-screenshot-capture`。
 
 1. ユーザーに「数分 Mac を触らない」と伝える。撮影したい状態（ローカルゲートウェイか、`hermes desktop --local` 起動か）を先に確認する
-2. `scripts/hermes-audit/capture/calibrate.sh $OUT/shots` → `00_calibrate_s.png` を Read し、カーソルが「モデル」に乗っていることを確認。乗っていなければ縮小画像の座標 × 1.18125 で `capture_settings.sh` の座標表を直す（内蔵ディスプレイ 1512x982 論理、ウィンドウ (40,40) 1420x900 が既定幾何）
-3. `capture_settings.sh $OUT/shots`（`--local` 起動なら `HERMES_LOCAL=1` を付ける）
-4. `52_cron_s.png` で cron モーダルの ✕ を実測して `CRON_CLOSE="x,y" capture_main.sh $OUT/shots`
+2. `scripts/hermes-audit/capture/calibrate.sh $OUT/shots` → `00_calibrate_s.png` を Read し、カーソルが「モデル」に乗っていることを確認する。縮小→論理の係数はディスプレイ設定で変わる（`calibrate.sh` が出す撮影画像の幅 / 2 / 1280。3600px なら 1.40625、3024px なら 1.18125）
+3. v0.22 以降のサイドバーはアコーディオン式（選択中の画面だけ子項目が開く）。`SHOTS=$OUT/shots shot.sh t_chat 130 <チャットの y>` でチャットを開いてから `SHOTS=$OUT/shots capture_subpages.sh` で全サブページを撮る（座標表は v0.22.1 時点）。撮影後、各 `*_0_s.png` のパンくずを 1 枚の一覧画像に切り貼りして着弾を確認する。旧 `capture_settings.sh` は 18 画面・旧幾何用
+4. メイン画面系は画面ごとに `shot.sh` で撮り、1 枚目を Read して次の座標を決める（ナビ・タブ・cron の ✕ は v0.22.1 で位置が変わった。旧 `capture_main.sh` の座標表は使えない）
 5. `restore.sh $OUT/shots` で他アプリを再表示し、ユーザーに「OK」と伝える
-6. 落とし穴: モーダルの ✕ は Esc で閉じない / サブビュー展開で下の項目が 33px ずつずれる / スクロールはマウス直下の容器が動くのでテーマ格子・ペット格子を避ける / 透過モーダルに背景が透けるので他アプリを隠す / hide 直後に Hermes が別ディスプレイへ戻ることがある
+6. 落とし穴: モーダルの ✕ は Esc で閉じない / 子項目の展開で下の項目が子の数 × 1 行ずつずれる / スクロールはマウス直下の容器が動くのでテーマ格子・ペット格子を避ける / 透過モーダルに背景が透けるので他アプリを隠す / hide 直後に Hermes が別ディスプレイへ戻ることがある / Superset 等のターミナルから初めて `screencapture` すると macOS の画面収録の確認ダイアログが出てクリックを吸う（押さずに撮影を止め、ユーザーに処理を頼む）
 
 撮れない画面（SSH 登録が要る Managed updates、平文トークン警告 等）は無理に作らず「ソース根拠」と明記して残す。
 
@@ -86,6 +90,10 @@ npm run quality
 - memory `hermes-rolling-main-version-pinned` の「現在の状態」をピン・画面数・件数で更新する
 - 派生ドキュメントを見直す: `KNOWN_ISSUES.md`（設定画面の表示順とファイル接頭辞の対応表）、`README.md` の frontmatter 例のピン、`docs/` 配下の版数・ページ数の記述、`templates/writer-common.md` の例示値
 - 残った未確認項目は本文に明記した状態で終える。ユーザーが「残課題も」と言ったら Phase 2 を条件付き（`--local` 起動、ゲートウェイ切替）で再実行する
+
+## 所要の目安（v0.22.1 実績）
+
+設定差分 3.3 万行・19 画面のサブページ化という大型更新。調査 10 体（A/B/C/E を各 2 分割 + D + F）20 分 → 撮影 15 分（185 枚、権限ダイアログで 1 回中断）→ 照合 1 体 30 分 → 執筆 6 体 + 画像加工 1 体 + アイコン CSS 1 体を並列で 20〜40 分（使用上限で 2 回中断）→ 整合・品質 10 分。依存が未インストールのことがあるので、品質ゲートの前に `node_modules` の有無を確かめて `npm ci` する。
 
 ## 所要の目安（v0.21.0 実績）
 

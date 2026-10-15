@@ -157,7 +157,7 @@ Starlight標準機能を使う:
 
 `src/components/PageTitle.astro`はStarlight標準PageTitleをラップし、status、実機・内容確認日、対象バージョン、対象コミット、platforms、tagsを表示する。
 
-`src/styles/starlight.css`（約1,000行）は配色、本文幅、読みやすさ、`prefers-reduced-motion`に加え、トップのエリアカード・フラッグシップカードの装飾と、設定18画面のアイコン（Tabler Icons 3.44.0のdata URIを`mask-image`で適用。サイドバー・トップの設定リンク・全設定項目索引のH2の3箇所）を定義する。Starlight標準のアクセシビリティを壊す上書きを避ける。新規の装飾は原則コンポーネントスコープの`<style>`に置き、このファイルを増やさない。
+`src/styles/starlight.css`（約1,000行）は配色、本文幅、読みやすさ、`prefers-reduced-motion`に加え、トップのエリアカード・フラッグシップカードの装飾と、設定19画面のアイコン（Tabler Icons 3.44.0のdata URIを`mask-image`で適用。プラグインのみVS Code codicons 0.0.45。サイドバー・トップの設定リンク・全設定項目索引のH2の3箇所）を定義する。Starlight標準のアクセシビリティを壊す上書きを避ける。新規の装飾は原則コンポーネントスコープの`<style>`に置き、このファイルを増やさない。
 
 ## 画像
 
