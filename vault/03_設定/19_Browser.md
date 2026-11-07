@@ -13,9 +13,9 @@ tags:
 audience:
   - Hermes Desktop利用者
 status: verified
-hermes_version: 0.22.1
-hermes_commit: '297552a9'
-verified: '2026-10-15'
+hermes_version: 0.23.0
+hermes_commit: '2bd378ed'
+verified: '2026-11-08'
 ---
 
 エージェントがブラウザーを操作するときに、既定ブラウザーのログイン状態を使うか、`localhost` や LAN などのプライベート URL を開けるかを設定する。項目は 3 つで、いずれも `config.yaml` の `browser` セクションに保存される。
@@ -32,7 +32,7 @@ verified: '2026-10-15'
 | 画面表示（主） | 内部キー（サブ） | 製品既定値 | 推奨 |
 |---|---|---:|---|
 | Use My Real Browser Profile | `browser.use_real_profile` | オフ | オフ。ログイン済みサイトを操作させるときだけオン |
-| ブラウザーのプライベート URL | `browser.allow_private_urls` | オフ | オフ。ローカル開発サーバーを操作するときだけオン |
+| ブラウザーのプライベート URL | `browser.allow_private_urls` | オフ | オフ。クラウドブラウザー等から内部 URL を開く必要があるときだけオン |
 | プライベート URL にはローカルブラウザーを使用 | `browser.auto_local_for_private_urls` | オン | オン |
 
 > [!note] サイドバーとラベルが英語表示
@@ -68,8 +68,12 @@ verified: '2026-10-15'
 |---|---|---|
 | `browser.real_profile_pin` | 空 | スナップショット元のプロファイルディレクトリ名（例: `Profile 2`）を固定する。空なら既定ブラウザーが最後に使ったプロファイルに追従する。仕事用と個人用を併用している環境で、意図しないアカウントが渡るのを防ぐ。存在しない名前を指定すると、最後に使ったプロファイルへ戻らずにエラーで止まる |
 | `browser.real_profile_autoclose` | `false` | Windows で、起動中の Chrome / Edge / Brave が Cookie DB をロックしていてコピーできないときに「ブラウザーを閉じる」提案フローを有効にする。自動では終了せず、エージェントが確認してから閉じる。macOS / Linux では起動中でもコピーできるため効果がない |
+| `browser.engine` | `auto` | ローカルブラウザーの実行エンジン。`auto` は Chromium、`lightpanda` はセッションごとに Lightpanda を起動する（ページ移動が速いがスクリーンショットは撮れない）。`chrome` は `auto` として扱われる |
+| `browser.executable_path` | 空 | ローカルセッションで使う Chromium の実行ファイル。空なら Hermes が用意した Chromium（`hermes pm install chromium`）を使う |
+| `browser.user_data_dir` | 空 | ローカルセッションで共有する永続的な Chromium プロファイルのフォルダー。空ならセッションごとに使い捨てのプロファイルを作る |
+| `browser.chromium_args` | `[]` | ローカルセッションの Chromium に渡す追加フラグ（例: `["--lang=de"]`） |
 
-`browser.use_real_profile` がオンのあいだは、[[03_設定/11_ツールとキー|ツールとキー]]の `AGENT_BROWSER_ENGINE`（`browser.engine`）の指定は無視される。
+`browser.use_real_profile` がオンのあいだ、またはクラウドブラウザーや CDP 接続（`browser.cdp_url`、`/browser connect`）を使っているあいだは、`browser.engine` の指定は無視される。以前 `.env` に書いていた `AGENT_BROWSER_*` の環境変数（エンジン・実行ファイル・プロファイル・追加フラグ・ウィンドウ表示）は、設定の移行時に対応する `browser.*` のキーへ移される。
 
 ## ローカル・プライベート URL
 
@@ -80,10 +84,14 @@ verified: '2026-10-15'
 
 ### ブラウザーのプライベート URL
 
-- **オン**: ブラウザーツールで `localhost`、ループバック、LAN、社内ネットワーク、クラウドメタデータなどの内部 URL を開くことを許可する。
-- **オフ**（既定）: ブラウザーツールによる内部 URL の操作を拒否する。
+この項目が効くのは、ブラウザーがこのマシンの外で動くとき（クラウドブラウザー、別ホストへの CDP 接続、コンテナ内のターミナルから使うブラウザーなど）だけ。このマシンで動くローカルブラウザーと、下の「プライベート URL にはローカルブラウザーを使用」で開いたページは、この項目に関係なく `localhost` や LAN の URL を開ける。
 
-[[03_設定/05_安全性#プライベート URL|安全性]]の「プライベート URL を許可」（`security.allow_private_urls`）は Web 取得など一般ツール向けの許可で、この項目とは独立している。ブラウザーでローカル開発サーバーを操作するには、この項目をオンにする。
+- **オン**: ローカル以外のブラウザーでも、`localhost`、ループバック、LAN、社内ネットワークなどの内部 URL を開くことを許可する。
+- **オフ**（既定）: ローカル以外のブラウザーによる内部 URL の操作を拒否する。
+
+クラウドのメタデータエンドポイント（IMDS）は、この項目のオン・オフに関係なく常に拒否される。
+
+[[03_設定/05_安全性#プライベート URL|安全性]]の「プライベート URL を許可」（`security.allow_private_urls`）は Web 取得など一般ツール向けの許可で、この項目とは独立している。
 
 ### プライベート URL にはローカルブラウザーを使用
 
@@ -102,4 +110,4 @@ verified: '2026-10-15'
 ## 関連ページ
 
 - [[03_設定/05_安全性|安全性]] ─ 承認モードと、一般ツール向けの「プライベート URL を許可」
-- [[03_設定/11_ツールとキー|ツールとキー]] ─ ブラウザーエンジンの選択、クラウドブラウザーの API キー
+- [[03_設定/11_ツールとキー|ツールとキー]] ─ クラウドブラウザーの API キー、Camofox プラグイン

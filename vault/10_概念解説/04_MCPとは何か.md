@@ -16,9 +16,9 @@ platforms:
   - Windows
   - Linux
 status: verified
-hermes_version: 0.22.1
-hermes_commit: '297552a9'
-verified: '2026-10-15'
+hermes_version: 0.23.0
+hermes_commit: '2bd378ed'
+verified: '2026-11-08'
 ---
 
 MCP（Model Context Protocol）は、[[10_概念解説/03_スキルとツールの違い|スキルとツールの違い]]で触れた「拡張の三つめの道」です。組み込みツールやスキルでは届かない外部の機能を、エージェントに取り込めます。とても強力ですが、設定リファレンスの[[03_設定/12_MCP|MCP]]には安全上の注意が繰り返し出てきます。なお、MCPの管理画面は設定画面ではなく、サイドバーの「スキルとツール」画面の「Connectors」タブにあります（日本語リソース未整備のため英語表示）。このタブには、自分で追加するMCPサーバーと、Nous側でホストされるアプリ（Managed）が1つの一覧に並びます。
@@ -69,6 +69,7 @@ Hermesは、この広がった境界を絞り込むための仕組みを複数�
 | `sampling.enabled: false` | MCPサーバーからの推論要求を拒否 | 未信頼サーバーにHermesのモデルを使わせない |
 | `ssl_verify`（既定 `true`） | サーバー証明書を検証 | 通信相手が本物かを確かめる。本番では無効化しない |
 | 再読み込み時の確認 | `approvals.mcp_reload_confirm` で確認を挟む（CLI/TUIの手動 `/reload-mcp` 時） | 手動の再読み込みが不用意に適用されるのを防ぐ |
+| 有料ツールの単価と上限 | `mcp_servers.<名前>.tool_costs` / `spend_limit` / `cost_unit` で呼び出し単価とチャットごとの上限を宣言する（設定ファイルのみ） | 承認時に単価と累計が見え、上限を超える前に必ず確認が入る。詳細は[[03_設定/12_MCP|MCP設定]] |
 
 特に注意したいのが、`sampling`（サンプリング）です。これはMCPサーバーが逆にHermesのモデル推論を利用できる機能で、SDK対応時は既定で有効です。つまりツールを提供するだけでなく、サーバー側からHermesのモデルを呼べる経路でもあります。信頼できないサーバーでは `sampling.enabled: false` にして、この逆向きの経路を閉じておくのが安全です。
 
