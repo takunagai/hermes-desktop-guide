@@ -29,6 +29,8 @@ scripts/hermes-audit/preflight.sh $OUT <前回監査コミット8桁> [対象タ
 
 出力で確認: バージョン行、HEAD、`_config_version`、対象タグとその祖先関係、前回からのコミット数、設定関連 4 パスの diff stat、`diff-defaults.txt`（追加/削除/変更の件数）、`diff-commands.txt`。リリースノートは `$OUT/release-<tag>.md`。
 
+`diff-defaults.txt` は AST で評価できる項目だけの比較。preflight の出力に出る `UNRESOLVED`（f 文字列で組み立てる `terminal.singularity_image`、`_aux()` 呼び出しの `auxiliary.*` など）は差分に数えられないので、新旧で一覧を突き合わせて手で補う（v0.23.0 では削除 2・追加 2 が漏れ、照合で見つかった）。
+
 前回コミットは memory `hermes-rolling-main-version-pinned` または `vault/06_リファレンス/02_バージョンと調査根拠.md` の対象表から取る。
 
 ## Phase 1 ─ ソース差分調査（並列 6 体）
